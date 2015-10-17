@@ -2,14 +2,13 @@ package vtech.iot.mesh.sim;
 
 import vtech.iot.mesh.sim.domain.Generator;
 import vtech.iot.mesh.sim.domain.Medium;
+import vtech.iot.mesh.sim.domain.Transmitter;
 
 public class MeshSim {
   public MeshSim() {
     Medium medium = new Medium();
-    Generator generator = new Generator(medium);
-    Generator generator2 = new Generator(medium);
-//    Generator generator3 = new Generator(medium);
-//    Generator generator4 = new Generator(medium);
+    Transmitter tr1 = new Transmitter(medium);
+    Generator generator = new Generator(tr1);
   }
   
   public static void main(String[] args){

@@ -16,31 +16,26 @@ public class Medium {
 
   private Object lock = new Object();
 
-  private List<MediumPacketContext> onAirPackets = new ArrayList<MediumPacketContext>();
+  private List<Transmission> currentTransmissions = new ArrayList<Transmission>();
 
   public Medium() {
     new Thread(new Runnable() {
 
       public void run() {
         while (true) {
-          processOnAirPackets();
+          processTransmissions();
           printStatsIfNeeded();
-//          try {
-//            Thread.sleep(0, 100);
-//          } catch (InterruptedException e) {
-//            e.printStackTrace();
-//          }
         }
       }
     }).start();
   }
 
-  public synchronized void addPacketToMedium() {
+  public synchronized void beginTransmission(Transmission transmission) {
     synchronized (lock) {
-      onAirPackets.add(new MediumPacketContext());
-      packetsSent ++;
-      
-      if (onAirPackets.size() == 1) {
+      currentTransmissions.add(transmission);
+      packetsSent++;
+
+      if (currentTransmissions.size() == 1) {
         // medium got started busy
         mediumStartedBusyInNanos = System.nanoTime();
 
@@ -48,26 +43,26 @@ public class Medium {
       }
 
       // there is more than one packet in medium
-      for (MediumPacketContext mpc : onAirPackets) {
-        mpc.setCollision(true);
+      for (Transmission tr : currentTransmissions) {
+        tr.setCollision();
       }
     }
   }
 
-  private void processOnAirPackets() {
+  private void processTransmissions() {
     synchronized (lock) {
-      for (int q = 0; q < onAirPackets.size(); q++) {
-        MediumPacketContext mpc = onAirPackets.get(q);
-        if (System.nanoTime() >= mpc.getEndInMediumInNanos()) {
-          onAirPackets.remove(q);
+      for (int q = 0; q < currentTransmissions.size(); q++) {
+        Transmission mpc = currentTransmissions.get(q);
+        if (System.nanoTime() >= mpc.getTransmissionEndInNanos()) {
+          currentTransmissions.remove(q);
           q--;
-          if(mpc.isCollision()){
-            packetsCollided ++;
+          if (mpc.isCollision()) {
+            packetsCollided++;
           }
         }
       }
 
-      if (onAirPackets.size() == 0 && mediumStartedBusyInNanos != 0) {
+      if (currentTransmissions.size() == 0 && mediumStartedBusyInNanos != 0) {
         final long mediumFinishedBusyInNanos = System.nanoTime();
 
         mediumBusySummaryTimeInNanos += (mediumFinishedBusyInNanos - mediumStartedBusyInNanos);
@@ -82,13 +77,14 @@ public class Medium {
     }
     lastPrintTimeInMillis = System.currentTimeMillis();
 
-    System.out.println(getMediumBusyPercentage());
-    System.out.println("System up time [s]     : " + (System.nanoTime() - startTimeInNanos) / 1000000000L);
+    System.out.println("System up time      [s]: " + (System.nanoTime() - startTimeInNanos) / 1000000000L);
     System.out.println("Packets sent           : " + packetsSent);
     System.out.println("Packets collision      : " + packetsCollided);
-    double packetsCollinPerc = 100.0 * ((double)packetsCollided) / ((double)packetsSent);
+    double packetsCollinPerc = 100.0 * ((double) packetsCollided) / ((double) packetsSent);
     System.out.println("Packets collision   [%]: " + packetsCollinPerc);
-    System.out.println("Medium busy [ms]       : " + mediumBusySummaryTimeInNanos / 1000000L);
+    System.out.println("Medium busy        [ms]: " + mediumBusySummaryTimeInNanos / 1000000L);
+    System.out.println("Medium busy         [%]: " + getMediumBusyPercentage());
+    System.out.println("");
   }
 
   private double getMediumBusyPercentage() {
