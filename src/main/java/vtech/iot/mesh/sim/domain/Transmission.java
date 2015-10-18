@@ -11,9 +11,8 @@ public class Transmission {
   public Transmission(Packet packet) {
     this.packet = packet;
 
+    long packetDuration = 1000000000L * ((long)packet.getSize()) * 8L / getDataRate();
     transmissionStartInNanos = System.nanoTime();
-
-    long packetDuration = 1000000000L * packet.getSize() * 8 / getDataRate();
     transmissionEndInNanos = transmissionStartInNanos + packetDuration;
   }
 

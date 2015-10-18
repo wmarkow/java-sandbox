@@ -11,7 +11,7 @@ public abstract class Transmitter {
 
   private volatile Medium medium;
   private List<Packet> outgoingQueue = new ArrayList<Packet>();
-  private Transmission currentTransmission = null;
+  private volatile Transmission currentTransmission = null;
   private Object lock = new Object();
 
   public Transmitter() {
