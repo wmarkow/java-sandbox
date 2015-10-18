@@ -1,12 +1,9 @@
 package vtech.iot.mesh.sim.examples;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 import javax.swing.Timer;
 
 import org.jfree.chart.ChartFactory;
@@ -18,10 +15,6 @@ import org.jfree.data.time.DynamicTimeSeriesCollection;
 import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
-
-import vtech.iot.mesh.sim.MeshSim;
-import vtech.iot.mesh.sim.domain.devices.AlohaDevice;
 
 public abstract class AbstractGraphExample extends ApplicationFrame {
 
@@ -57,10 +50,8 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
 
     JFreeChart chart = createChart(dataset);
 
-    this.add(new ChartPanel(chart), BorderLayout.CENTER);
-    JPanel btnPanel = new JPanel(new FlowLayout());
-
-    this.add(btnPanel, BorderLayout.SOUTH);
+    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    getContentPane().add(new ChartPanel(chart));
 
     timer = new Timer(FAST, new ActionListener() {
 
@@ -72,12 +63,12 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
         for (int q = 0; q < getSeriesCount(); q++) {
           newData[q] = getSeriesData(q);
         }
-        
+
         dataset.advanceTime();
         dataset.appendData(newData);
       }
     });
-    
+
     timer.start();
   }
 
