@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import org.jfree.ui.RefineryUtilities;
 
 import vtech.iot.mesh.sim.MeshSim;
+import vtech.iot.mesh.sim.domain.devices.AlohaBetterDevice;
 import vtech.iot.mesh.sim.domain.devices.AlohaDevice;
 
 public class AlohaTransmitters extends AbstractGraphExample {
@@ -16,7 +17,15 @@ public class AlohaTransmitters extends AbstractGraphExample {
   public AlohaTransmitters() {
     super(WINDOW_TITLE);
 
-    meshSim.addDevice(new AlohaDevice(10));
+    meshSim.addDevice(new AlohaDevice(1));
+    meshSim.addDevice(new AlohaDevice(1));
+    meshSim.addDevice(new AlohaDevice(1));
+    meshSim.addDevice(new AlohaDevice(1));
+    
+//    meshSim.addDevice(new AlohaBetterDevice(10));
+//    meshSim.addDevice(new AlohaBetterDevice(10));
+//    meshSim.addDevice(new AlohaBetterDevice(10));
+//    meshSim.addDevice(new AlohaBetterDevice(10));
   }
 
   @Override
@@ -26,13 +35,17 @@ public class AlohaTransmitters extends AbstractGraphExample {
 
   @Override
   protected int getSeriesCount() {
-    return 1;
+    return 2;
   }
 
   @Override
   protected String getSeriesName(int seriesIndex) {
     if (seriesIndex == 0) {
       return "Network load";
+    }
+    
+    if (seriesIndex == 1) {
+      return "Collided packets";
     }
 
     return "Unknown";
@@ -42,6 +55,10 @@ public class AlohaTransmitters extends AbstractGraphExample {
   protected float getSeriesData(int seriesIndex) {
     if (seriesIndex == 0) {
       return (float)meshSim.getMediumBusyPercentage();
+    }
+    
+    if (seriesIndex == 1) {
+      return (float)meshSim.getCollidedPacketsPercentage();
     }
 
     return 1000;

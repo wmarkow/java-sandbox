@@ -27,7 +27,7 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
 
   private static final float Y_MAX = 100;
   private static final float Y_MIN = 0;
-  private static final int COUNT = 2 * 60;
+  private static final int COUNT = 30;;
   private static final int FAST = 1000;
   private Timer timer;
 

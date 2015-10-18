@@ -13,11 +13,15 @@ public class MeshSim {
 
   public void addDevice(Device device) {
     devices.add(device);
-    
+
     device.attachToMedium(medium);
   }
-  
+
   public double getMediumBusyPercentage() {
     return medium.getMediumBusyPercentage();
+  }
+
+  public double getCollidedPacketsPercentage() {
+    return medium.getCollidedPacketsPercentage();
   }
 }

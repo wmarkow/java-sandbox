@@ -86,8 +86,7 @@ public class Medium {
     System.out.println("System up time      [s]: " + (System.nanoTime() - startTimeInNanos) / 1000000000L);
     System.out.println("Packets sent           : " + packetsSent);
     System.out.println("Packets collision      : " + packetsCollided);
-    double packetsCollinPerc = 100.0 * ((double) packetsCollided) / ((double) packetsSent);
-    System.out.println("Packets collision   [%]: " + packetsCollinPerc);
+    System.out.println("Packets collision   [%]: " + getCollidedPacketsPercentage());
     System.out.println("Medium busy        [ms]: " + mediumBusySummaryTimeInNanos / 1000000L);
     System.out.println("Medium busy         [%]: " + getMediumBusyPercentage());
     System.out.println("");
@@ -95,5 +94,9 @@ public class Medium {
 
   public double getMediumBusyPercentage() {
     return 100 * (((double) mediumBusySummaryTimeInNanos)) / (((double) System.nanoTime()) - ((double) startTimeInNanos));
+  }
+  
+  public double getCollidedPacketsPercentage(){
+    return 100.0 * ((double) packetsCollided) / ((double) packetsSent);
   }
 }
