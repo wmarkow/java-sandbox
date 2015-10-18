@@ -3,16 +3,14 @@ package vtech.iot.mesh.sim.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transmitter {
+public abstract class Transmitter {
 
   private Medium medium;
   private List<Packet> outgoingQueue = new ArrayList<Packet>();
   private Transmission currentTransmission = null;
   private Object lock = new Object();
 
-  public Transmitter(Medium medium) {
-    this.medium = medium;
-
+  public Transmitter() {
     initThread();
   }
 
@@ -20,6 +18,14 @@ public class Transmitter {
     synchronized (lock) {
       outgoingQueue.add(packet);
     }
+  }
+
+  public void attachToMedium(Medium medium) {
+    this.medium = medium;
+  }
+
+  protected boolean isMediumBusy() {
+    return medium.isBusy();
   }
 
   private void initThread() {
@@ -33,7 +39,13 @@ public class Transmitter {
     }).start();
   }
 
+  protected abstract Transmission beginTransmission(Packet packet);
+
   private void sendPacket() {
+    if (medium == null) {
+      return;
+    }
+
     synchronized (lock) {
       if (currentTransmission != null) {
         if (System.nanoTime() < currentTransmission.getTransmissionEndInNanos()) {
@@ -50,10 +62,12 @@ public class Transmitter {
         return;
       }
 
-      currentTransmission = new Transmission(outgoingQueue.get(0));
+      Packet packet = outgoingQueue.get(0);
       outgoingQueue.remove(0);
 
+      currentTransmission = beginTransmission(packet);
       medium.beginTransmission(currentTransmission);
+
       return;
 
     }

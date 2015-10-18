@@ -30,6 +30,12 @@ public class Medium {
     }).start();
   }
 
+  public synchronized boolean isBusy() {
+    synchronized (lock) {
+      return currentTransmissions.size() != 0;
+    }
+  }
+
   public synchronized void beginTransmission(Transmission transmission) {
     synchronized (lock) {
       currentTransmissions.add(transmission);

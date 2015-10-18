@@ -4,9 +4,18 @@ public class Generator {
 
   private Transmitter transmitter;
   private Poisson poisson = new Poisson();
+  private int averageRequestsPerSecond;
 
-  public Generator(Transmitter transmitter) {
-    this.transmitter = transmitter;
+  public Generator(int averageRequestsPerSecond) {
+    if (averageRequestsPerSecond < 0) {
+      throw new IllegalArgumentException("Average requests per second must be a positive value.");
+    }
+
+    if (averageRequestsPerSecond >= 1000) {
+      throw new IllegalArgumentException("Average requests per second must be lower than 1000.");
+    }
+
+    this.averageRequestsPerSecond = averageRequestsPerSecond;
 
     new Thread(new Runnable() {
 
@@ -18,14 +27,20 @@ public class Generator {
     }).start();
   }
 
+  public void setTransmitter(Transmitter transmitter) {
+    this.transmitter = transmitter;
+  }
+
   private void generate() {
 
     try {
-      int numberOfMillis = (int) poisson.getPoisson(100);
-      
+      int numberOfMillis = (int) poisson.getPoisson(((double)1000) / ((double)averageRequestsPerSecond));
+
       Thread.sleep(numberOfMillis);
-      
-      transmitter.addPacketToSend(new Packet());
+
+      if (transmitter != null) {
+        transmitter.addPacketToSend(new Packet());
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
