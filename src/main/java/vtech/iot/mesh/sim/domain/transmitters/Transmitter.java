@@ -9,7 +9,7 @@ import vtech.iot.mesh.sim.domain.Transmission;
 
 public abstract class Transmitter {
 
-  private Medium medium;
+  private volatile Medium medium;
   private List<Packet> outgoingQueue = new ArrayList<Packet>();
   private Transmission currentTransmission = null;
   private Object lock = new Object();
@@ -29,6 +29,10 @@ public abstract class Transmitter {
   }
 
   protected boolean isMediumBusy() {
+    if (medium == null) {
+      return true;
+    }
+    
     return medium.isBusy();
   }
 
