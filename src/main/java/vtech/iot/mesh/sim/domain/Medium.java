@@ -57,10 +57,13 @@ public class Medium {
 
   private void processTransmissions() {
     synchronized (lock) {
+      Transmission lastFinishedTransmission = null;
       for (int q = 0; q < currentTransmissions.size(); q++) {
         Transmission mpc = currentTransmissions.get(q);
-        if (System.nanoTime() >= mpc.getTransmissionEndInNanos()) {
+        final long now = System.nanoTime();
+        if (now >= mpc.getTransmissionEndInNanos()) {
           currentTransmissions.remove(q);
+          lastFinishedTransmission = mpc;
           q--;
           if (mpc.isCollision()) {
             packetsCollided++;
@@ -69,7 +72,7 @@ public class Medium {
       }
 
       if (currentTransmissions.size() == 0 && mediumStartedBusyInNanos != 0) {
-        final long mediumFinishedBusyInNanos = System.nanoTime();
+        final long mediumFinishedBusyInNanos = lastFinishedTransmission.getTransmissionEndInNanos();
 
         mediumBusySummaryTimeInNanos += (mediumFinishedBusyInNanos - mediumStartedBusyInNanos);
         mediumStartedBusyInNanos = 0;
