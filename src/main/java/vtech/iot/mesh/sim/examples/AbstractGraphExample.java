@@ -30,22 +30,20 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
     init();
   }
 
-  protected abstract String getGraphTitle();
-
-  protected abstract int getSeriesCount();
-
-  protected abstract String getSeriesName(int seriesIndex);
-
-  protected abstract float getSeriesData(int seriesIndex);
+  protected abstract SimulationGraphInfo[] getSimulationGraphInfos();
+  
+  protected abstract float[] getSeriesData(int graphIndex);
 
   private void init() {
-    this.setTitle(getGraphTitle());
+    SimulationGraphInfo[] simulationGraphInfos = getSimulationGraphInfos();
+    
+    this.setTitle(simulationGraphInfos[0].getTitle());
 
-    final DynamicTimeSeriesCollection dataset = new DynamicTimeSeriesCollection(getSeriesCount(), COUNT, new Second());
+    final DynamicTimeSeriesCollection dataset = new DynamicTimeSeriesCollection(simulationGraphInfos[0].getSeriesNames().length, COUNT, new Second());
     dataset.setTimeBase(new Second(0, 0, 0, 1, 1, 2011));
 
-    for (int q = 0; q < getSeriesCount(); q++) {
-      dataset.addSeries(new float[] {}, q, getSeriesName(q));
+    for (int q = 0; q < simulationGraphInfos[0].getSeriesNames().length; q++) {
+      dataset.addSeries(new float[] {}, q, simulationGraphInfos[0].getSeriesNames()[q]);
     }
 
     JFreeChart chart = createChart(dataset);
@@ -54,18 +52,10 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
     getContentPane().add(new ChartPanel(chart));
 
     timer = new Timer(FAST, new ActionListener() {
-
-      float[] newData = new float[getSeriesCount()];
-
       @Override
       public void actionPerformed(ActionEvent e) {
-
-        for (int q = 0; q < getSeriesCount(); q++) {
-          newData[q] = getSeriesData(q);
-        }
-
         dataset.advanceTime();
-        dataset.appendData(newData);
+        dataset.appendData(getSeriesData(0));
       }
     });
 
@@ -73,7 +63,7 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
   }
 
   private JFreeChart createChart(final XYDataset dataset) {
-    final JFreeChart result = ChartFactory.createTimeSeriesChart(getGraphTitle(), "hh:mm:ss", "[%]", dataset, true, true, false);
+    final JFreeChart result = ChartFactory.createTimeSeriesChart(getSimulationGraphInfos()[0].getTitle(), "hh:mm:ss", "[%]", dataset, true, true, false);
     final XYPlot plot = result.getXYPlot();
     ValueAxis domain = plot.getDomainAxis();
     domain.setAutoRange(true);

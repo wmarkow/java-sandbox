@@ -5,13 +5,12 @@ import java.awt.EventQueue;
 import org.jfree.ui.RefineryUtilities;
 
 import vtech.iot.mesh.sim.MeshSim;
-import vtech.iot.mesh.sim.domain.devices.AlohaBetterDevice;
 import vtech.iot.mesh.sim.domain.devices.AlohaDevice;
 
 public class AlohaTransmitters extends AbstractGraphExample {
   final static String WINDOW_TITLE = "Aloha Simulation";
-  final static String GRAPH_TITLE = "Aloha Simulation: one station, 10 requests (average) per second";
-  
+  final static String GRAPH_TITLE = "one station, 10 packets per second";
+
   private MeshSim meshSim = new MeshSim();
 
   public AlohaTransmitters() {
@@ -21,47 +20,25 @@ public class AlohaTransmitters extends AbstractGraphExample {
     meshSim.addDevice(new AlohaDevice(1));
     meshSim.addDevice(new AlohaDevice(1));
     meshSim.addDevice(new AlohaDevice(1));
-    
-//    meshSim.addDevice(new AlohaBetterDevice(10));
-//    meshSim.addDevice(new AlohaBetterDevice(10));
-//    meshSim.addDevice(new AlohaBetterDevice(10));
-//    meshSim.addDevice(new AlohaBetterDevice(10));
+
+    // meshSim.addDevice(new AlohaBetterDevice(10));
+    // meshSim.addDevice(new AlohaBetterDevice(10));
+    // meshSim.addDevice(new AlohaBetterDevice(10));
+    // meshSim.addDevice(new AlohaBetterDevice(10));
   }
 
   @Override
-  protected String getGraphTitle() {
-    return GRAPH_TITLE;
+  protected SimulationGraphInfo[] getSimulationGraphInfos() {
+    return new SimulationGraphInfo[] { new SimulationGraphInfo(GRAPH_TITLE, new String[] { "Network load", "Collided packets" }) };
   }
 
   @Override
-  protected int getSeriesCount() {
-    return 2;
-  }
+  protected float[] getSeriesData(int graphIndex) {
+    float[] result = new float[2];
+    result[0] = (float) meshSim.getMediumBusyPercentage();
+    result[1] = (float) meshSim.getCollidedPacketsPercentage();
 
-  @Override
-  protected String getSeriesName(int seriesIndex) {
-    if (seriesIndex == 0) {
-      return "Network load";
-    }
-    
-    if (seriesIndex == 1) {
-      return "Collided packets";
-    }
-
-    return "Unknown";
-  }
-
-  @Override
-  protected float getSeriesData(int seriesIndex) {
-    if (seriesIndex == 0) {
-      return (float)meshSim.getMediumBusyPercentage();
-    }
-    
-    if (seriesIndex == 1) {
-      return (float)meshSim.getCollidedPacketsPercentage();
-    }
-
-    return 1000;
+    return result;
   }
 
   public static void main(final String[] args) {
