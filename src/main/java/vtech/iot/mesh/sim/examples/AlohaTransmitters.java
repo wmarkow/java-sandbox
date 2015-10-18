@@ -10,8 +10,8 @@ import vtech.iot.mesh.sim.domain.devices.AlohaDevice;
 
 public class AlohaTransmitters extends AbstractGraphExample {
   final static String WINDOW_TITLE = "Aloha Simulation";
-  final static String ALOHA_TITLE = "one station, 10 packets per second";
-  final static String BETTER_ALOHA_TITLE = "one station, 10 packets per second";
+  final static String ALOHA_TITLE = "Four stations, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
+  final static String BETTER_ALOHA_TITLE = "Four stations, 10 packets per second, 32B per packet, 250bps. Transmitter waits until medium not busy.";
 
   private MeshSim alohaSim = new MeshSim();
   private MeshSim betterAlohaSim = new MeshSim();
