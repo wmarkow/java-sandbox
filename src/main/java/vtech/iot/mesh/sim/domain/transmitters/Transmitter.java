@@ -1,7 +1,11 @@
-package vtech.iot.mesh.sim.domain;
+package vtech.iot.mesh.sim.domain.transmitters;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import vtech.iot.mesh.sim.domain.Medium;
+import vtech.iot.mesh.sim.domain.Packet;
+import vtech.iot.mesh.sim.domain.Transmission;
 
 public abstract class Transmitter {
 

@@ -3,8 +3,8 @@ package vtech.iot.mesh.sim;
 import java.util.ArrayList;
 import java.util.List;
 
-import vtech.iot.mesh.sim.domain.Device;
 import vtech.iot.mesh.sim.domain.Medium;
+import vtech.iot.mesh.sim.domain.devices.Device;
 
 public class MeshSim {
 

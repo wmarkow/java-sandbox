@@ -1,4 +1,6 @@
-package vtech.iot.mesh.sim.domain;
+package vtech.iot.mesh.sim.domain.devices;
+
+import vtech.iot.mesh.sim.domain.Generator;
 
 public class AlohaBetterDevice extends Device {
   private Generator generator;

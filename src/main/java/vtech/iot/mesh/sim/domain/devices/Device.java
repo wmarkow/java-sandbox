@@ -1,4 +1,7 @@
-package vtech.iot.mesh.sim.domain;
+package vtech.iot.mesh.sim.domain.devices;
+
+import vtech.iot.mesh.sim.domain.Medium;
+import vtech.iot.mesh.sim.domain.transmitters.Transmitter;
 
 public abstract class Device {
 

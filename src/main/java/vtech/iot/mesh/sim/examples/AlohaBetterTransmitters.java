@@ -1,7 +1,7 @@
 package vtech.iot.mesh.sim.examples;
 
 import vtech.iot.mesh.sim.MeshSim;
-import vtech.iot.mesh.sim.domain.AlohaBetterDevice;
+import vtech.iot.mesh.sim.domain.devices.AlohaBetterDevice;
 
 public class AlohaBetterTransmitters {
 

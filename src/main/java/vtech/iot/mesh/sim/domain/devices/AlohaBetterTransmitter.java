@@ -1,4 +1,8 @@
-package vtech.iot.mesh.sim.domain;
+package vtech.iot.mesh.sim.domain.devices;
+
+import vtech.iot.mesh.sim.domain.Packet;
+import vtech.iot.mesh.sim.domain.Transmission;
+import vtech.iot.mesh.sim.domain.transmitters.Transmitter;
 
 public class AlohaBetterTransmitter extends Transmitter {
 

@@ -1,5 +1,7 @@
 package vtech.iot.mesh.sim.domain;
 
+import vtech.iot.mesh.sim.domain.transmitters.Transmitter;
+
 public class Generator {
 
   private Transmitter transmitter;
