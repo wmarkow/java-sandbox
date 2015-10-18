@@ -16,4 +16,8 @@ public class MeshSim {
     
     device.attachToMedium(medium);
   }
+  
+  public double getMediumBusyPercentage() {
+    return medium.getMediumBusyPercentage();
+  }
 }

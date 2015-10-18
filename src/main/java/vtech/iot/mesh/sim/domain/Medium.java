@@ -29,7 +29,7 @@ public class Medium {
       }
     }).start();
   }
-
+  
   public synchronized boolean isBusy() {
     synchronized (lock) {
       return currentTransmissions.size() != 0;
@@ -93,7 +93,7 @@ public class Medium {
     System.out.println("");
   }
 
-  private double getMediumBusyPercentage() {
+  public double getMediumBusyPercentage() {
     return 100 * (((double) mediumBusySummaryTimeInNanos)) / (((double) System.nanoTime()) - ((double) startTimeInNanos));
   }
 }
