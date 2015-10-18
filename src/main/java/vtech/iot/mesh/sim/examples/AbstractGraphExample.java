@@ -52,7 +52,7 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
         dataset.addSeries(new float[] {}, q, graphInfo.getSeriesNames()[q]);
       }
 
-      JFreeChart chart = createChart(dataset);
+      JFreeChart chart = createChart(dataset, graphInfo.getTitle());
 
       getContentPane().add(new ChartPanel(chart));
     }
@@ -73,8 +73,8 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
     timer.start();
   }
 
-  private JFreeChart createChart(final XYDataset dataset) {
-    final JFreeChart result = ChartFactory.createTimeSeriesChart(getSimulationGraphInfos()[0].getTitle(), "hh:mm:ss", "[%]", dataset, true, true, false);
+  private JFreeChart createChart(final XYDataset dataset, String title) {
+    final JFreeChart result = ChartFactory.createTimeSeriesChart(title, "hh:mm:ss", "[%]", dataset, true, true, false);
     final XYPlot plot = result.getXYPlot();
     ValueAxis domain = plot.getDomainAxis();
     domain.setAutoRange(true);
