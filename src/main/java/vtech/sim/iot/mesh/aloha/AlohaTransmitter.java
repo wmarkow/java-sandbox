@@ -39,7 +39,7 @@ public class AlohaTransmitter extends Process {
       Transmission transmission = medium.sendPacket(packet);
 
       setPhase(FINISH_TRANSMISSION);
-      activate(transmission.getTransmissionDurationInMillis());
+      scheduleNextExecution(transmission.getTransmissionDurationInMillis());
       break;
     case FINISH_TRANSMISSION:
       if(packets.size() == 0){
@@ -48,7 +48,7 @@ public class AlohaTransmitter extends Process {
       }
       
       setPhase(BEGIN_TRANSMISSION);
-      activate(0);
+      scheduleNextExecutionToNow();
       
       break;
     }
@@ -59,7 +59,7 @@ public class AlohaTransmitter extends Process {
 
     if (getPhase() == IDLE) {
       setPhase(BEGIN_TRANSMISSION);
-      activate(0);
+      scheduleNextExecutionToNow();
     }
   }
 }

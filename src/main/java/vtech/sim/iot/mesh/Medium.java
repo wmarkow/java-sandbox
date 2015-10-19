@@ -38,7 +38,7 @@ public class Medium extends Process {
       }
 
       if (nextTime < Double.MAX_VALUE) {
-        activate(nextTime - getCurrentMillisTime());
+        scheduleNextExecution(nextTime - getCurrentMillisTime());
       }
     }
   }
@@ -48,9 +48,7 @@ public class Medium extends Process {
 
     currentTransmissions.add(tr);
 
-    // if (currentTransmissions.size() == 1) {
-    activate(0);
-    // }
+    scheduleNextExecutionToNow();
 
     return tr;
   }

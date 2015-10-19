@@ -6,16 +6,16 @@ import vtech.sim.iot.mesh.aloha.AlohaTransmitter;
 
 public class PoissonGenerator extends Process {
 
+  private final static int WAIT = 0;
+  private final static int GENERATE_PACKET = 1;
+
   private AlohaTransmitter transmitter;
   private PoissonDistribution poisson;
   private double averageRequestsPerSecond;
-  
-  private double timeSum = 0;
-  private double timeCount = 0;
 
   public PoissonGenerator(AlohaTransmitter transmitter, double averageRequestsPerSecond) {
     super();
-    
+
     this.transmitter = transmitter;
     poisson = new PoissonDistribution();
     this.averageRequestsPerSecond = averageRequestsPerSecond;
@@ -23,29 +23,20 @@ public class PoissonGenerator extends Process {
 
   @Override
   public void execute() {
-    boolean cont = false;
-    do {
-      switch (getPhase()) {
-      case 0:
-        // init
-        // wait some time before sending the packet
-        double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
-        setPhase(1);
-        
-        timeSum += nexMillisToNextRequest;
-        timeCount ++;
-                
-        cont = false;
-        this.activate(nexMillisToNextRequest);
-        break;
-      case 1:
-        // send packet to transmitter
-        transmitter.addPacketToSend(new Packet());
-        
-        setPhase(0);
-        cont = true;
-        break;
-      }
-    } while (cont);
+
+    switch (getPhase()) {
+    case WAIT:
+      double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
+      setPhase(GENERATE_PACKET);
+
+      scheduleNextExecution(nexMillisToNextRequest);
+      break;
+    case GENERATE_PACKET:
+      transmitter.addPacketToSend(new Packet());
+
+      setPhase(WAIT);
+      scheduleNextExecutionToNow();
+      break;
+    }
   }
 }

@@ -15,12 +15,20 @@ public abstract class Process {
 
   public void attachToSimulation(EventScheduler scheduler) {
     this.scheduler = scheduler;
-    
+
     scheduler.addEvent(this, 0);
   }
 
-  protected void activate(double deltaTime) {
-    scheduler.addEvent(this, deltaTime);
+  protected void scheduleNextExecution(double deltaMillisTime) {
+    if (deltaMillisTime < 0) {
+      throw new IllegalArgumentException("deltaMillisTime must not be negative");
+    }
+
+    scheduler.addEvent(this, deltaMillisTime);
+  }
+
+  protected void scheduleNextExecutionToNow() {
+    scheduleNextExecution(0);
   }
 
   protected int getPhase() {
