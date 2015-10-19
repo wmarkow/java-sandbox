@@ -1,4 +1,4 @@
-package vtech.iot.mesh.sim.domain;
+package vtech.sim.iot.mesh;
 
 public class Packet {
   private final static int DEFAULT_PACKET_SIZE = 32;

@@ -1,4 +1,4 @@
-package vtech.iot.mesh.sim.examples;
+package vtech.sim.iot.mesh.examples;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,11 +18,13 @@ import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
+import vtech.iot.mesh.sim.examples.SimulationGraphInfo;
+
 public abstract class AbstractGraphExample extends ApplicationFrame {
 
   private static final float Y_MAX = 100;
   private static final float Y_MIN = 0;
-  private static final int COUNT = 30;;
+  private static final int COUNT = 120;
   private static final int FAST = 1000;
   private Timer timer;
 
