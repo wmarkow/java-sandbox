@@ -27,9 +27,13 @@ public class Transmission {
   public double getTransmissionEndInMillis() {
     return transmissionEndInMillis;
   }
-  
-  public double getTransmissionDurationInMillis(){
+
+  public double getTransmissionDurationInMillis() {
     return getTransmissionEndInMillis() - getTransmissionStartInMillis();
+  }
+
+  public Packet getPacket() {
+    return packet;
   }
 
   boolean isCollision() {

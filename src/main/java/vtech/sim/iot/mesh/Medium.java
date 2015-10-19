@@ -15,6 +15,7 @@ public class Medium extends Process {
   private long packetsCollided = 0;
 
   private List<Transmission> currentTransmissions = new ArrayList<Transmission>();
+  private List<Receiver> receivers = new ArrayList<Receiver>();
 
   @Override
   public void execute() {
@@ -53,6 +54,18 @@ public class Medium extends Process {
     return tr;
   }
 
+  public boolean isBusy() {
+    if (currentTransmissions.size() > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public void addReceiver(Receiver listener) {
+    this.receivers.add(listener);
+  }
+
   private void removeSentPackets() {
     for (int q = 0; q < currentTransmissions.size(); q++) {
       Transmission tr = currentTransmissions.get(q);
@@ -60,6 +73,8 @@ public class Medium extends Process {
         packetsSent++;
         currentTransmissions.remove(q);
         q--;
+
+        notifyListenersPacketTransmissionFinished(tr.getPacket());
 
         if (tr.isCollision()) {
           packetsCollided++;
@@ -88,8 +103,23 @@ public class Medium extends Process {
       if (tr.getTransmissionStartInMillis() == this.getCurrentMillisTime()) {
         mediumStartedBusyInMillis = getCurrentMillisTime();
 
+        notifyListenersPacketTransmissionStarted();
+
+        // FIXME: remove that return?
         return;
       }
+    }
+  }
+
+  private void notifyListenersPacketTransmissionStarted() {
+    for (Receiver receiver : receivers) {
+      receiver.packetTransmissionStarted();
+    }
+  }
+
+  private void notifyListenersPacketTransmissionFinished(Packet packet) {
+    for (Receiver receiver : receivers) {
+      receiver.packetTransmissionFinished(packet);
     }
   }
 

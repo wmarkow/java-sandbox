@@ -9,11 +9,11 @@ public class PoissonGenerator extends Process {
   private final static int WAIT = 0;
   private final static int GENERATE_PACKET = 1;
 
-  private AlohaTransmitter transmitter;
+  private Transmitter transmitter;
   private PoissonDistribution poisson;
   private double averageRequestsPerSecond;
 
-  public PoissonGenerator(AlohaTransmitter transmitter, double averageRequestsPerSecond) {
+  public PoissonGenerator(Transmitter transmitter, double averageRequestsPerSecond) {
     super();
 
     this.transmitter = transmitter;
