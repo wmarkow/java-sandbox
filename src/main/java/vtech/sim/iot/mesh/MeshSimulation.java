@@ -1,8 +1,8 @@
 package vtech.sim.iot.mesh;
 
 import vtech.sim.core.Simulation;
-import vtech.sim.iot.mesh.AlohaDevice;
 import vtech.sim.iot.mesh.Medium;
+import vtech.sim.iot.mesh.aloha.AlohaDevice;
 
 public class MeshSimulation extends Simulation {
 

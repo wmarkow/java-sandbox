@@ -2,21 +2,22 @@ package vtech.sim.iot.mesh;
 
 import vtech.sim.core.Process;
 import vtech.sim.core.scheduler.EventScheduler;
+import vtech.sim.iot.mesh.aloha.AlohaTransmitter;
 
-public class Generator extends Process {
+public class PoissonGenerator extends Process {
 
   private AlohaTransmitter transmitter;
-  private Poisson poisson;
+  private PoissonDistribution poisson;
   private double averageRequestsPerSecond;
   
   private double timeSum = 0;
   private double timeCount = 0;
 
-  public Generator(EventScheduler scheduler, AlohaTransmitter transmitter, double averageRequestsPerSecond) {
+  public PoissonGenerator(EventScheduler scheduler, AlohaTransmitter transmitter, double averageRequestsPerSecond) {
     super(scheduler);
     
     this.transmitter = transmitter;
-    poisson = new Poisson();
+    poisson = new PoissonDistribution();
     this.averageRequestsPerSecond = averageRequestsPerSecond;
   }
 
@@ -28,16 +29,14 @@ public class Generator extends Process {
       case 0:
         // init
         // wait some time before sending the packet
-        double nexRequestInMillis = poisson.getPoisson(averageRequestsPerSecond);
+        double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
         setPhase(1);
         
-        timeSum += nexRequestInMillis;
+        timeSum += nexMillisToNextRequest;
         timeCount ++;
-        
-//        System.out.println(timeSum / timeCount);
-        
+                
         cont = false;
-        this.activate(nexRequestInMillis);
+        this.activate(nexMillisToNextRequest);
         break;
       case 1:
         // send packet to transmitter

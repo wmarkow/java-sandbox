@@ -1,10 +1,13 @@
-package vtech.sim.iot.mesh;
+package vtech.sim.iot.mesh.aloha;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import vtech.sim.core.Process;
 import vtech.sim.core.scheduler.EventScheduler;
+import vtech.sim.iot.mesh.Medium;
+import vtech.sim.iot.mesh.Packet;
+import vtech.sim.iot.mesh.Transmission;
 
 public class AlohaTransmitter extends Process {
 

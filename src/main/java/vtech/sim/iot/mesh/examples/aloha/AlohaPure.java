@@ -1,10 +1,12 @@
-package vtech.sim.iot.mesh.examples;
+package vtech.sim.iot.mesh.examples.aloha;
 
 import java.awt.EventQueue;
 
 import org.jfree.ui.RefineryUtilities;
 
-import vtech.sim.iot.mesh.AlohaDevice;
+import vtech.sim.iot.mesh.aloha.AlohaDevice;
+import vtech.sim.iot.mesh.examples.AbstractGraphExample;
+import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
 public class AlohaPure extends AbstractGraphExample {
   final static String WINDOW_TITLE = "Aloha Simulation";

@@ -1,14 +1,16 @@
-package vtech.sim.iot.mesh;
+package vtech.sim.iot.mesh.aloha;
 
 import vtech.sim.core.scheduler.EventScheduler;
+import vtech.sim.iot.mesh.PoissonGenerator;
+import vtech.sim.iot.mesh.Medium;
 
 public class AlohaDevice {
 
-  private Generator generator;
+  private PoissonGenerator generator;
   private AlohaTransmitter transmitter;
 
   public AlohaDevice(EventScheduler scheduler, int requestsPerSecond, Medium medium) {
     transmitter = new AlohaTransmitter(scheduler, medium);
-    generator = new Generator(scheduler, transmitter, requestsPerSecond);
+    generator = new PoissonGenerator(scheduler, transmitter, requestsPerSecond);
   }
 }
