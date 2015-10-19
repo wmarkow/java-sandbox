@@ -23,32 +23,13 @@ public class AlohaPure extends AbstractGraphExample {
   public AlohaPure() {
     super(WINDOW_TITLE);
     aloha0Sim.init();
-    aloha0Sim.start(50000);
+    aloha0Sim.start();
     aloha1Sim.init();
-    aloha1Sim.start(50000);
+    aloha1Sim.start();
     aloha2Sim.init();
-    aloha2Sim.start(50000);
+    aloha2Sim.start();
     aloha3Sim.init();
-    aloha3Sim.start(50000);
-
-    // aloha0Sim.addDevice(new AlohaDevice(10));
-    //
-    // aloha1Sim.addDevice(new AlohaDevice(10));
-    // aloha1Sim.addDevice(new AlohaDevice(10));
-    //
-    // aloha2Sim.addDevice(new AlohaDevice(10));
-    // aloha2Sim.addDevice(new AlohaDevice(10));
-    // aloha2Sim.addDevice(new AlohaDevice(10));
-    // aloha2Sim.addDevice(new AlohaDevice(10));
-    //
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
-    // aloha3Sim.addDevice(new AlohaDevice(10));
+    aloha3Sim.start();
   }
 
   @Override

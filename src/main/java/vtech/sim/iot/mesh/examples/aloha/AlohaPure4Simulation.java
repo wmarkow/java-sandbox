@@ -1,34 +1,16 @@
 package vtech.sim.iot.mesh.examples.aloha;
 
-import vtech.sim.core.Simulation;
-import vtech.sim.iot.mesh.Medium;
+import vtech.sim.iot.mesh.MeshSimulation;
 import vtech.sim.iot.mesh.aloha.AlohaDevice;
 
-public class AlohaPure4Simulation extends Simulation {
-
-  private Medium medium;
+public class AlohaPure4Simulation extends MeshSimulation {
 
   @Override
-  public void init() {
-    medium = new Medium();
-    AlohaDevice device = new AlohaDevice(10, medium);
-    AlohaDevice device2 = new AlohaDevice(10, medium);
-    AlohaDevice device3 = new AlohaDevice(10, medium);
-    AlohaDevice device4 = new AlohaDevice(10, medium);
-
-    medium.attachToSimulation(getEventScheduler());
-    device.attachToSimulation(getEventScheduler());
-    device2.attachToSimulation(getEventScheduler());
-    device3.attachToSimulation(getEventScheduler());
-    device4.attachToSimulation(getEventScheduler());
-  }
-
-  public double getMediumBusyPercentage() {
-    return medium.getMediumBusyPercentage();
-  }
-
-  public double getCollidedPacketsPercentage() {
-    return medium.getCollidedPacketsPercentage();
+  protected void prepareDevices() {
+    addDevice(new AlohaDevice(10, getMedium()));
+    addDevice(new AlohaDevice(10, getMedium()));
+    addDevice(new AlohaDevice(10, getMedium()));
+    addDevice(new AlohaDevice(10, getMedium()));
   }
 
   public static void main(String[] args) {
