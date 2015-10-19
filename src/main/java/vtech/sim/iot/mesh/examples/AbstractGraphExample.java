@@ -1,11 +1,14 @@
 package vtech.sim.iot.mesh.examples;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.Timer;
 
 import org.jfree.chart.ChartFactory;
@@ -26,6 +29,9 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
   private static final int FAST = 1000;
   private Timer timer;
 
+  private JScrollPane scrollPane;
+  private JPanel graphsPanel;
+
   private List<DynamicTimeSeriesCollection> datasets = new ArrayList<DynamicTimeSeriesCollection>();
 
   public AbstractGraphExample(String windowTitle) {
@@ -39,7 +45,7 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
   protected abstract float[] getSeriesData(int graphIndex);
 
   private void init() {
-    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    createContents();
 
     SimulationGraphInfo[] simulationGraphInfos = getSimulationGraphInfos();
 
@@ -54,7 +60,7 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
 
       JFreeChart chart = createChart(dataset, graphInfo.getTitle());
 
-      getContentPane().add(new ChartPanel(chart));
+      getGraphsPanel().add(new ChartPanel(chart));
     }
 
     timer = new Timer(FAST, new ActionListener() {
@@ -82,5 +88,26 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
     range.setRange(Y_MIN, Y_MAX);
     range.setAutoRange(true);
     return result;
+  }
+
+  private void createContents() {
+    setLayout(new BorderLayout(0, 0));
+    add(getScrollPane(), BorderLayout.CENTER);
+  }
+
+  private JScrollPane getScrollPane() {
+    if (scrollPane == null) {
+      scrollPane = new JScrollPane();
+      scrollPane.setViewportView(getGraphsPanel());
+    }
+    return scrollPane;
+  }
+
+  private JPanel getGraphsPanel() {
+    if (graphsPanel == null) {
+      graphsPanel = new JPanel();
+      graphsPanel.setLayout(new BoxLayout(graphsPanel, BoxLayout.Y_AXIS));
+    }
+    return graphsPanel;
   }
 }
