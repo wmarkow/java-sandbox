@@ -10,8 +10,11 @@ public class AlohaPure1Simulation extends Simulation {
   
   @Override
   public void init() {
-    medium = new Medium(getEventScheduler());
-    AlohaDevice device = new AlohaDevice(getEventScheduler(), 10, medium);
+    medium = new Medium();
+    AlohaDevice device = new AlohaDevice(10, medium);
+    
+    medium.attachToSimulation(getEventScheduler());
+    device.attachToSimulation(getEventScheduler());
   }
 
   public double getMediumBusyPercentage() {

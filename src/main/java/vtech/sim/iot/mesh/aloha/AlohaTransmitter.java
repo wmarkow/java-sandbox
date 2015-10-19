@@ -18,8 +18,8 @@ public class AlohaTransmitter extends Process {
   private Medium medium;
   private List<Packet> packets = new ArrayList<Packet>();
 
-  public AlohaTransmitter(EventScheduler scheduler, Medium medium) {
-    super(scheduler);
+  public AlohaTransmitter(Medium medium) {
+    super();
 
     this.medium = medium;
   }

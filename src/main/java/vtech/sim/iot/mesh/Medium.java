@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vtech.sim.core.Process;
-import vtech.sim.core.scheduler.EventScheduler;
 
 public class Medium extends Process {
 
@@ -16,10 +15,6 @@ public class Medium extends Process {
   private long packetsCollided = 0;
 
   private List<Transmission> currentTransmissions = new ArrayList<Transmission>();
-
-  public Medium(EventScheduler scheduler) {
-    super(scheduler);
-  }
 
   @Override
   public void execute() {
@@ -53,9 +48,9 @@ public class Medium extends Process {
 
     currentTransmissions.add(tr);
 
-//    if (currentTransmissions.size() == 1) {
-      activate(0);
-//    }
+    // if (currentTransmissions.size() == 1) {
+    activate(0);
+    // }
 
     return tr;
   }
@@ -67,9 +62,9 @@ public class Medium extends Process {
         packetsSent++;
         currentTransmissions.remove(q);
         q--;
-        
-        if(tr.isCollision()) {
-          packetsCollided ++;
+
+        if (tr.isCollision()) {
+          packetsCollided++;
         }
       }
     }

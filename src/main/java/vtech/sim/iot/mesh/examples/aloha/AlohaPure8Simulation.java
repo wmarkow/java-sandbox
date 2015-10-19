@@ -10,15 +10,25 @@ public class AlohaPure8Simulation extends Simulation {
   
   @Override
   public void init() {
-    medium = new Medium(getEventScheduler());
-    AlohaDevice device = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device2 = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device3 = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device4 = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device5 = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device6 = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device7 = new AlohaDevice(getEventScheduler(), 10, medium);
-    AlohaDevice device8 = new AlohaDevice(getEventScheduler(), 10, medium);
+    medium = new Medium();
+    AlohaDevice device = new AlohaDevice(10, medium);
+    AlohaDevice device2 = new AlohaDevice(10, medium);
+    AlohaDevice device3 = new AlohaDevice(10, medium);
+    AlohaDevice device4 = new AlohaDevice(10, medium);
+    AlohaDevice device5 = new AlohaDevice(10, medium);
+    AlohaDevice device6 = new AlohaDevice(10, medium);
+    AlohaDevice device7 = new AlohaDevice(10, medium);
+    AlohaDevice device8 = new AlohaDevice(10, medium);
+    
+    medium.attachToSimulation(getEventScheduler());
+    device.attachToSimulation(getEventScheduler());
+    device2.attachToSimulation(getEventScheduler());
+    device3.attachToSimulation(getEventScheduler());
+    device4.attachToSimulation(getEventScheduler());
+    device5.attachToSimulation(getEventScheduler());
+    device6.attachToSimulation(getEventScheduler());
+    device7.attachToSimulation(getEventScheduler());
+    device8.attachToSimulation(getEventScheduler());
   }
 
   public double getMediumBusyPercentage() {

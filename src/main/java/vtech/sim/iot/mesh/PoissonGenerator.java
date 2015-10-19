@@ -13,8 +13,8 @@ public class PoissonGenerator extends Process {
   private double timeSum = 0;
   private double timeCount = 0;
 
-  public PoissonGenerator(EventScheduler scheduler, AlohaTransmitter transmitter, double averageRequestsPerSecond) {
-    super(scheduler);
+  public PoissonGenerator(AlohaTransmitter transmitter, double averageRequestsPerSecond) {
+    super();
     
     this.transmitter = transmitter;
     poisson = new PoissonDistribution();

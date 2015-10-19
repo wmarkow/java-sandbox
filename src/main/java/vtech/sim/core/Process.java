@@ -7,14 +7,17 @@ public abstract class Process {
   private EventScheduler scheduler;
   private int phase;
 
-  public Process(EventScheduler scheduler) {
-    this.scheduler = scheduler;
+  public Process() {
     phase = 0;
-
-    scheduler.addEvent(this, 0);
   }
 
   public abstract void execute();
+
+  public void attachToSimulation(EventScheduler scheduler) {
+    this.scheduler = scheduler;
+    
+    scheduler.addEvent(this, 0);
+  }
 
   protected void activate(double deltaTime) {
     scheduler.addEvent(this, deltaTime);
@@ -27,7 +30,7 @@ public abstract class Process {
   protected void setPhase(int phase) {
     this.phase = phase;
   }
-  
+
   protected double getCurrentMillisTime() {
     return scheduler.getCurrentMillisTime();
   }
