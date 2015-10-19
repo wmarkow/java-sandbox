@@ -7,7 +7,7 @@ import java.util.List;
 import vtech.sim.core.Event;
 import vtech.sim.core.Process;
 
-public class Scheduler implements EventScheduler, SimulationScheduler {
+public class Scheduler implements EventScheduler {
   private List<Event> events = new ArrayList<Event>();
   private Clock clock = new Clock();
 
@@ -20,7 +20,6 @@ public class Scheduler implements EventScheduler, SimulationScheduler {
     Collections.sort(events, comparator);
   }
 
-  @Override
   public Event getNextEvent() {
     if (events.size() == 0) {
       throw new IllegalStateException("No events to execute!");
@@ -34,5 +33,5 @@ public class Scheduler implements EventScheduler, SimulationScheduler {
   @Override
   public double getCurrentMillisTime() {
     return clock.getMillisTime();
-  }  
+  }
 }

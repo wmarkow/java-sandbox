@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 
 import org.jfree.ui.RefineryUtilities;
 
-import vtech.iot.mesh.sim.examples.SimulationGraphInfo;
 import vtech.sim.iot.mesh.AlohaDevice;
 
 public class AlohaPure extends AbstractGraphExample {

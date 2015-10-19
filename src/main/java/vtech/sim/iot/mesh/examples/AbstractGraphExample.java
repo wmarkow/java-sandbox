@@ -18,8 +18,6 @@ import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
-import vtech.iot.mesh.sim.examples.SimulationGraphInfo;
-
 public abstract class AbstractGraphExample extends ApplicationFrame {
 
   private static final float Y_MAX = 100;
