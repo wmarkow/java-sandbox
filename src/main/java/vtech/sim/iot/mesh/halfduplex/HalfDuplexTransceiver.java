@@ -5,12 +5,13 @@ import java.util.List;
 
 import vtech.sim.core.Process;
 import vtech.sim.iot.mesh.Medium;
+import vtech.sim.iot.mesh.MediumListener;
 import vtech.sim.iot.mesh.Packet;
 import vtech.sim.iot.mesh.Receiver;
 import vtech.sim.iot.mesh.Transmission;
 import vtech.sim.iot.mesh.Transmitter;
 
-public class HalfDuplexTransceiver extends Process implements Receiver, Transmitter {
+public class HalfDuplexTransceiver extends Process implements MediumListener, Transmitter {
   private final static int IDLE = 0;
   private final static int WAIT_FOR_PACKET_TRANSMISSION_FINISHED = 1;
   private final static int BEGIN_TRANSMISSION = 2;
@@ -23,7 +24,7 @@ public class HalfDuplexTransceiver extends Process implements Receiver, Transmit
     super();
 
     this.medium = medium;
-    medium.addReceiver(this);
+    medium.addListener(this);
   }
 
   @Override

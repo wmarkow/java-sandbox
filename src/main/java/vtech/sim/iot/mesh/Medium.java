@@ -15,7 +15,7 @@ public class Medium extends Process {
   private long packetsCollided = 0;
 
   private List<Transmission> currentTransmissions = new ArrayList<Transmission>();
-  private List<Receiver> receivers = new ArrayList<Receiver>();
+  private List<MediumListener> mediumListeners = new ArrayList<MediumListener>();
 
   @Override
   public void execute() {
@@ -62,8 +62,8 @@ public class Medium extends Process {
     return false;
   }
 
-  public void addReceiver(Receiver listener) {
-    this.receivers.add(listener);
+  public void addListener(MediumListener listener) {
+    this.mediumListeners.add(listener);
   }
 
   private void removeSentPackets() {
@@ -112,14 +112,14 @@ public class Medium extends Process {
   }
 
   private void notifyListenersPacketTransmissionStarted() {
-    for (Receiver receiver : receivers) {
-      receiver.packetTransmissionStarted();
+    for (MediumListener listener : mediumListeners) {
+      listener.packetTransmissionStarted();
     }
   }
 
   private void notifyListenersPacketTransmissionFinished(Packet packet) {
-    for (Receiver receiver : receivers) {
-      receiver.packetTransmissionFinished(packet);
+    for (MediumListener listener : mediumListeners) {
+      listener.packetTransmissionFinished(packet);
     }
   }
 
