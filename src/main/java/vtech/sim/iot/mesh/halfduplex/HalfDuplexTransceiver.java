@@ -67,11 +67,7 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
         return;
       }
 
-      Packet packet = packetsToSend.remove(0);
-      Transmission transmission = medium.sendPacket(packet);
-
-      state = State.TX;
-      scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
+      sendPacket(packetsToSend.remove(0));
       break;
     case EVENT_PACKET_RECEIVING_STARTED:
       state = State.RX;
@@ -99,11 +95,7 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
         return;
       }
       
-      Packet packetToSend = packetsToSend.remove(0);
-      Transmission transmission = medium.sendPacket(packetToSend);
-
-      state = State.TX;
-      scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
+      sendPacket(packetsToSend.remove(0));
       break;
     default:
       throw new IllegalStateException();
@@ -124,11 +116,7 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
         return;
       }
 
-      Packet packet = packetsToSend.remove(0);
-      Transmission transmission = medium.sendPacket(packet);
-
-      state = State.TX;
-      scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
+      sendPacket(packetsToSend.remove(0));
       break;
     default:
       throw new IllegalStateException();
@@ -163,5 +151,12 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     }
 
     return packetsReceived.remove(0);
+  }
+  
+  private void sendPacket(Packet packet){
+    Transmission transmission = medium.sendPacket(packet);
+
+    state = State.TX;
+    scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
   }
 }
