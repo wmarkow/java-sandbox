@@ -3,14 +3,8 @@ package vtech.sim.core;
 public class Event {
   private double eventMillisTime;
   private Process process;
-  private Integer eventType = null;
+  private int eventType;
   private Object param = null;
-
-  @Deprecated
-  public Event(Process process, double eventMillisTime) {
-    this.eventMillisTime = eventMillisTime;
-    this.process = process;
-  }
 
   public Event(Process process, double eventMillisTime, int eventType) {
     this.eventMillisTime = eventMillisTime;
@@ -33,7 +27,7 @@ public class Event {
     return process;
   }
 
-  public Integer getEventType() {
+  public int getEventType() {
     return eventType;
   }
 

@@ -64,8 +64,4 @@ public class PoissonGenerator extends Process {
       throw new IllegalStateException();
     }
   }
-
-  @Override
-  public void execute() {
-  }
 }

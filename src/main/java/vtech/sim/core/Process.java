@@ -13,27 +13,12 @@ public abstract class Process {
     phase = 0;
   }
 
-  @Deprecated
-  public abstract void execute();
-
-  public void execute(Event event) {
-
-  }
+  public abstract void execute(Event event);
 
   public void attachToSimulation(EventScheduler scheduler) {
     this.scheduler = scheduler;
 
-    scheduler.addEvent(this, 0);
     scheduler.addEvent(this, 0, EVENT_INIT);
-  }
-
-  @Deprecated
-  protected void scheduleNextExecution(double deltaMillisTime) {
-    if (deltaMillisTime < 0) {
-      throw new IllegalArgumentException("deltaMillisTime must not be negative");
-    }
-
-    scheduler.addEvent(this, deltaMillisTime);
   }
 
   protected void scheduleNextExecution(double deltaMillisTime, int eventType) {
@@ -50,11 +35,6 @@ public abstract class Process {
     }
 
     scheduler.addEvent(this, deltaMillisTime, eventType, param);
-  }
-
-  @Deprecated
-  protected void scheduleNextExecutionToNow() {
-    scheduleNextExecution(0);
   }
 
   protected void scheduleNextExecutionToNow(int eventType) {

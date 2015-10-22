@@ -39,11 +39,6 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
   }
 
   @Override
-  public void execute() {
-
-  }
-
-  @Override
   public void execute(Event event) {
     switch (state) {
     case IDLE:

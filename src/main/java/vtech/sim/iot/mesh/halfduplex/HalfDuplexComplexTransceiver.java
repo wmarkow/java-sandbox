@@ -43,11 +43,6 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
   }
 
   @Override
-  public void execute() {
-
-  }
-
-  @Override
   public void execute(Event event) {
     switch (state) {
     case IDLE:

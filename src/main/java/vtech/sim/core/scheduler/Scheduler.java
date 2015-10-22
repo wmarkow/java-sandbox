@@ -12,13 +12,6 @@ public class Scheduler implements EventScheduler {
   private Clock clock = new Clock();
 
   private EventsComparator comparator = new EventsComparator();
-
-  @Override
-  public void addEvent(Process process, double deltaMillis) {
-    events.add(new Event(process, clock.getMillisTime() + deltaMillis));
-
-    Collections.sort(events, comparator);
-  }
   
   @Override
   public void addEvent(Process process, double deltaMillis, int eventType) {

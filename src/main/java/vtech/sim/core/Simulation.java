@@ -40,11 +40,7 @@ public abstract class Simulation {
 
     while (scheduler.getCurrentMillisTime() <= requiredDurationInMillis) {
       Event event = scheduler.getNextEvent();
-      if (event.getEventType() == null) {
-        event.getProcess().execute();
-      } else {
-        event.getProcess().execute(event);
-      }
+      event.getProcess().execute(event);
 
       long millisToSleep = (long) scheduler.getCurrentMillisTime() - (System.currentTimeMillis() - simulationStartupInMillis);
       if (millisToSleep > 0) {

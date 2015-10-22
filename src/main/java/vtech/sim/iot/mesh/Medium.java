@@ -21,11 +21,6 @@ public class Medium extends Process {
   private List<MediumListener> mediumListeners = new ArrayList<MediumListener>();
 
   @Override
-  public void execute() {
-
-  }
-
-  @Override
   public void execute(Event event) {
     removeSentPackets();
     checkForCollisions();

@@ -72,11 +72,6 @@ public class AlohaTransmitter extends Process implements Transmitter {
   }
 
   @Override
-  public void execute() {
-
-  }
-
-  @Override
   public void addPacketToSend(Packet packet) {
     packets.add(packet);
     scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
