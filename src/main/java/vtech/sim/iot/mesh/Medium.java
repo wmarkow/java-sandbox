@@ -58,11 +58,21 @@ public class Medium extends Process {
   }
 
   public boolean isBusy() {
-    if (currentTransmissions.size() > 0) {
-      return true;
+    if (currentTransmissions.size() == 0) {
+      return false;
     }
 
-    return false;
+    int count = 0;
+    for (Transmission transmission : currentTransmissions) {
+      if (transmission.getTransmissionStartInMillis() < getCurrentMillisTime()) {
+        count++;
+      }
+    }
+    if (count == 0) {
+      return false;
+    }
+
+    return true;
   }
 
   public void addListener(MediumListener listener) {
