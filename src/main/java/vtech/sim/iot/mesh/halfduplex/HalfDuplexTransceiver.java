@@ -60,69 +60,6 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     }
   }
 
-  private void executeForIdle(Event event) {
-    switch (event.getEventType()) {
-    case EVENT_NEW_PACKET_TO_SEND:
-      if (medium.isBusy()) {
-        return;
-      }
-
-      sendPacket(packetsToSend.remove(0));
-      break;
-    case EVENT_PACKET_RECEIVING_STARTED:
-      state = State.RX;
-      break;
-    default:
-    }
-  }
-
-  private void executeForRx(Event event) {
-    switch (event.getEventType()) {
-    case EVENT_NEW_PACKET_TO_SEND:
-      break;
-    case EVENT_PACKET_RECEIVING_STARTED:
-      // collision
-      break;
-    case EVENT_PACKET_RECEIVING_FINISHED:
-      Packet packet = (Packet) event.getParam();
-      packetsReceived.add(packet);
-      for (ReceiverListener listener : listeners) {
-        listener.packetReceived();
-      }
-      
-      if (packetsToSend.size() == 0) {
-        state = State.IDLE;
-        return;
-      }
-      
-      sendPacket(packetsToSend.remove(0));
-      break;
-    default:
-      throw new IllegalStateException();
-    }
-  }
-
-  private void executeForTx(Event event) {
-    switch (event.getEventType()) {
-    case EVENT_NEW_PACKET_TO_SEND:
-      break;
-    case EVENT_PACKET_RECEIVING_STARTED:
-      break;
-    case EVENT_PACKET_RECEIVING_FINISHED:
-      break;
-    case EVENT_PACKET_TRANSMITION_FINISHED:
-      if (packetsToSend.size() == 0) {
-        state = State.IDLE;
-        return;
-      }
-
-      sendPacket(packetsToSend.remove(0));
-      break;
-    default:
-      throw new IllegalStateException();
-    }
-  }
-
   public void addPacketToSend(Packet packet) {
     packetsToSend.add(packet);
 
@@ -152,8 +89,71 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 
     return packetsReceived.remove(0);
   }
-  
-  private void sendPacket(Packet packet){
+
+  private void executeForIdle(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_NEW_PACKET_TO_SEND:
+      if (medium.isBusy()) {
+        return;
+      }
+
+      sendPacket(packetsToSend.remove(0));
+      break;
+    case EVENT_PACKET_RECEIVING_STARTED:
+      state = State.RX;
+      break;
+    default:
+    }
+  }
+
+  private void executeForRx(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_NEW_PACKET_TO_SEND:
+      break;
+    case EVENT_PACKET_RECEIVING_STARTED:
+      // collision
+      break;
+    case EVENT_PACKET_RECEIVING_FINISHED:
+      Packet packet = (Packet) event.getParam();
+      packetsReceived.add(packet);
+      for (ReceiverListener listener : listeners) {
+        listener.packetReceived();
+      }
+
+      if (packetsToSend.size() == 0) {
+        state = State.IDLE;
+        return;
+      }
+
+      sendPacket(packetsToSend.remove(0));
+      break;
+    default:
+      throw new IllegalStateException();
+    }
+  }
+
+  private void executeForTx(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_NEW_PACKET_TO_SEND:
+      break;
+    case EVENT_PACKET_RECEIVING_STARTED:
+      break;
+    case EVENT_PACKET_RECEIVING_FINISHED:
+      break;
+    case EVENT_PACKET_TRANSMITION_FINISHED:
+      if (packetsToSend.size() == 0) {
+        state = State.IDLE;
+        return;
+      }
+
+      sendPacket(packetsToSend.remove(0));
+      break;
+    default:
+      throw new IllegalStateException();
+    }
+  }
+
+  private void sendPacket(Packet packet) {
     Transmission transmission = medium.sendPacket(packet);
 
     state = State.TX;
