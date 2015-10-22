@@ -4,6 +4,8 @@ import vtech.sim.core.scheduler.EventScheduler;
 
 public abstract class Process {
 
+  protected final static int EVENT_INIT = 1000;
+
   private EventScheduler scheduler;
   private int phase;
 
@@ -13,14 +15,16 @@ public abstract class Process {
 
   @Deprecated
   public abstract void execute();
-  public void execute(Event event){
-    
+
+  public void execute(Event event) {
+
   }
 
   public void attachToSimulation(EventScheduler scheduler) {
     this.scheduler = scheduler;
 
     scheduler.addEvent(this, 0);
+    scheduler.addEvent(this, 0, EVENT_INIT);
   }
 
   @Deprecated
@@ -31,7 +35,7 @@ public abstract class Process {
 
     scheduler.addEvent(this, deltaMillisTime);
   }
-  
+
   protected void scheduleNextExecution(double deltaMillisTime, int eventType) {
     if (deltaMillisTime < 0) {
       throw new IllegalArgumentException("deltaMillisTime must not be negative");
@@ -39,7 +43,7 @@ public abstract class Process {
 
     scheduler.addEvent(this, deltaMillisTime, eventType);
   }
-  
+
   protected void scheduleNextExecution(double deltaMillisTime, int eventType, Object param) {
     if (deltaMillisTime < 0) {
       throw new IllegalArgumentException("deltaMillisTime must not be negative");
@@ -52,11 +56,11 @@ public abstract class Process {
   protected void scheduleNextExecutionToNow() {
     scheduleNextExecution(0);
   }
-  
+
   protected void scheduleNextExecutionToNow(int eventType) {
     scheduleNextExecution(0, eventType);
   }
-  
+
   protected void scheduleNextExecutionToNow(int eventType, Object param) {
     scheduleNextExecution(0, eventType, param);
   }

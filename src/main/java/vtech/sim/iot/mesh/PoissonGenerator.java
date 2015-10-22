@@ -1,17 +1,21 @@
 package vtech.sim.iot.mesh;
 
+import vtech.sim.core.Event;
 import vtech.sim.core.Process;
-import vtech.sim.core.scheduler.EventScheduler;
-import vtech.sim.iot.mesh.aloha.AlohaTransmitter;
 
 public class PoissonGenerator extends Process {
 
-  private final static int WAIT = 0;
-  private final static int GENERATE_PACKET = 1;
+  private final static int STATE_IDLE = 0;
+  private final static int STATE_WAIT = 1;
+  private final static int STATE_GENERATE_PACKET = 2;
+
+  private final static int EVENT_WAIT_FINISHED = 0;
+  private final static int EVENT_GENERATE_PACKET = 1;
 
   private Transmitter transmitter;
   private PoissonDistribution poisson;
   private double averageRequestsPerSecond;
+  private int state = STATE_IDLE;
 
   public PoissonGenerator(Transmitter transmitter, double averageRequestsPerSecond) {
     super();
@@ -22,21 +26,46 @@ public class PoissonGenerator extends Process {
   }
 
   @Override
-  public void execute() {
+  public void execute(Event event) {
+    switch (state) {
+    case STATE_IDLE:
+      if (event.getEventType() == EVENT_INIT) {
 
-    switch (getPhase()) {
-    case WAIT:
-      double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
-      setPhase(GENERATE_PACKET);
+        double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
+        state = STATE_WAIT;
 
-      scheduleNextExecution(nexMillisToNextRequest);
-      break;
-    case GENERATE_PACKET:
-      transmitter.addPacketToSend(new Packet());
+        scheduleNextExecution(nexMillisToNextRequest, EVENT_WAIT_FINISHED);
 
-      setPhase(WAIT);
-      scheduleNextExecutionToNow();
-      break;
+        return;
+      }
+      
+      throw new IllegalStateException();
+    case STATE_WAIT:
+      if (event.getEventType() == EVENT_WAIT_FINISHED) {
+        state = STATE_GENERATE_PACKET;
+        scheduleNextExecutionToNow(EVENT_GENERATE_PACKET);
+
+        return;
+      }
+      
+      throw new IllegalStateException();
+    case STATE_GENERATE_PACKET:
+      if (event.getEventType() == EVENT_GENERATE_PACKET) {
+        transmitter.addPacketToSend(new Packet());
+
+        double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
+        state = STATE_WAIT;
+
+        scheduleNextExecution(nexMillisToNextRequest, EVENT_WAIT_FINISHED);
+        
+        return;
+      }
+      
+      throw new IllegalStateException();
     }
+  }
+
+  @Override
+  public void execute() {
   }
 }
