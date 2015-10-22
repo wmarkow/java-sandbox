@@ -4,23 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import vtech.sim.core.Event;
 import vtech.sim.core.Process;
 import vtech.sim.iot.mesh.Medium;
 import vtech.sim.iot.mesh.MediumListener;
 import vtech.sim.iot.mesh.Packet;
+import vtech.sim.iot.mesh.Receiver;
+import vtech.sim.iot.mesh.ReceiverListener;
 import vtech.sim.iot.mesh.Transmission;
 import vtech.sim.iot.mesh.Transmitter;
 
-public class HalfDuplexComplexTransceiver extends Process implements MediumListener, Transmitter {
-  private final static int IDLE = 0;
-  private final static int WAIT_FOR_PACKET_TRANSMISSION_FINISHED = 1;
-  private final static int WAIT_ADDITIONAL_TIME_FINISHED = 2;
-  private final static int BEGIN_TRANSMISSION = 3;
-  private final static int FINISH_TRANSMISSION = 4;
+public class HalfDuplexComplexTransceiver extends Process implements MediumListener, Transmitter, Receiver {
+  private final static int EVENT_NEW_PACKET_TO_SEND = 0;
+  private final static int EVENT_PACKET_RECEIVING_STARTED = 1;
+  private final static int EVENT_PACKET_RECEIVING_FINISHED = 2;
+  private final static int EVENT_PACKET_TRANSMITION_FINISHED = 3;
+  private final static int EVENT_RANDOM_WAIT_FINISHED = 4;
 
   private Medium medium;
-  private List<Packet> packets = new ArrayList<Packet>();
+  private List<Packet> packetsToSend = new ArrayList<Packet>();
+  private List<Packet> packetsReceived = new ArrayList<Packet>();
+  private List<ReceiverListener> listeners = new ArrayList<ReceiverListener>();
+  private State state = State.IDLE;
   private Random random = new Random(System.currentTimeMillis());
+
+  private enum State {
+    IDLE,
+    RX,
+    RANDOM_WAIT,
+    TX
+  }
 
   public HalfDuplexComplexTransceiver(Medium medium) {
     super();
@@ -31,69 +44,143 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
 
   @Override
   public void execute() {
-    switch (getPhase()) {
+
+  }
+
+  @Override
+  public void execute(Event event) {
+    switch (state) {
     case IDLE:
+      executeForIdle(event);
       break;
-    case WAIT_FOR_PACKET_TRANSMISSION_FINISHED:
-      if (medium.isBusy()) {
-        return;
-      }
-
-      // it waits max for 0.1ms (100us)
-      double waitInMillis = random.nextDouble() / 10;
-      setPhase(WAIT_ADDITIONAL_TIME_FINISHED);
-      scheduleNextExecution(waitInMillis);
+    case RX:
+      executeForRx(event);
       break;
-    case WAIT_ADDITIONAL_TIME_FINISHED:
-      if (medium.isBusy()) {
-        setPhase(WAIT_FOR_PACKET_TRANSMISSION_FINISHED);
-      } else {
-        setPhase(BEGIN_TRANSMISSION);
-        scheduleNextExecutionToNow();
-      }
+    case RANDOM_WAIT:
+      executeForRandomWait(event);
       break;
-    case BEGIN_TRANSMISSION:
-      if (packets.size() == 0) {
-        setPhase(IDLE);
-        return;
-      }
-
-      Packet packet = packets.remove(0);
-      Transmission transmission = medium.sendPacket(packet);
-
-      setPhase(FINISH_TRANSMISSION);
-      scheduleNextExecution(transmission.getTransmissionDurationInMillis());
+    case TX:
+      executeForTx(event);
       break;
-    case FINISH_TRANSMISSION:
-      if (packets.size() == 0) {
-        setPhase(IDLE);
-        return;
-      }
-
-      setPhase(WAIT_FOR_PACKET_TRANSMISSION_FINISHED);
-      scheduleNextExecutionToNow();
-
+    default:
       break;
     }
   }
 
   public void addPacketToSend(Packet packet) {
-    packets.add(packet);
+    packetsToSend.add(packet);
 
-    if (getPhase() == IDLE) {
-      setPhase(WAIT_FOR_PACKET_TRANSMISSION_FINISHED);
-      scheduleNextExecutionToNow();
-    }
+    scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
   }
 
   @Override
   public void packetTransmissionStarted() {
+    scheduleNextExecutionToNow(EVENT_PACKET_RECEIVING_STARTED);
   }
 
   @Override
   public void packetTransmissionFinished(Packet packet) {
-    if (getPhase() == WAIT_FOR_PACKET_TRANSMISSION_FINISHED) {
-      scheduleNextExecutionToNow();
+    scheduleNextExecutionToNow(EVENT_PACKET_RECEIVING_FINISHED, packet);
+  }
+
+  @Override
+  public void adReceiverListener(ReceiverListener listener) {
+    listeners.add(listener);
+  }
+
+  @Override
+  public Packet getNextPacket() {
+    if (packetsReceived.size() == 0) {
+      return null;
     }
+
+    return packetsReceived.remove(0);
+  }
+
+  private void executeForIdle(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_NEW_PACKET_TO_SEND:
+      if (medium.isBusy()) {
+        return;
+      }
+
+      sendPacket(packetsToSend.remove(0));
+      break;
+    case EVENT_PACKET_RECEIVING_STARTED:
+      state = State.RX;
+      break;
+    default:
+    }
+  }
+
+  private void executeForRx(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_NEW_PACKET_TO_SEND:
+      break;
+    case EVENT_PACKET_RECEIVING_STARTED:
+      // collision
+      break;
+    case EVENT_PACKET_RECEIVING_FINISHED:
+      Packet packet = (Packet) event.getParam();
+      packetsReceived.add(packet);
+      for (ReceiverListener listener : listeners) {
+        listener.packetReceived();
+      }
+
+      if (packetsToSend.size() == 0) {
+        state = State.IDLE;
+        return;
+      }
+
+      // it waits max for 0.1ms (100us)
+      double waitInMillis = random.nextDouble() / 100;
+      state = State.RANDOM_WAIT;
+      scheduleNextExecution(waitInMillis, EVENT_RANDOM_WAIT_FINISHED);
+      break;
+    default:
+      throw new IllegalStateException();
+    }
+  }
+
+  private void executeForRandomWait(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_RANDOM_WAIT_FINISHED:
+      if (medium.isBusy()) {
+        state = State.IDLE;
+        return;
+      }
+
+      sendPacket(packetsToSend.remove(0));
+      break;
+    default:
+    }
+  }
+
+  private void executeForTx(Event event) {
+    switch (event.getEventType()) {
+    case EVENT_NEW_PACKET_TO_SEND:
+      break;
+    case EVENT_PACKET_RECEIVING_STARTED:
+      break;
+    case EVENT_PACKET_RECEIVING_FINISHED:
+      break;
+    case EVENT_PACKET_TRANSMITION_FINISHED:
+      if (packetsToSend.size() == 0) {
+        state = State.IDLE;
+        return;
+      }
+
+      sendPacket(packetsToSend.remove(0));
+      break;
+    default:
+      throw new IllegalStateException();
+    }
+  }
+
+  private void sendPacket(Packet packet) {
+    Transmission transmission = medium.sendPacket(packet);
+
+    state = State.TX;
+    scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
   }
 }
