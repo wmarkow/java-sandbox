@@ -45,7 +45,6 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 
   @Override
   public void execute(Event event) {
-//    System.out.println(String.format("to send queue size = %s", packetsToSend.size()));
     switch (state) {
     case IDLE:
       executeForIdle(event);
@@ -94,7 +93,17 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
       for (ReceiverListener listener : listeners) {
         listener.packetReceived();
       }
-      state = State.IDLE;
+      
+      if (packetsToSend.size() == 0) {
+        state = State.IDLE;
+        return;
+      }
+      
+      Packet packetToSend = packetsToSend.remove(0);
+      Transmission transmission = medium.sendPacket(packetToSend);
+
+      state = State.TX;
+      scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
       break;
     default:
       throw new IllegalStateException();
@@ -110,10 +119,6 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     case EVENT_PACKET_RECEIVING_FINISHED:
       break;
     case EVENT_PACKET_TRANSMITION_FINISHED:
-      // if (medium.isBusy()) {
-      // state = State.IDLE;
-      // return;
-      // }
       if (packetsToSend.size() == 0) {
         state = State.IDLE;
         return;
