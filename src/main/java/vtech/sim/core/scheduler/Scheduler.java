@@ -19,6 +19,20 @@ public class Scheduler implements EventScheduler {
 
     Collections.sort(events, comparator);
   }
+  
+  @Override
+  public void addEvent(Process process, double deltaMillis, int eventType) {
+    events.add(new Event(process, clock.getMillisTime() + deltaMillis, eventType));
+
+    Collections.sort(events, comparator);
+  }
+  
+  @Override
+  public void addEvent(Process process, double deltaMillis, int eventType, Object param) {
+    events.add(new Event(process, clock.getMillisTime() + deltaMillis, eventType, param));
+
+    Collections.sort(events, comparator);
+  }
 
   public Event getNextEvent() {
     if (events.size() == 0) {

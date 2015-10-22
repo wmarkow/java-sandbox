@@ -11,7 +11,11 @@ public abstract class Process {
     phase = 0;
   }
 
+  @Deprecated
   public abstract void execute();
+  public void execute(Event event){
+    
+  }
 
   public void attachToSimulation(EventScheduler scheduler) {
     this.scheduler = scheduler;
@@ -19,6 +23,7 @@ public abstract class Process {
     scheduler.addEvent(this, 0);
   }
 
+  @Deprecated
   protected void scheduleNextExecution(double deltaMillisTime) {
     if (deltaMillisTime < 0) {
       throw new IllegalArgumentException("deltaMillisTime must not be negative");
@@ -26,9 +31,34 @@ public abstract class Process {
 
     scheduler.addEvent(this, deltaMillisTime);
   }
+  
+  protected void scheduleNextExecution(double deltaMillisTime, int eventType) {
+    if (deltaMillisTime < 0) {
+      throw new IllegalArgumentException("deltaMillisTime must not be negative");
+    }
 
+    scheduler.addEvent(this, deltaMillisTime, eventType);
+  }
+  
+  protected void scheduleNextExecution(double deltaMillisTime, int eventType, Object param) {
+    if (deltaMillisTime < 0) {
+      throw new IllegalArgumentException("deltaMillisTime must not be negative");
+    }
+
+    scheduler.addEvent(this, deltaMillisTime, eventType, param);
+  }
+
+  @Deprecated
   protected void scheduleNextExecutionToNow() {
     scheduleNextExecution(0);
+  }
+  
+  protected void scheduleNextExecutionToNow(int eventType) {
+    scheduleNextExecution(0, eventType);
+  }
+  
+  protected void scheduleNextExecutionToNow(int eventType, Object param) {
+    scheduleNextExecution(0, eventType, param);
   }
 
   protected int getPhase() {
