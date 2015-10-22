@@ -3,9 +3,12 @@ package vtech.sim.iot.mesh;
 import java.util.ArrayList;
 import java.util.List;
 
+import vtech.sim.core.Event;
 import vtech.sim.core.Process;
 
 public class Medium extends Process {
+
+  private final static int EVENT_PROCESS = 0;
 
   private volatile double mediumBusySummaryTimeInMillis = 0;
   private volatile Double mediumStartedBusyInMillis = null;
@@ -19,6 +22,11 @@ public class Medium extends Process {
 
   @Override
   public void execute() {
+
+  }
+
+  @Override
+  public void execute(Event event) {
     removeSentPackets();
     checkForCollisions();
     sendPackets();
@@ -39,7 +47,7 @@ public class Medium extends Process {
       }
 
       if (nextTime < Double.MAX_VALUE) {
-        scheduleNextExecution(nextTime - getCurrentMillisTime());
+        scheduleNextExecution(nextTime - getCurrentMillisTime(), EVENT_PROCESS);
       }
     }
   }
@@ -49,7 +57,7 @@ public class Medium extends Process {
 
     currentTransmissions.add(tr);
 
-    scheduleNextExecutionToNow();
+    scheduleNextExecutionToNow(EVENT_PROCESS);
 
     return tr;
   }
