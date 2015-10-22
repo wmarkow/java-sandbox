@@ -116,13 +116,13 @@ public class Medium extends Process {
 
   private void notifyListenersPacketTransmissionStarted() {
     for (MediumListener listener : mediumListeners) {
-      listener.packetTransmissionStarted();
+      listener.transmissionInMediumStarted();
     }
   }
 
   private void notifyListenersPacketTransmissionFinished(Packet packet) {
     for (MediumListener listener : mediumListeners) {
-      listener.packetTransmissionFinished(packet);
+      listener.transmissionInMediumFinished(packet);
     }
   }
 

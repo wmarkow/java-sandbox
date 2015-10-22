@@ -69,12 +69,12 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
   }
 
   @Override
-  public void packetTransmissionStarted() {
+  public void transmissionInMediumStarted() {
     scheduleNextExecutionToNow(EVENT_PACKET_RECEIVING_STARTED);
   }
 
   @Override
-  public void packetTransmissionFinished(Packet packet) {
+  public void transmissionInMediumFinished(Packet packet) {
     scheduleNextExecutionToNow(EVENT_PACKET_RECEIVING_FINISHED, packet);
   }
 
