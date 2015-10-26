@@ -13,7 +13,7 @@ public class PoissonGenerator extends Process {
   private final static int EVENT_GENERATE_PACKET = 1;
 
   private Transmitter transmitter;
-  private PoissonDistribution poisson;
+  private RandomGenerator poisson;
   private double averageRequestsPerSecond;
   private int state = STATE_IDLE;
 
@@ -21,7 +21,7 @@ public class PoissonGenerator extends Process {
     super();
 
     this.transmitter = transmitter;
-    poisson = new PoissonDistribution();
+    poisson = new RandomGenerator();
     this.averageRequestsPerSecond = averageRequestsPerSecond;
   }
 
@@ -31,7 +31,7 @@ public class PoissonGenerator extends Process {
     case STATE_IDLE:
       if (event.getEventType() == EVENT_INIT) {
 
-        double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
+        double nexMillisToNextRequest = poisson.getPoissonMillisToNextRequest(averageRequestsPerSecond);
         state = STATE_WAIT;
 
         scheduleNextExecution(nexMillisToNextRequest, EVENT_WAIT_FINISHED);
@@ -53,7 +53,7 @@ public class PoissonGenerator extends Process {
       if (event.getEventType() == EVENT_GENERATE_PACKET) {
         transmitter.addPacketToSend(new Packet());
 
-        double nexMillisToNextRequest = poisson.getMillisToNextRequest(averageRequestsPerSecond);
+        double nexMillisToNextRequest = poisson.getPoissonMillisToNextRequest(averageRequestsPerSecond);
         state = STATE_WAIT;
 
         scheduleNextExecution(nexMillisToNextRequest, EVENT_WAIT_FINISHED);

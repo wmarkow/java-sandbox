@@ -2,13 +2,13 @@ package vtech.sim.iot.mesh.halfduplex;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import vtech.sim.core.Event;
 import vtech.sim.core.Process;
 import vtech.sim.iot.mesh.Medium;
 import vtech.sim.iot.mesh.MediumListener;
 import vtech.sim.iot.mesh.Packet;
+import vtech.sim.iot.mesh.RandomGenerator;
 import vtech.sim.iot.mesh.Receiver;
 import vtech.sim.iot.mesh.ReceiverListener;
 import vtech.sim.iot.mesh.Transmission;
@@ -26,7 +26,7 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
   private List<Packet> packetsReceived = new ArrayList<Packet>();
   private List<ReceiverListener> listeners = new ArrayList<ReceiverListener>();
   private State state = State.IDLE;
-  private Random random = new Random(System.currentTimeMillis());
+  private RandomGenerator random = new RandomGenerator();
 
   private enum State {
     IDLE,
@@ -128,7 +128,7 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
       }
 
       // it waits max for 0.1ms (100us)
-      double waitInMillis = random.nextDouble() / 100;
+      double waitInMillis = random.getDouble(0.1);
       state = State.RANDOM_WAIT;
       scheduleNextExecution(waitInMillis, EVENT_RANDOM_WAIT_FINISHED);
       break;
