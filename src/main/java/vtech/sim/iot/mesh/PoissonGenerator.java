@@ -2,19 +2,22 @@ package vtech.sim.iot.mesh;
 
 public class PoissonGenerator extends TrafficGenerator {
 
-  private RandomGenerator poisson;
+  private RandomGenerator randomGenerator = new RandomGenerator();
   private double averageRequestsPerSecond;
 
   public PoissonGenerator(Transmitter transmitter, double averageRequestsPerSecond) {
     super(transmitter);
 
-    poisson = new RandomGenerator();
     this.averageRequestsPerSecond = averageRequestsPerSecond;
+  }
+
+  protected RandomGenerator getRandomGenerator() {
+    return randomGenerator;
   }
 
   @Override
   protected double getMillisToNextRequest() {
-    return poisson.getPoissonMillisToNextRequest(averageRequestsPerSecond);
+    return randomGenerator.getPoissonMillisToNextRequest(averageRequestsPerSecond);
   }
 
   @Override
