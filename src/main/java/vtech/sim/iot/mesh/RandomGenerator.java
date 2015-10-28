@@ -13,4 +13,8 @@ public class RandomGenerator {
   public double getDouble(double maxValue) {
     return random.nextDouble() * maxValue;
   }
+
+  public int getInt(int min, int max) {
+    return (int) ((max - min) * random.nextDouble() + min + 0.5);
+  }
 }
