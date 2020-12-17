@@ -8,7 +8,7 @@ import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
 public class AlohaPurePoissonGenerator extends AbstractGraphExample {
-  final static String WINDOW_TITLE = "Aloha Simulation";
+  final static String WINDOW_TITLE = "Aloha Simulation with Poisson traffic generator";
   final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
   final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
   final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
