@@ -7,13 +7,13 @@ import org.jfree.ui.RefineryUtilities;
 import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
-public class AlohaPure extends AbstractGraphExample {
+public class AlohaPurePoissonGenerator extends AbstractGraphExample {
   final static String WINDOW_TITLE = "Aloha Simulation";
-  final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
-  final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
-  final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
-  final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
-  final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
+  final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+  final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+  final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+  final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+  final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
 
   private AlohaPure1Simulation aloha0Sim = new AlohaPure1Simulation();
   private AlohaPure2Simulation aloha1Sim = new AlohaPure2Simulation();
@@ -21,7 +21,7 @@ public class AlohaPure extends AbstractGraphExample {
   private AlohaPure8Simulation aloha3Sim = new AlohaPure8Simulation();
   private AlohaPure16Simulation aloha4Sim = new AlohaPure16Simulation();
 
-  public AlohaPure() {
+  public AlohaPurePoissonGenerator() {
     super(WINDOW_TITLE);
     aloha0Sim.init();
     aloha0Sim.start();
@@ -82,7 +82,7 @@ public class AlohaPure extends AbstractGraphExample {
 
       @Override
       public void run() {
-        AlohaPure demo = new AlohaPure();
+        AlohaPurePoissonGenerator demo = new AlohaPurePoissonGenerator();
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
