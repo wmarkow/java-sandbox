@@ -24,7 +24,6 @@ public class Medium extends Process {
   public void execute(Event event) {
     removeSentPackets();
     checkForCollisions();
-    sendPackets();
 
     printStatsIfNeeded();
 
@@ -50,7 +49,14 @@ public class Medium extends Process {
   public Transmission sendPacket(Packet packet) {
     Transmission tr = new Transmission(packet, this.getCurrentMillisTime());
 
+    if(currentTransmissions.size() == 0) {
+        // medium begins to be busy
+        mediumStartedBusyInMillis = getCurrentMillisTime();
+    }
+    
     currentTransmissions.add(tr);
+    
+    notifyListenersPacketTransmissionStarted();
 
     scheduleNextExecutionToNow(EVENT_PROCESS);
 
@@ -95,7 +101,7 @@ public class Medium extends Process {
       }
     }
 
-    if (currentTransmissions.size() <= 1 && mediumStartedBusyInMillis != null) {
+    if (currentTransmissions.size() == 0 && mediumStartedBusyInMillis != null) {
       mediumBusySummaryTimeInMillis += (getCurrentMillisTime() - mediumStartedBusyInMillis);
       mediumStartedBusyInMillis = null;
     }
@@ -108,19 +114,6 @@ public class Medium extends Process {
 
     for (Transmission tr : currentTransmissions) {
       tr.setCollision();
-    }
-  }
-
-  private void sendPackets() {
-    for (Transmission tr : currentTransmissions) {
-      if (tr.getTransmissionStartInMillis() == this.getCurrentMillisTime()) {
-        mediumStartedBusyInMillis = getCurrentMillisTime();
-
-        notifyListenersPacketTransmissionStarted();
-
-        // FIXME: remove that return?
-        return;
-      }
     }
   }
 
