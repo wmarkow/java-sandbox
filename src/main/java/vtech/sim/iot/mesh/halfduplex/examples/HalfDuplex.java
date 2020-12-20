@@ -14,12 +14,18 @@ public class HalfDuplex extends AbstractGraphExample {
   final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transceiver.";
   final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transceiver.";
   final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transceiver.";
+  final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transceiver.";
+  final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transceiver.";
+  final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transceiver.";
 
   private HalfDuplex1Simulation aloha0Sim = new HalfDuplex1Simulation();
   private HalfDuplex2Simulation aloha1Sim = new HalfDuplex2Simulation();
   private HalfDuplex4Simulation aloha2Sim = new HalfDuplex4Simulation();
   private HalfDuplex8Simulation aloha3Sim = new HalfDuplex8Simulation();
   private HalfDuplex16Simulation aloha4Sim = new HalfDuplex16Simulation();
+  private HalfDuplex32Simulation aloha5Sim = new HalfDuplex32Simulation();
+  private HalfDuplex64Simulation aloha6Sim = new HalfDuplex64Simulation();
+  private HalfDuplex128Simulation aloha7Sim = new HalfDuplex128Simulation();
 
   public HalfDuplex() {
     super(WINDOW_TITLE);
@@ -37,6 +43,15 @@ public class HalfDuplex extends AbstractGraphExample {
 
     aloha4Sim.init();
     aloha4Sim.start();
+
+    aloha5Sim.init();
+    aloha5Sim.start();
+    
+    aloha6Sim.init();
+    aloha6Sim.start();
+    
+    aloha7Sim.init();
+    aloha7Sim.start();
   }
 
   @Override
@@ -46,7 +61,10 @@ public class HalfDuplex extends AbstractGraphExample {
         new SimulationGraphInfo(ALOHA_1_TITLE, new String[] { "Network load", "Collided packets" }),
         new SimulationGraphInfo(ALOHA_2_TITLE, new String[] { "Network load", "Collided packets" }),
         new SimulationGraphInfo(ALOHA_3_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_4_TITLE, new String[] { "Network load", "Collided packets" }) };
+        new SimulationGraphInfo(ALOHA_4_TITLE, new String[] { "Network load", "Collided packets" }),
+        new SimulationGraphInfo(ALOHA_5_TITLE, new String[] { "Network load", "Collided packets" }),
+        new SimulationGraphInfo(ALOHA_6_TITLE, new String[] { "Network load", "Collided packets" }),
+        new SimulationGraphInfo(ALOHA_7_TITLE, new String[] { "Network load", "Collided packets" })};
   }
 
   @Override
@@ -76,6 +94,21 @@ public class HalfDuplex extends AbstractGraphExample {
     if (graphIndex == 4) {
       result[0] = (float) aloha4Sim.getMediumBusyPercentage();
       result[1] = (float) aloha4Sim.getCollidedPacketsPercentage();
+    }
+    
+    if (graphIndex == 5) {
+        result[0] = (float) aloha5Sim.getMediumBusyPercentage();
+        result[1] = (float) aloha5Sim.getCollidedPacketsPercentage();
+    }
+    
+    if (graphIndex == 6) {
+        result[0] = (float) aloha6Sim.getMediumBusyPercentage();
+        result[1] = (float) aloha6Sim.getCollidedPacketsPercentage();
+    }
+    
+    if (graphIndex == 7) {
+        result[0] = (float) aloha7Sim.getMediumBusyPercentage();
+        result[1] = (float) aloha7Sim.getCollidedPacketsPercentage();
     }
 
     return result;
