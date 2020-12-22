@@ -76,4 +76,10 @@ public class AlohaTransmitter extends Process implements Transmitter {
     packets.add(packet);
     scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
   }
+
+  @Override
+  public int getCountOfPacketsWaitingToSend()
+  {
+      return packets.size();
+  }
 }

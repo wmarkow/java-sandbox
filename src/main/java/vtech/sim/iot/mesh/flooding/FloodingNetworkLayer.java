@@ -31,4 +31,10 @@ public class FloodingNetworkLayer extends Process implements ReceiverListener, T
     // the network layer.
     transceiver.addPacketToSend(packet);
   }
+
+  @Override
+  public int getCountOfPacketsWaitingToSend()
+  {
+      return transceiver.getCountOfPacketsWaitingToSend();
+  }
 }

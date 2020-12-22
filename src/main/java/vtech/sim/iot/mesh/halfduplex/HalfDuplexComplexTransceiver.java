@@ -178,4 +178,10 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     state = State.TX;
     scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
   }
+
+  @Override
+  public int getCountOfPacketsWaitingToSend()
+  {
+      return packetsToSend.size();
+  }
 }

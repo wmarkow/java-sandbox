@@ -4,4 +4,6 @@ import vtech.sim.core.scheduler.EventScheduler;
 
 public abstract class Device {
   public abstract void attachToSimulation(EventScheduler scheduler);
+  
+  public abstract Transmitter getTransmitter();
 }

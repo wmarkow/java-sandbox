@@ -3,6 +3,7 @@ package vtech.sim.iot.mesh.flooding;
 import vtech.sim.core.scheduler.EventScheduler;
 import vtech.sim.iot.mesh.Device;
 import vtech.sim.iot.mesh.Medium;
+import vtech.sim.iot.mesh.Transmitter;
 import vtech.sim.iot.mesh.halfduplex.HalfDuplexComplexTransceiver;
 
 public class FloodingDevice extends Device {
@@ -24,5 +25,11 @@ public class FloodingDevice extends Device {
     transmitter.attachToSimulation(scheduler);
     floodingNetworkLayer.attachToSimulation(scheduler);
     pingGenerator.attachToSimulation(scheduler);
+  }
+  
+  @Override
+  public Transmitter getTransmitter()
+  {
+      return transmitter;
   }
 }

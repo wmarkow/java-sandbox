@@ -4,6 +4,7 @@ import vtech.sim.core.scheduler.EventScheduler;
 import vtech.sim.iot.mesh.ConstantGenerator;
 import vtech.sim.iot.mesh.Device;
 import vtech.sim.iot.mesh.Medium;
+import vtech.sim.iot.mesh.Transmitter;
 
 public class AlohaConstantGeneratorDevice extends Device
 {
@@ -19,5 +20,11 @@ public class AlohaConstantGeneratorDevice extends Device
     {
         generator.attachToSimulation(scheduler);
         transmitter.attachToSimulation(scheduler);
+    }
+
+    @Override
+    public Transmitter getTransmitter()
+    {
+        return transmitter;
     }
 }
