@@ -14,6 +14,8 @@ import javax.swing.Timer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.DynamicTimeSeriesCollection;
@@ -58,8 +60,8 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
         dataset.addSeries(new float[] {}, q, graphInfo.getSeriesNames()[q]);
       }
 
-      JFreeChart chart = createChart(dataset, graphInfo.getTitle());
-
+      // FIXME: the third series (packet queue size) should have a separate axis (now it uses % which is wrong)
+      JFreeChart chart = createChart(dataset, graphInfo.getTitle());      
       getGraphsPanel().add(new ChartPanel(chart));
     }
 

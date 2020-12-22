@@ -30,28 +30,31 @@ public class AlohaPureConstantGenerator extends AbstractGraphExample {
   @Override
   protected SimulationGraphInfo[] getSimulationGraphInfos() {
 
-    return new SimulationGraphInfo[] { new SimulationGraphInfo(ALOHA_0_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_1_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_2_TITLE, new String[] { "Network load", "Collided packets" }) };
+    return new SimulationGraphInfo[] { new SimulationGraphInfo(ALOHA_0_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_1_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_2_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }) };
   }
 
   @Override
   protected synchronized float[] getSeriesData(int graphIndex) {
-    float[] result = new float[2];
+    float[] result = new float[3];
 
     if (graphIndex == 0) {
       result[0] = (float) aloha0Sim.getMediumBusyPercentage();
       result[1] = (float) aloha0Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha0Sim.getOutgoingQueueSize();
     }
 
     if (graphIndex == 1) {
       result[0] = (float) aloha1Sim.getMediumBusyPercentage();
       result[1] = (float) aloha1Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha1Sim.getOutgoingQueueSize();
     }
 
     if (graphIndex == 2) {
       result[0] = (float) aloha2Sim.getMediumBusyPercentage();
       result[1] = (float) aloha2Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha2Sim.getOutgoingQueueSize();
     }
 
     return result;

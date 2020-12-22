@@ -57,58 +57,66 @@ public class HalfDuplex extends AbstractGraphExample {
   @Override
   protected SimulationGraphInfo[] getSimulationGraphInfos() {
 
-    return new SimulationGraphInfo[] { new SimulationGraphInfo(ALOHA_0_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_1_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_2_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_3_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_4_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_5_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_6_TITLE, new String[] { "Network load", "Collided packets" }),
-        new SimulationGraphInfo(ALOHA_7_TITLE, new String[] { "Network load", "Collided packets" })};
+    return new SimulationGraphInfo[] { new SimulationGraphInfo(ALOHA_0_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_1_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_2_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_3_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_4_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_5_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_6_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" }),
+        new SimulationGraphInfo(ALOHA_7_TITLE, new String[] { "Network load", "Collided packets", "Average queue size" })};
   }
 
   @Override
   protected synchronized float[] getSeriesData(int graphIndex) {
-    float[] result = new float[2];
+    float[] result = new float[3];
 
     if (graphIndex == 0) {
       result[0] = (float) aloha0Sim.getMediumBusyPercentage();
       result[1] = (float) aloha0Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha0Sim.getOutgoingQueueSize();
     }
 
     if (graphIndex == 1) {
       result[0] = (float) aloha1Sim.getMediumBusyPercentage();
       result[1] = (float) aloha1Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha1Sim.getOutgoingQueueSize();
     }
 
     if (graphIndex == 2) {
       result[0] = (float) aloha2Sim.getMediumBusyPercentage();
       result[1] = (float) aloha2Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha2Sim.getOutgoingQueueSize();
     }
 
     if (graphIndex == 3) {
       result[0] = (float) aloha3Sim.getMediumBusyPercentage();
       result[1] = (float) aloha3Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha3Sim.getOutgoingQueueSize();
     }
     
     if (graphIndex == 4) {
       result[0] = (float) aloha4Sim.getMediumBusyPercentage();
       result[1] = (float) aloha4Sim.getCollidedPacketsPercentage();
+      result[2] = (float) aloha4Sim.getOutgoingQueueSize();
     }
     
     if (graphIndex == 5) {
         result[0] = (float) aloha5Sim.getMediumBusyPercentage();
         result[1] = (float) aloha5Sim.getCollidedPacketsPercentage();
+        result[2] = (float) aloha5Sim.getOutgoingQueueSize();
     }
     
     if (graphIndex == 6) {
         result[0] = (float) aloha6Sim.getMediumBusyPercentage();
         result[1] = (float) aloha6Sim.getCollidedPacketsPercentage();
+        result[2] = (float) aloha6Sim.getOutgoingQueueSize();
     }
     
     if (graphIndex == 7) {
         result[0] = (float) aloha7Sim.getMediumBusyPercentage();
         result[1] = (float) aloha7Sim.getCollidedPacketsPercentage();
+        result[2] = (float) aloha7Sim.getOutgoingQueueSize();
     }
 
     return result;
