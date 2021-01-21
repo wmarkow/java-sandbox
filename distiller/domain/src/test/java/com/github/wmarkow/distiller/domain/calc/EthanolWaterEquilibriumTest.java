@@ -47,7 +47,7 @@ public class EthanolWaterEquilibriumTest {
             double temp = subject.getMinValidTemp() - q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getLiquidMoleFraction(temp);
+                subject.getEthanolLiquidMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -62,7 +62,7 @@ public class EthanolWaterEquilibriumTest {
             double temp = subject.getMaxValidTemp() + q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getLiquidMoleFraction(temp);
+                subject.getEthanolLiquidMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -79,7 +79,7 @@ public class EthanolWaterEquilibriumTest {
         for(int q = 0 ; q < steps ; q ++) {
             double temp = minTemp + q * delta;
             assertTrue(subject.isValidPoint(temp));
-            subject.getLiquidMoleFraction(temp);
+            subject.getEthanolLiquidMoleFraction(temp);
         }
     }
 
@@ -90,7 +90,7 @@ public class EthanolWaterEquilibriumTest {
             double temp = subject.getMinValidTemp() - q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getVaporMoleFraction(temp);
+                subject.getEthanolVaporMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -105,7 +105,7 @@ public class EthanolWaterEquilibriumTest {
             double temp = subject.getMaxValidTemp() + q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getVaporMoleFraction(temp);
+                subject.getEthanolVaporMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -122,26 +122,26 @@ public class EthanolWaterEquilibriumTest {
         for(int q = 0 ; q < steps ; q ++) {
             double temp = minTemp + q * delta;
             assertTrue(subject.isValidPoint(temp));
-            subject.getVaporMoleFraction(temp);
+            subject.getEthanolVaporMoleFraction(temp);
         }
     }
 
     @Test
     public void testGetLiquidMoleFraction() {
-        assertEquals(0.8943, subject.getLiquidMoleFraction(78.15), 0.0001);
-        assertEquals(0.5079, subject.getLiquidMoleFraction(79.8), 0.0001);
-        assertEquals(0.3273, subject.getLiquidMoleFraction(81.5), 0.0001);
-        assertEquals(0.1661, subject.getLiquidMoleFraction(84.1), 0.0001);
-        assertEquals(0.0, subject.getLiquidMoleFraction(100.0), 0.0001);
+        assertEquals(0.8943, subject.getEthanolLiquidMoleFraction(78.15), 0.0001);
+        assertEquals(0.5079, subject.getEthanolLiquidMoleFraction(79.8), 0.0001);
+        assertEquals(0.3273, subject.getEthanolLiquidMoleFraction(81.5), 0.0001);
+        assertEquals(0.1661, subject.getEthanolLiquidMoleFraction(84.1), 0.0001);
+        assertEquals(0.0, subject.getEthanolLiquidMoleFraction(100.0), 0.0001);
     }
 
     @Test
     public void testGetVaporMoleFraction() {
-        assertEquals(0.8943, subject.getVaporMoleFraction(78.15), 0.0001);
-        assertEquals(0.6564, subject.getVaporMoleFraction(79.8), 0.0001);
-        assertEquals(0.5826, subject.getVaporMoleFraction(81.5), 0.0001);
-        assertEquals(0.5089, subject.getVaporMoleFraction(84.1), 0.0001);
-        assertEquals(0.0, subject.getVaporMoleFraction(100.0), 0.0001);
+        assertEquals(0.8943, subject.getEthanolVaporMoleFraction(78.15), 0.0001);
+        assertEquals(0.6564, subject.getEthanolVaporMoleFraction(79.8), 0.0001);
+        assertEquals(0.5826, subject.getEthanolVaporMoleFraction(81.5), 0.0001);
+        assertEquals(0.5089, subject.getEthanolVaporMoleFraction(84.1), 0.0001);
+        assertEquals(0.0, subject.getEthanolVaporMoleFraction(100.0), 0.0001);
     }
 
     @Test
@@ -158,8 +158,8 @@ public class EthanolWaterEquilibriumTest {
             }
 
             int y = pixels - q;
-            int xLiquid = (int)(subject.getLiquidMoleFraction(temp) * pixels);
-            int xVapor = (int)(subject.getVaporMoleFraction(temp) * pixels);
+            int xLiquid = (int)(subject.getEthanolLiquidMoleFraction(temp) * pixels);
+            int xVapor = (int)(subject.getEthanolVaporMoleFraction(temp) * pixels);
 
             // create XY-T plot
             xytImage.getGraphics().drawLine(xLiquid, y, xLiquid, y);

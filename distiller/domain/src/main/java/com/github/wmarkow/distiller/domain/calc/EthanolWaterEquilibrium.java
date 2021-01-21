@@ -19,13 +19,13 @@ public class EthanolWaterEquilibrium {
     private static Double minValidTemp = null;
     private static Double maxValidTemp = null;
 
-    public double getLiquidMoleFraction(double boilingTemp) {
+    public double getEthanolLiquidMoleFraction(double boilingTemp) {
         init();
 
         return liquidData.value(boilingTemp);
     }
 
-    public double getVaporMoleFraction(double vaporTemp) {
+    public double getEthanolVaporMoleFraction(double vaporTemp) {
         init();
 
         return vaporData.value(vaporTemp);
