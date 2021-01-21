@@ -14,6 +14,9 @@ import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class FishGraphTest {
@@ -32,11 +35,21 @@ public class FishGraphTest {
     }
 
     @Test
+    public void testGetMinValidTemp() {
+        assertEquals(78.17, subject.getMinValidTemp(), 0.000001);
+    }
+
+    @Test
+    public void testGetMaxValidTemp() {
+        assertEquals(99.00, subject.getMaxValidTemp(), 0.000001);
+    }
+
+    @Test
     public void testGetLiquidAlcoholVolumeContentForLowerOutOfRangeException() {
-        double initialTemp = 78.17;
         for(int q = 1 ; q < 100 ; q++)
         {
-            double temp = initialTemp - q * 0.1;
+            double temp = subject.getMinValidTemp() - q * 0.1;
+            assertFalse(subject.isValidPoint(temp));
             try {
                 subject.getLiquidAlcoholVolumeContent(temp);
                 fail("OutOfRangeException should be thrown");
@@ -48,10 +61,10 @@ public class FishGraphTest {
 
     @Test
     public void testGetLiquidAlcoholVolumeContentForHigherOutOfRangeException() {
-        double initialTemp = 99.0;
         for(int q = 1 ; q < 100 ; q++)
         {
-            double temp = initialTemp + q * 0.1;
+            double temp = subject.getMaxValidTemp() + q * 0.1;
+            assertFalse(subject.isValidPoint(temp));
             try {
                 subject.getLiquidAlcoholVolumeContent(temp);
                 fail("OutOfRangeException should be thrown");
@@ -63,25 +76,23 @@ public class FishGraphTest {
 
     @Test
     public void testGetLiquidAlcoholVolumeContentForValidTemperature() {
-        double temp = 78.17;
+        double steps = 100;
+        double delta = (subject.getMaxValidTemp() - subject.getMinValidTemp()) / steps;
+        double minTemp = subject.getMinValidTemp();
 
-        while(true) {
-            if(temp > 99.0)
-            {
-                return;
-            }
+        for(int q = 0 ; q < steps ; q ++) {
+            double temp = minTemp + q * delta;
+            assertTrue(subject.isValidPoint(temp));
             subject.getLiquidAlcoholVolumeContent(temp);
-
-            temp += 0.001;
         }
     }
 
     @Test
     public void testGetVaporAlcoholVolumeContentForLowerOutOfRangeException() {
-        double initialTemp = 78.17;
         for(int q = 1 ; q < 100 ; q++)
         {
-            double temp = initialTemp - q * 0.1;
+            double temp = subject.getMinValidTemp() - q * 0.1;
+            assertFalse(subject.isValidPoint(temp));
             try {
                 subject.getVaporAlcoholVolumeContent(temp);
                 fail("OutOfRangeException should be thrown");
@@ -93,10 +104,10 @@ public class FishGraphTest {
 
     @Test
     public void testGetVaporAlcoholVolumeContentForHigherOutOfRangeException() {
-        double initialTemp = 99.0;
         for(int q = 1 ; q < 100 ; q++)
         {
-            double temp = initialTemp + q * 0.1;
+            double temp = subject.getMaxValidTemp() + q * 0.1;
+            assertFalse(subject.isValidPoint(temp));
             try {
                 subject.getVaporAlcoholVolumeContent(temp);
                 fail("OutOfRangeException should be thrown");
@@ -108,27 +119,23 @@ public class FishGraphTest {
 
     @Test
     public void testGetVaporAlcoholVolumeContentForValidTemperature() {
-        double temp = 78.17;
+        double steps = 100;
+        double delta = (subject.getMaxValidTemp() - subject.getMinValidTemp()) / steps;
+        double minTemp = subject.getMinValidTemp();
 
-        while(true) {
-            if(temp > 99.0)
-            {
-                return;
-            }
+        for(int q = 0 ; q < steps ; q ++) {
+            double temp = minTemp + q * delta;
+            assertTrue(subject.isValidPoint(temp));
             subject.getVaporAlcoholVolumeContent(temp);
-
-            temp += 0.001;
         }
     }
 
     @Test
     public void createFishGraph() throws IOException {
-        double initialTemp = 78.17;
-
         BufferedImage bufferedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
 
         for(int q = 0; q < 200 ; q ++) {
-            double temp = initialTemp + q * 0.1;
+            double temp = subject.getMinValidTemp() + q * 0.1;
 
             if(temp > 99.0) {
                 continue;

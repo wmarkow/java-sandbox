@@ -17,6 +17,8 @@ public class FishGraph {
 
     private static PolynomialSplineFunction liquidData = null;
     private static PolynomialSplineFunction vaporData = null;
+    private static Double minValidTemp = null;
+    private static Double maxValidTemp = null;
 
     public double getLiquidAlcoholVolumeContent(double boilingTemp) {
         init();
@@ -28,6 +30,24 @@ public class FishGraph {
         init();
 
         return vaporData.value(vaporTemp);
+    }
+
+    public boolean isValidPoint(double temp) {
+        init();
+
+        return (liquidData.isValidPoint(temp) && vaporData.isValidPoint(temp));
+    }
+
+    public double getMinValidTemp() {
+        init();
+
+        return  minValidTemp;
+    }
+
+    public double getMaxValidTemp() {
+        init();
+
+        return maxValidTemp;
     }
 
     static void init() {
@@ -72,6 +92,13 @@ public class FishGraph {
                 double liquidContent = Double.parseDouble(split[0]);
                 double temp = Double.parseDouble(split[1]);
                 double vaporContent = Double.parseDouble(split[2]);
+
+                if(minValidTemp == null || temp < minValidTemp) {
+                    minValidTemp = temp;
+                }
+                if(maxValidTemp == null || temp > maxValidTemp) {
+                    maxValidTemp = temp;
+                }
 
                 tempData.add(temp);
                 liquidContentData.add(liquidContent);
