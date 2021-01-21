@@ -19,5 +19,5 @@ public class Water {
     public final static double SPECIFIC_HEAT_CAPACITY = 4189.9;
 
     public final static PPDS12Parameters PPDS12_PARAMETERS = new PPDS12Parameters(5.6297, 13.962 ,-11.673
-            , 2.1784 , -0.31666, 647.3 , 273, 647);
+            , 2.1784 , -0.31666, 647.3 , 273.0, 647.0);
 }

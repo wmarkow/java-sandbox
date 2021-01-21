@@ -2,6 +2,10 @@ package com.github.wmarkow.distiller.domain.calc;
 
 import com.github.wmarkow.distiller.domain.constants.Constants;
 
+/***
+ * Heat of Vaporization
+ * Calculation by PPDS12 Equation
+ */
 public class PPDS12Calc {
 
     /***
