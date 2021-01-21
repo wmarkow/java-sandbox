@@ -31,6 +31,14 @@ public class EthanolWaterEquilibrium {
         return vaporData.value(vaporTemp);
     }
 
+    public double getWaterLiquidMoleFraction(double boilingTemp) {
+        return 1.0 - getEthanolLiquidMoleFraction(boilingTemp);
+    }
+
+    public double getWaterVaporMoleFraction(double vaporTemp) {
+        return 1.0 - getEthanolVaporMoleFraction(vaporTemp);
+    }
+
     public boolean isValidPoint(double temp) {
         init();
 
