@@ -9,24 +9,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class FishGraph {
+public class EthanolWaterEquilibrium {
 
-    private final static String LIQUID_VAPOR_FILE_NAME = "liquid_vapor.txt";
+    private final static String LIQUID_VAPOR_FILE_NAME = "liquid-vapor_ethanol-water_equilibrium.txt";
 
     private static PolynomialSplineFunction liquidData = null;
     private static PolynomialSplineFunction vaporData = null;
     private static Double minValidTemp = null;
     private static Double maxValidTemp = null;
 
-    public double getLiquidAlcoholVolumeContent(double boilingTemp) {
+    public double getLiquidMoleFraction(double boilingTemp) {
         init();
 
         return liquidData.value(boilingTemp);
     }
 
-    public double getVaporAlcoholVolumeContent(double vaporTemp) {
+    public double getVaporMoleFraction(double vaporTemp) {
         init();
 
         return vaporData.value(vaporTemp);
@@ -55,7 +54,7 @@ public class FishGraph {
             return;
         }
         // The class loader that loaded the class
-        ClassLoader classLoader = FishGraph.class.getClassLoader();
+        ClassLoader classLoader = EthanolWaterEquilibrium.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(LIQUID_VAPOR_FILE_NAME);
 
         // the stream holding the file content
@@ -89,8 +88,8 @@ public class FishGraph {
                     throw new IllegalArgumentException(String.format("File %s contains more than 3 columns", LIQUID_VAPOR_FILE_NAME));
                 }
 
-                double liquidContent = Double.parseDouble(split[0]);
-                double temp = Double.parseDouble(split[1]);
+                double temp = Double.parseDouble(split[0]);
+                double liquidContent = Double.parseDouble(split[1]);
                 double vaporContent = Double.parseDouble(split[2]);
 
                 if(minValidTemp == null || temp < minValidTemp) {
@@ -104,10 +103,6 @@ public class FishGraph {
                 liquidContentData.add(liquidContent);
                 vaporContentData.add(vaporContent);
             }
-
-            Collections.reverse(tempData);
-            Collections.reverse(liquidContentData);
-            Collections.reverse(vaporContentData);
 
             double[] tempArray = tempData.stream().mapToDouble(d -> d).toArray();
             double[] liquidArray = liquidContentData.stream().mapToDouble(d -> d).toArray();

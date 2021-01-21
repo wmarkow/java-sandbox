@@ -1,16 +1,12 @@
 package com.github.wmarkow.distiller.domain.calc;
 
-import com.github.wmarkow.distiller.domain.calc.FishGraph;
-
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 
@@ -19,13 +15,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class FishGraphTest {
+public class EthanolWaterEquilibriumTest {
 
-    private FishGraph subject;
+    private EthanolWaterEquilibrium subject;
 
     @Before
     public void init() {
-        subject = new FishGraph();
+        subject = new EthanolWaterEquilibrium();
     }
 
     @Test
@@ -36,12 +32,12 @@ public class FishGraphTest {
 
     @Test
     public void testGetMinValidTemp() {
-        assertEquals(78.17, subject.getMinValidTemp(), 0.000001);
+        assertEquals(78.15, subject.getMinValidTemp(), 0.000001);
     }
 
     @Test
     public void testGetMaxValidTemp() {
-        assertEquals(99.00, subject.getMaxValidTemp(), 0.000001);
+        assertEquals(100.00, subject.getMaxValidTemp(), 0.000001);
     }
 
     @Test
@@ -51,7 +47,7 @@ public class FishGraphTest {
             double temp = subject.getMinValidTemp() - q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getLiquidAlcoholVolumeContent(temp);
+                subject.getLiquidMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -66,7 +62,7 @@ public class FishGraphTest {
             double temp = subject.getMaxValidTemp() + q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getLiquidAlcoholVolumeContent(temp);
+                subject.getLiquidMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -83,7 +79,7 @@ public class FishGraphTest {
         for(int q = 0 ; q < steps ; q ++) {
             double temp = minTemp + q * delta;
             assertTrue(subject.isValidPoint(temp));
-            subject.getLiquidAlcoholVolumeContent(temp);
+            subject.getLiquidMoleFraction(temp);
         }
     }
 
@@ -94,7 +90,7 @@ public class FishGraphTest {
             double temp = subject.getMinValidTemp() - q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getVaporAlcoholVolumeContent(temp);
+                subject.getVaporMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -109,7 +105,7 @@ public class FishGraphTest {
             double temp = subject.getMaxValidTemp() + q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getVaporAlcoholVolumeContent(temp);
+                subject.getVaporMoleFraction(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -126,32 +122,61 @@ public class FishGraphTest {
         for(int q = 0 ; q < steps ; q ++) {
             double temp = minTemp + q * delta;
             assertTrue(subject.isValidPoint(temp));
-            subject.getVaporAlcoholVolumeContent(temp);
+            subject.getVaporMoleFraction(temp);
         }
     }
 
     @Test
-    public void createFishGraph() throws IOException {
-        BufferedImage bufferedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+    public void testGetLiquidMoleFraction() {
+        assertEquals(0.8943, subject.getLiquidMoleFraction(78.15), 0.0001);
+        assertEquals(0.5079, subject.getLiquidMoleFraction(79.8), 0.0001);
+        assertEquals(0.3273, subject.getLiquidMoleFraction(81.5), 0.0001);
+        assertEquals(0.1661, subject.getLiquidMoleFraction(84.1), 0.0001);
+        assertEquals(0.0, subject.getLiquidMoleFraction(100.0), 0.0001);
+    }
 
-        for(int q = 0; q < 200 ; q ++) {
+    @Test
+    public void testGetVaporMoleFraction() {
+        assertEquals(0.8943, subject.getVaporMoleFraction(78.15), 0.0001);
+        assertEquals(0.6564, subject.getVaporMoleFraction(79.8), 0.0001);
+        assertEquals(0.5826, subject.getVaporMoleFraction(81.5), 0.0001);
+        assertEquals(0.5089, subject.getVaporMoleFraction(84.1), 0.0001);
+        assertEquals(0.0, subject.getVaporMoleFraction(100.0), 0.0001);
+    }
+
+    @Test
+    public void createFishPlots() throws IOException {
+        int pixels = 200;
+        BufferedImage xytImage = new BufferedImage(pixels, pixels, BufferedImage.TYPE_INT_RGB);
+        BufferedImage xyImage = new BufferedImage(pixels, pixels, BufferedImage.TYPE_INT_RGB);
+
+        for(int q = 0; q < pixels ; q ++) {
             double temp = subject.getMinValidTemp() + q * 0.1;
 
             if(temp > 99.0) {
                 continue;
             }
 
-            double liquidContent = subject.getLiquidAlcoholVolumeContent(temp);
-            double vaporContent = subject.getVaporAlcoholVolumeContent(temp);
+            int y = pixels - q;
+            int xLiquid = (int)(subject.getLiquidMoleFraction(temp) * pixels);
+            int xVapor = (int)(subject.getVaporMoleFraction(temp) * pixels);
 
-            bufferedImage.getGraphics().setColor(Color.BLUE);
-            bufferedImage.getGraphics().drawLine(q, (int)liquidContent, q, (int)liquidContent);
-            bufferedImage.getGraphics().drawLine(q, (int)vaporContent, q, (int)vaporContent);
+            // create XY-T plot
+            xytImage.getGraphics().drawLine(xLiquid, y, xLiquid, y);
+            xytImage.getGraphics().drawLine(xVapor, y, xVapor, y);
+
+            // create XY plot
+            xyImage.getGraphics().drawLine(xLiquid, pixels - xVapor, xLiquid, pixels - xVapor);
         }
-        bufferedImage.getGraphics().dispose();
+        xytImage.getGraphics().dispose();
+        xyImage.getGraphics().dispose();
 
-        File file = new File("target/fishgraph.png");
-        file.mkdirs();
-        ImageIO.write(bufferedImage, "png", file);
+        File xytFile = new File("target/fishgraph-xyt.png");
+        xytFile.mkdirs();
+        ImageIO.write(xytImage, "png", xytFile);
+
+        File xyFile = new File("target/fishgraph-xy.png");
+        xyFile.mkdirs();
+        ImageIO.write(xyImage, "png", xyFile);
     }
 }
