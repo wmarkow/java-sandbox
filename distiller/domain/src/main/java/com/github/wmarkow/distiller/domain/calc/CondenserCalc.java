@@ -2,7 +2,7 @@ package com.github.wmarkow.distiller.domain.calc;
 
 import com.github.wmarkow.distiller.domain.constants.Water;
 
-public class Condenser {
+public class CondenserCalc {
 
     /***
      * Calculates the cooling power of the condenser. It assumes that a cold water comes into the condenser

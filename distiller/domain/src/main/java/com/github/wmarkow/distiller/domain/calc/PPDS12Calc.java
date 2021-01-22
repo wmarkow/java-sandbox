@@ -5,6 +5,7 @@ import com.github.wmarkow.distiller.domain.constants.Constants;
 /***
  * Heat of Vaporization
  * Calculation by PPDS12 Equation
+ * @see http://ddbonline.ddbst.com/PPDS12HVPCalculation/HVP_PPDS12CalculationCGI.exe
  */
 public class PPDS12Calc {
 
