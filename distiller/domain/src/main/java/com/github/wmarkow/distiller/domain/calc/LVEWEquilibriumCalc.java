@@ -22,24 +22,13 @@ public class LVEWEquilibriumCalc {
     private static Double minValidTemp = null;
     private static Double maxValidTemp = null;
 
-    public double getEthanolLiquidMoleFraction(double boilingTemp) {
+    public LVEWEquilibrium calculateEquilibrium(double temperature) {
         init();
 
-        return liquidData.value(boilingTemp);
-    }
+        double ethanolLiquidMoleFraction = liquidData.value(temperature);
+        double ethanolVaporMoleFraction = vaporData.value(temperature);
 
-    public double getEthanolVaporMoleFraction(double vaporTemp) {
-        init();
-
-        return vaporData.value(vaporTemp);
-    }
-
-    public double getWaterLiquidMoleFraction(double boilingTemp) {
-        return 1.0 - getEthanolLiquidMoleFraction(boilingTemp);
-    }
-
-    public double getWaterVaporMoleFraction(double vaporTemp) {
-        return 1.0 - getEthanolVaporMoleFraction(vaporTemp);
+        return new LVEWEquilibrium(temperature, ethanolLiquidMoleFraction, ethanolVaporMoleFraction);
     }
 
     public boolean isValidPoint(double temp) {

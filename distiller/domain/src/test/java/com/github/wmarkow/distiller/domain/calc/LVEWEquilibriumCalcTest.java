@@ -41,13 +41,12 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void testGetLiquidAlcoholVolumeContentForLowerOutOfRangeException() {
-        for(int q = 1 ; q < 100 ; q++)
-        {
+    public void testGetEquilibriumForLowerOutOfRangeException() {
+        for (int q = 1; q < 100; q++) {
             double temp = subject.getMinValidTemp() - q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getEthanolLiquidMoleFraction(temp);
+                subject.calculateEquilibrium(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -56,13 +55,12 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void testGetLiquidAlcoholVolumeContentForHigherOutOfRangeException() {
-        for(int q = 1 ; q < 100 ; q++)
-        {
+    public void testGetEquilibriumForHigherOutOfRangeException() {
+        for (int q = 1; q < 100; q++) {
             double temp = subject.getMaxValidTemp() + q * 0.1;
             assertFalse(subject.isValidPoint(temp));
             try {
-                subject.getEthanolLiquidMoleFraction(temp);
+                subject.calculateEquilibrium(temp);
                 fail("OutOfRangeException should be thrown");
             } catch (OutOfRangeException e) {
                 // this is good
@@ -71,77 +69,34 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void testGetLiquidAlcoholVolumeContentForValidTemperature() {
+    public void testGetEquilibriumForValidTemperature() {
         double steps = 100;
         double delta = (subject.getMaxValidTemp() - subject.getMinValidTemp()) / steps;
         double minTemp = subject.getMinValidTemp();
 
-        for(int q = 0 ; q < steps ; q ++) {
+        for (int q = 0; q < steps; q++) {
             double temp = minTemp + q * delta;
             assertTrue(subject.isValidPoint(temp));
-            subject.getEthanolLiquidMoleFraction(temp);
-        }
-    }
-
-    @Test
-    public void testGetVaporAlcoholVolumeContentForLowerOutOfRangeException() {
-        for(int q = 1 ; q < 100 ; q++)
-        {
-            double temp = subject.getMinValidTemp() - q * 0.1;
-            assertFalse(subject.isValidPoint(temp));
-            try {
-                subject.getEthanolVaporMoleFraction(temp);
-                fail("OutOfRangeException should be thrown");
-            } catch (OutOfRangeException e) {
-                // this is good
-            }
-        }
-    }
-
-    @Test
-    public void testGetVaporAlcoholVolumeContentForHigherOutOfRangeException() {
-        for(int q = 1 ; q < 100 ; q++)
-        {
-            double temp = subject.getMaxValidTemp() + q * 0.1;
-            assertFalse(subject.isValidPoint(temp));
-            try {
-                subject.getEthanolVaporMoleFraction(temp);
-                fail("OutOfRangeException should be thrown");
-            } catch (OutOfRangeException e) {
-                // this is good
-            }
-        }
-    }
-
-    @Test
-    public void testGetVaporAlcoholVolumeContentForValidTemperature() {
-        double steps = 100;
-        double delta = (subject.getMaxValidTemp() - subject.getMinValidTemp()) / steps;
-        double minTemp = subject.getMinValidTemp();
-
-        for(int q = 0 ; q < steps ; q ++) {
-            double temp = minTemp + q * delta;
-            assertTrue(subject.isValidPoint(temp));
-            subject.getEthanolVaporMoleFraction(temp);
+            subject.calculateEquilibrium(temp);
         }
     }
 
     @Test
     public void testGetLiquidMoleFraction() {
-        assertEquals(0.8943, subject.getEthanolLiquidMoleFraction(78.15), 0.0001);
-        assertEquals(0.5079, subject.getEthanolLiquidMoleFraction(79.8), 0.0001);
-        assertEquals(0.3273, subject.getEthanolLiquidMoleFraction(81.5), 0.0001);
-        assertEquals(0.1661, subject.getEthanolLiquidMoleFraction(84.1), 0.0001);
-        assertEquals(0.0, subject.getEthanolLiquidMoleFraction(100.0), 0.0001);
+        assertEquals(0.8943, subject.calculateEquilibrium(78.15).ethanolLiquidMoleFraction, 0.0001);
+        assertEquals(0.5079, subject.calculateEquilibrium(79.8).ethanolLiquidMoleFraction, 0.0001);
+        assertEquals(0.3273, subject.calculateEquilibrium(81.5).ethanolLiquidMoleFraction, 0.0001);
+        assertEquals(0.1661, subject.calculateEquilibrium(84.1).ethanolLiquidMoleFraction, 0.0001);
+        assertEquals(0.0, subject.calculateEquilibrium(100.0).ethanolLiquidMoleFraction, 0.0001);
     }
 
     @Test
     public void testGetVaporMoleFraction() {
-        assertEquals(0.8943, subject.getEthanolVaporMoleFraction(78.15), 0.0001);
-        assertEquals(0.6564, subject.getEthanolVaporMoleFraction(79.8), 0.0001);
-        assertEquals(0.5826, subject.getEthanolVaporMoleFraction(81.5), 0.0001);
-        assertEquals(0.5089, subject.getEthanolVaporMoleFraction(84.1), 0.0001);
-        assertEquals(0.0, subject.getEthanolVaporMoleFraction(100.0), 0.0001);
+        assertEquals(0.8943, subject.calculateEquilibrium(78.15).ethanolVaporMoleFraction, 0.0001);
+        assertEquals(0.6564, subject.calculateEquilibrium(79.8).ethanolVaporMoleFraction, 0.0001);
+        assertEquals(0.5826, subject.calculateEquilibrium(81.5).ethanolVaporMoleFraction, 0.0001);
+        assertEquals(0.5089, subject.calculateEquilibrium(84.1).ethanolVaporMoleFraction, 0.0001);
+        assertEquals(0.0, subject.calculateEquilibrium(100.0).ethanolVaporMoleFraction, 0.0001);
     }
 
     @Test
@@ -150,16 +105,16 @@ public class LVEWEquilibriumCalcTest {
         BufferedImage xytImage = new BufferedImage(pixels, pixels, BufferedImage.TYPE_INT_RGB);
         BufferedImage xyImage = new BufferedImage(pixels, pixels, BufferedImage.TYPE_INT_RGB);
 
-        for(int q = 0; q < pixels ; q ++) {
+        for (int q = 0; q < pixels; q++) {
             double temp = subject.getMinValidTemp() + q * 0.1;
 
-            if(temp > 99.0) {
+            if (temp > 99.0) {
                 continue;
             }
 
             int y = pixels - q;
-            int xLiquid = (int)(subject.getEthanolLiquidMoleFraction(temp) * pixels);
-            int xVapor = (int)(subject.getEthanolVaporMoleFraction(temp) * pixels);
+            int xLiquid = (int) (subject.calculateEquilibrium(temp).ethanolLiquidMoleFraction * pixels);
+            int xVapor = (int) (subject.calculateEquilibrium(temp).ethanolVaporMoleFraction * pixels);
 
             // create XY-T plot
             xytImage.getGraphics().drawLine(xLiquid, y, xLiquid, y);
