@@ -15,13 +15,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class EthanolWaterEquilibriumTest {
+public class LVEWEquilibriumCalcTest {
 
-    private EthanolWaterEquilibrium subject;
+    private LVEWEquilibriumCalc subject;
 
     @Before
     public void init() {
-        subject = new EthanolWaterEquilibrium();
+        subject = new LVEWEquilibriumCalc();
     }
 
     @Test

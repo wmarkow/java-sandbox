@@ -10,7 +10,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class EthanolWaterEquilibrium {
+/***
+ * Liquid-vapor of ethanol-water equilibrium
+ */
+public class LVEWEquilibriumCalc {
 
     private final static String LIQUID_VAPOR_FILE_NAME = "liquid-vapor_ethanol-water_equilibrium.txt";
 
@@ -62,7 +65,7 @@ public class EthanolWaterEquilibrium {
             return;
         }
         // The class loader that loaded the class
-        ClassLoader classLoader = EthanolWaterEquilibrium.class.getClassLoader();
+        ClassLoader classLoader = LVEWEquilibriumCalc.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(LIQUID_VAPOR_FILE_NAME);
 
         // the stream holding the file content
