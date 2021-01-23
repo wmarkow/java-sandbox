@@ -21,6 +21,13 @@ public class EthanolSolutionCalc {
 
     private static BicubicInterpolatingFunction densityData = null;
 
+    /***
+     * Calculates the density of the solution for a given ethanol molar fraction concentration and temperature.
+     * 
+     * @param ethanolMolarFraction ethanol molar fraction concentration
+     * @param temperature solution temperature
+     * @return denisty in kg/l
+     */
     public double calculateDensity(double ethanolMolarFraction, double temperature) {
         init();
         return densityData.value(temperature, ethanolMolarFraction);
