@@ -27,9 +27,9 @@ public class CondenserCalc {
      * @param tOut condenser output water temperature in Celsius degree
      * @param flow condenser water flow in m3/s
      * @param tHeader temperature under the condenser in Celsius degree
-     * @return the speed of condensation process in kg/s
+     * @return the speed of condensation process
      */
-    public double calculateCondensationSpeed(double tIn, double tOut, double flow, double tHeader) {
+    public CondensationSpeed calculateCondensationSpeed(double tIn, double tOut, double flow, double tHeader) {
         // calculate the current power of condenser
         double power = calculateCoolingPower(tIn, tOut, flow);
 
@@ -52,8 +52,13 @@ public class CondenserCalc {
 
         // calculate the speed in kg/s
         double gramsPerMole = Water.MOLAR_MASS * equilibrium.waterVaporMoleFraction + Ethanol.MOLAR_MASS * equilibrium.ethanolVaporMoleFraction;
-        double condensationRateInKg = condensationRate * gramsPerMole / 1000.0;
+        double condensationSpeedInKgPerSec = condensationRate * gramsPerMole / 1000.0;
 
-        return condensationRateInKg;
+        // calculate the speed in l/s
+        EthanolSolutionCalc ethanolSolutionCalc = new EthanolSolutionCalc();
+        double density = ethanolSolutionCalc.calculateDensity(equilibrium.waterVaporMoleFraction, tHeader);
+        double condensationSpeedInLPerSec = condensationSpeedInKgPerSec / density;
+
+        return new CondensationSpeed(condensationSpeedInKgPerSec, condensationSpeedInLPerSec);
     }
 }

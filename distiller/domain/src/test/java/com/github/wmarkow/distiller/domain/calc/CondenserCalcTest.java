@@ -15,6 +15,6 @@ public class CondenserCalcTest {
     @Test
     public void testCalculateCondensationSpeed() {
         double flow = 0.020/3660.0; // 20 l/h as m3/s
-        double result = subject.calculateCondensationSpeed(20.0, 70.0, flow, 90.0);
+        CondensationSpeed result = subject.calculateCondensationSpeed(20.0, 70.0, flow, 90.0);
     }
 }
