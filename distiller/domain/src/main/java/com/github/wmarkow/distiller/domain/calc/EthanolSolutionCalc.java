@@ -33,6 +33,26 @@ public class EthanolSolutionCalc {
         return densityData.value(temperature, ethanolMolarFraction);
     }
 
+    /***
+     * Gets minimal valid temperature
+     * @return temperature in Celsius degree
+     */
+    public double getMinValidTemp() {
+        init();
+
+        return minValidTemp;
+    }
+
+    /***
+     * Gets maximal valid temperature
+     * @return temperature in Celsius degree
+     */
+    public double getMaxValidTemp() {
+        init();
+
+        return maxValidTemp;
+    }
+
     static void init() {
         if (densityData != null) {
             return;
