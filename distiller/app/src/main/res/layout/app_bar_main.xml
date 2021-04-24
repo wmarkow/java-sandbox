@@ -29,6 +29,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/ic_bluetooth_disconnected"
+        app:borderWidth="0dp"
         app:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
