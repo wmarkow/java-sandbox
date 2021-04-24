@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="ic_bluetooth_disconnected">@android:color/holo_red_dark</color>
+    <color name="ic_bluetooth_connected">@android:color/holo_green_dark</color>
+    <color name="ic_bluetooth_connecting">@android:color/holo_orange_dark</color>
 </resources>
