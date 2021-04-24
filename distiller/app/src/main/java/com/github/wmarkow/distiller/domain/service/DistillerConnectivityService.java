@@ -1,15 +1,20 @@
 package com.github.wmarkow.distiller.domain.service;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.util.Log;
 
+import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.domain.interactor.DefaultSubscriber;
 import com.github.wmarkow.distiller.domain.interactor.DeviceDiscoveryUseCase;
 import com.github.wmarkow.distiller.domain.model.BleScanResult;
+import com.github.wmarkow.distiller.domain.model.DeviceInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -21,9 +26,9 @@ public class DistillerConnectivityService {
 
     private Set<BleScanResult> scanResults = new HashSet<>();
     private DeviceDiscoveryUseCase deviceDiscoveryUseCase = null;
-    //private Map<String, LegoHubConnectionService> trainConnectionServices = new HashMap<>();
+    private Map<String, DistillerConnectionService> distillerConnectionServices = new HashMap<>();
     private List<DistillerConnectivityServiceSubscriber> subscribers = new ArrayList<DistillerConnectivityServiceSubscriber>();
-    //private DefaultLegoHubConnectionSubscriber defaultLegoHubConnectionSubscriber = new DefaultLegoHubConnectionSubscriber();
+    private DefaultDistillerConnectionServiceSubscriber distillerConnectionServiceSubscriber = new DefaultDistillerConnectionServiceSubscriber();
 
     @Inject
     public DistillerConnectivityService() {
@@ -48,7 +53,18 @@ public class DistillerConnectivityService {
         return true;
     }
 
+    public void connect(String deviceAddress) {
+        getDistillerConnectionService(deviceAddress).connect();
+    }
+
     public boolean isConnected() {
+        // if at least one device is connected then return true
+        for(DistillerConnectionService dcs : distillerConnectionServices.values()) {
+            if(dcs.isConnected()) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -56,18 +72,22 @@ public class DistillerConnectivityService {
         return scanResults;
     }
 
-  /*  private synchronized LegoHubConnectionService createTrainConnectionServiceIfNeeded(String deviceAddress) {
-        if (trainConnectionServices.containsKey(deviceAddress)) {
-            return trainConnectionServices.get(deviceAddress);
+    private synchronized DistillerConnectionService getDistillerConnectionService(String deviceAddress) {
+        return createDistillerConnectionServiceIfNeeded(deviceAddress);
+    }
+
+    private synchronized DistillerConnectionService createDistillerConnectionServiceIfNeeded(String deviceAddress) {
+        if (distillerConnectionServices.containsKey(deviceAddress)) {
+            return distillerConnectionServices.get(deviceAddress);
         }
         // FIXME: pass application context by dagger
-        Context appContext = WeatherApplication.getWeatherApplication().getApplicationContext();
-        LegoHubConnectionService service = new LegoHubConnectionService(appContext, deviceAddress);
-        service.setLegoHubConnectionSubscriber(defaultLegoHubConnectionSubscriber);
-        trainConnectionServices.put(deviceAddress, service);
+        Context appContext = DistillerApplication.getDistillerApplication().getApplicationContext();
+        DistillerConnectionService service = new DistillerConnectionService(appContext, deviceAddress);
+        service.setDistillerConnectionServiceSubscriber(distillerConnectionServiceSubscriber);
+        distillerConnectionServices.put(deviceAddress, service);
 
         return service;
-    }*/
+    }
 
     private final class DeviceDiscoveryUseCaseSubscriber extends DefaultSubscriber<BleScanResult> {
         @Override
@@ -99,18 +119,28 @@ public class DistillerConnectivityService {
             scanResults.add(bleScanResult);
 
             deviceDiscoveryUseCase.stopScan();
-            //createTrainConnectionServiceIfNeeded(hubScanResult.getAddress());
-        }
+            DistillerConnectionService distillerConnectionService = createDistillerConnectionServiceIfNeeded(bleScanResult.getAddress());
 
-    /*private class DefaultLegoHubConnectionSubscriber implements LegoHubConnectionSubscriber {
-
-        @Override
-        public void onHubConnectivityChanged(String hubAddress, boolean isConnected) {
-            for(ConnectivityServiceSubscriber subscriber : subscribers)
+            for(DistillerConnectivityServiceSubscriber subscriber : subscribers)
             {
-                subscriber.onHubConnectivityChanged(hubAddress, isConnected);
+                DeviceInfo deviceInfo = distillerConnectionService.getDistillerDeviceInfo();
+                subscriber.onDeviceDiscovered(deviceInfo);
             }
         }
-    }*/
+    }
+
+    private class DefaultDistillerConnectionServiceSubscriber implements DistillerConnectionServiceSubscriber {
+
+        @Override
+        public void onDistillerConnectivityChanged(DeviceInfo deviceInfo, boolean isConnected) {
+            for(DistillerConnectivityServiceSubscriber subscriber : subscribers)
+            {
+                if(isConnected) {
+                    subscriber.onDeviceConnected(deviceInfo);
+                } else {
+                    subscriber.onDeviceDisconnected(deviceInfo);
+                }
+            }
+        }
     }
 }

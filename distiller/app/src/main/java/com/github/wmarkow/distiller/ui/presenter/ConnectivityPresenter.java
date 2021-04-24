@@ -124,6 +124,12 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         @Override
+        public void onDeviceDiscovered(DeviceInfo deviceInfo) {
+            // connect to that device automatically
+            distillerConnectivityService.connect(deviceInfo.getAddress());
+        }
+
+        @Override
         public void onError(Throwable e) {
             connectivityViewIf.showDistillerDisconnected();
             Toast.makeText(connectivityViewIf.getContext(), "Error during distiller device discovery!", Toast.LENGTH_LONG).show();
@@ -132,7 +138,11 @@ public class ConnectivityPresenter implements Presenter {
         @Override
         public void onDeviceConnected(DeviceInfo deviceInfo) {
             connectivityViewIf.showDistillerConnected();
-            Toast.makeText(connectivityViewIf.getContext(), "Distiller device connected", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onDeviceDisconnected(DeviceInfo deviceInfo) {
+            connectivityViewIf.showDistillerDisconnected();
         }
     }
 }

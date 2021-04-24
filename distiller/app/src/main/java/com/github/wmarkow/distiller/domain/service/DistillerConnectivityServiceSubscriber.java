@@ -8,7 +8,11 @@ public interface DistillerConnectivityServiceSubscriber {
 
     public void onDeviceDiscoveryCompleted();
 
+    public void onDeviceDiscovered(DeviceInfo deviceInfo);
+
     public void onError(Throwable e);
 
     public void onDeviceConnected(DeviceInfo deviceInfo);
+
+    public void onDeviceDisconnected(DeviceInfo deviceInfo);
 }

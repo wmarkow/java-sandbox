@@ -92,6 +92,19 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
                 || super.onSupportNavigateUp();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // fix the bluetoothe button first and the uncomment this line
+        //connectivityPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        connectivityPresenter.pause();
+    }
+
     @OnClick(R.id.fab)
     public void onFabClicked()
     {
