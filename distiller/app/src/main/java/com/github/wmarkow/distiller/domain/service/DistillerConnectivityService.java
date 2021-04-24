@@ -3,8 +3,14 @@ package com.github.wmarkow.distiller.domain.service;
 import android.bluetooth.BluetoothAdapter;
 import android.util.Log;
 
+import com.github.wmarkow.distiller.domain.interactor.DefaultSubscriber;
+import com.github.wmarkow.distiller.domain.interactor.DeviceDiscoveryUseCase;
+import com.github.wmarkow.distiller.domain.model.BleScanResult;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -13,8 +19,8 @@ import javax.inject.Inject;
  */
 public class DistillerConnectivityService {
 
-    //private Set<LegoHubScanResult> foundHubs = new HashSet<>();
-    //private LegoHubDiscoveryUseCase legoHubDiscoveryUseCase = null;
+    private Set<BleScanResult> scanResults = new HashSet<>();
+    private DeviceDiscoveryUseCase deviceDiscoveryUseCase = null;
     //private Map<String, LegoHubConnectionService> trainConnectionServices = new HashMap<>();
     private List<DistillerConnectivityServiceSubscriber> subscribers = new ArrayList<DistillerConnectivityServiceSubscriber>();
     //private DefaultLegoHubConnectionSubscriber defaultLegoHubConnectionSubscriber = new DefaultLegoHubConnectionSubscriber();
@@ -33,18 +39,21 @@ public class DistillerConnectivityService {
     }
 
     public synchronized boolean startDistillerDiscovery(BluetoothAdapter bluetoothAdapter) {
-      /*  if (legoHubDiscoveryUseCase != null) {
+        if (deviceDiscoveryUseCase != null) {
             return false;
         }
-        legoHubDiscoveryUseCase = new LegoHubDiscoveryUseCase();
-        legoHubDiscoveryUseCase.execute(bluetoothAdapter, new LegoHubDiscoveryUseCaseSubscriber());
-*/
+        deviceDiscoveryUseCase = new DeviceDiscoveryUseCase();
+        deviceDiscoveryUseCase.execute(bluetoothAdapter, new DeviceDiscoveryUseCaseSubscriber());
+
         return true;
     }
 
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return false;
+    }
+
+    public Set<BleScanResult> getScanResults() {
+        return scanResults;
     }
 
   /*  private synchronized LegoHubConnectionService createTrainConnectionServiceIfNeeded(String deviceAddress) {
@@ -60,48 +69,40 @@ public class DistillerConnectivityService {
         return service;
     }*/
 
-    /*private final class LegoHubDiscoveryUseCaseSubscriber extends DefaultSubscriber<LegoHubScanResult> {
+    private final class DeviceDiscoveryUseCaseSubscriber extends DefaultSubscriber<BleScanResult> {
         @Override
         public void onStart() {
-            for(ConnectivityServiceSubscriber subscriber : subscribers)
-            {
-                subscriber.onHubDiscoveryStarted();
+            for (DistillerConnectivityServiceSubscriber subscriber : subscribers) {
+                subscriber.onDeviceDiscoveryStarted();
             }
         }
 
         @Override
         public void onCompleted() {
-            for(ConnectivityServiceSubscriber subscriber : subscribers)
-            {
-                subscriber.onHubDiscoveryCompleted();
+            for (DistillerConnectivityServiceSubscriber subscriber : subscribers) {
+                subscriber.onDeviceDiscoveryCompleted();
             }
 
-            legoHubDiscoveryUseCase.destroy();
-            legoHubDiscoveryUseCase = null;
+            deviceDiscoveryUseCase.destroy();
+            deviceDiscoveryUseCase = null;
         }
 
         @Override
         public void onError(Throwable e) {
-            for(ConnectivityServiceSubscriber subscriber : subscribers)
-            {
+            for (DistillerConnectivityServiceSubscriber subscriber : subscribers) {
                 subscriber.onError(e);
             }
         }
 
         @Override
-        public void onNext(LegoHubScanResult hubScanResult) {
-            foundHubs.add(hubScanResult);
-            createTrainConnectionServiceIfNeeded(hubScanResult.getAddress());
+        public void onNext(BleScanResult bleScanResult) {
+            scanResults.add(bleScanResult);
 
-            for(ConnectivityServiceSubscriber subscriber : subscribers)
-            {
-                HubInfo hubInfo = new HubInfo(hubScanResult.getAddress());
-                subscriber.onHubDiscovered(hubInfo);
-            }
+            deviceDiscoveryUseCase.stopScan();
+            //createTrainConnectionServiceIfNeeded(hubScanResult.getAddress());
         }
-    }
 
-    private class DefaultLegoHubConnectionSubscriber implements LegoHubConnectionSubscriber {
+    /*private class DefaultLegoHubConnectionSubscriber implements LegoHubConnectionSubscriber {
 
         @Override
         public void onHubConnectivityChanged(String hubAddress, boolean isConnected) {
@@ -111,4 +112,5 @@ public class DistillerConnectivityService {
             }
         }
     }*/
+    }
 }

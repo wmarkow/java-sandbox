@@ -6,7 +6,7 @@ public interface DistillerConnectivityServiceSubscriber {
 
     public void onDeviceDiscoveryStarted();
 
-    public void onDeviceDiscoveryCompleted(DeviceInfo deviceInfo);
+    public void onDeviceDiscoveryCompleted();
 
     public void onError(Throwable e);
 

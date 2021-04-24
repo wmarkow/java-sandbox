@@ -115,8 +115,8 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         @Override
-        public void onDeviceDiscoveryCompleted(DeviceInfo deviceInfo) {
-            if(deviceInfo == null) {
+        public void onDeviceDiscoveryCompleted() {
+            if (distillerConnectivityService.getScanResults().size() == 0) {
                 // means no device has been found
                 connectivityViewIf.showDistillerDisconnected();
                 Toast.makeText(connectivityViewIf.getContext(), "No distiller device found!", Toast.LENGTH_LONG).show();
