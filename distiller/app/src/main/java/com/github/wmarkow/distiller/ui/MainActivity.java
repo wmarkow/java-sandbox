@@ -1,6 +1,7 @@
 package com.github.wmarkow.distiller.ui;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -95,8 +96,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     @Override
     public void onResume() {
         super.onResume();
-        // fix the bluetoothe button first and the uncomment this line
-        //connectivityPresenter.resume();
+        connectivityPresenter.resume();
     }
 
     @Override
@@ -123,26 +123,17 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     @Override
     public void showDistillerConnected() {
-        Drawable drawable = fab.getBackground();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, getResources().getColor(R.color.ic_bluetooth_connected));
-        fab.setBackground(drawable);
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connected)));
     }
 
     @Override
     public void showDistillerDisconnected() {
-        Drawable drawable = fab.getBackground();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, getResources().getColor(R.color.ic_bluetooth_disconnected));
-        fab.setBackground(drawable);
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_disconnected)));
     }
 
     @Override
     public void showDistillerConnectionInProgress() {
-        Drawable drawable = fab.getBackground();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, getResources().getColor(R.color.ic_bluetooth_connecting));
-        fab.setBackground(drawable);
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connecting)));
     }
 
     @Override
