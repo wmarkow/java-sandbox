@@ -79,6 +79,11 @@ public class ConnectivityPresenter implements Presenter {
             }
         }
 
+        // do not connect if already connected
+        if(distillerConnectivityService.isConnected()) {
+            return;
+        }
+
         distillerConnectivityService.startDistillerDiscovery(bluetoothAdapter);
     }
 
@@ -120,6 +125,12 @@ public class ConnectivityPresenter implements Presenter {
                 // means no device has been found
                 connectivityViewIf.showDistillerDisconnected();
                 Toast.makeText(connectivityViewIf.getContext(), "No distiller device found!", Toast.LENGTH_LONG).show();
+
+                return;
+            }
+
+            if(distillerConnectivityService.isConnected()) {
+                connectivityViewIf.showDistillerConnected();
             }
         }
 
