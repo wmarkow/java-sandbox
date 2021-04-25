@@ -100,6 +100,9 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         connectivityViewIf.showDistillerDisconnected();
+
+        // start device discovery
+        connectToDistiller();
     }
 
     @Override
