@@ -137,12 +137,26 @@ public class ConnectivityPresenter implements Presenter {
 
         @Override
         public void onDeviceConnected(DeviceInfo deviceInfo) {
-            connectivityViewIf.showDistillerConnected();
+            // This event comes directly from android.bluetooth.BluetoothGatt
+            // Notification must be dispatched in UI thread in order to update widgets correctly.
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    connectivityViewIf.showDistillerConnected();
+                }
+            });
         }
 
         @Override
         public void onDeviceDisconnected(DeviceInfo deviceInfo) {
-            connectivityViewIf.showDistillerDisconnected();
+            // This event comes directly from android.bluetooth.BluetoothGatt
+            // Notification must be dispatched in UI thread in order to update widgets correctly.
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    connectivityViewIf.showDistillerDisconnected();
+                }
+            });
         }
     }
 }

@@ -5,9 +5,11 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 
+import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
@@ -37,11 +39,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements ConnectivityViewIf {
+    private final String TAG = "MainActivity";
 
     private AppBarConfiguration mAppBarConfiguration;
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.fabProgressCircle)
+    FABProgressCircle fabProgressCircle;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -96,13 +102,23 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     @Override
     public void onResume() {
         super.onResume();
-        connectivityPresenter.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         connectivityPresenter.pause();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if(hasFocus) {
+            // https://github.com/JorgeCastilloPrz/FABProgressCircle/issues/29#issuecomment-252837864
+            // FABProgressCircle throws NPE when called from onResume() (probably not all graphic resources are loaded/created
+            // when onResume() is called).
+            // Need to call it from this method as it behaves like onResume()
+            connectivityPresenter.resume();
+        }
     }
 
     @OnClick(R.id.fab)
@@ -124,16 +140,19 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     @Override
     public void showDistillerConnected() {
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connected)));
+        fabProgressCircle.hide();
     }
 
     @Override
     public void showDistillerDisconnected() {
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_disconnected)));
+        fabProgressCircle.hide();
     }
 
     @Override
     public void showDistillerConnectionInProgress() {
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connecting)));
+        fabProgressCircle.show();
     }
 
     @Override
