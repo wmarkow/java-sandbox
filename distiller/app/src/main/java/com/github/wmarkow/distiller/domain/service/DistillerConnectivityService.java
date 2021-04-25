@@ -25,8 +25,9 @@ import javax.inject.Inject;
 public class DistillerConnectivityService {
 
     private Set<BleScanResult> scanResults = new HashSet<>();
-    private DeviceDiscoveryUseCase deviceDiscoveryUseCase = null;
     private Map<String, DistillerConnectionService> distillerConnectionServices = new HashMap<>();
+
+    private DeviceDiscoveryUseCase deviceDiscoveryUseCase = null;
     private List<DistillerConnectivityServiceSubscriber> subscribers = new ArrayList<DistillerConnectivityServiceSubscriber>();
     private DefaultDistillerConnectionServiceSubscriber distillerConnectionServiceSubscriber = new DefaultDistillerConnectionServiceSubscriber();
 
@@ -47,6 +48,25 @@ public class DistillerConnectivityService {
         if (deviceDiscoveryUseCase != null) {
             return false;
         }
+
+        // all scan results should be cleared
+        scanResults.clear();
+
+        // all not connected devices should be removed
+        for(String deviceAddress : distillerConnectionServices.keySet())
+        {
+            DistillerConnectionService dcs = distillerConnectionServices.get(deviceAddress);
+            if(dcs == null) {
+                distillerConnectionServices.remove(deviceAddress);
+                continue;
+            }
+
+            if(!dcs.isConnected()) {
+                distillerConnectionServices.remove(deviceAddress);
+                continue;
+            }
+        }
+
         deviceDiscoveryUseCase = new DeviceDiscoveryUseCase();
         deviceDiscoveryUseCase.execute(bluetoothAdapter, new DeviceDiscoveryUseCaseSubscriber());
 
