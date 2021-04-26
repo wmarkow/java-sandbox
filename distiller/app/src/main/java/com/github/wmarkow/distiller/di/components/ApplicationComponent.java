@@ -23,5 +23,5 @@ public interface ApplicationComponent {
 
     PostExecutionThread postExecutionThread();
 
-    DistillerConnectivityService trainConnectivityService();
+    DistillerConnectivityService distillerConnectivityService();
 }

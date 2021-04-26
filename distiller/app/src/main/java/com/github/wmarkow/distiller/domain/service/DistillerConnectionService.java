@@ -8,25 +8,36 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.icu.text.UFormat;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.github.wmarkow.distiller.DistillerApplication;
+import com.github.wmarkow.distiller.di.components.ApplicationComponent;
+import com.github.wmarkow.distiller.di.components.DaggerDistillerConnectionComponent;
+import com.github.wmarkow.distiller.di.components.DistillerConnectionComponent;
+import com.github.wmarkow.distiller.di.modules.UseCasesModule;
+import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDataUseCase;
 import com.github.wmarkow.distiller.domain.model.DeviceInfo;
+import com.github.wmarkow.distiller.domain.model.DistillerData;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /***
  * Manages a bluetooth connection to a specific Distiller.
  */
 public class DistillerConnectionService {
     private final static String TAG = "DistillerConnervice";
-
-    private final static UUID DISTILLER_SERVICE_UUID = UUID.fromString("00001623-1212-efde-1623-785feabcd123");
-    private final static UUID DISTILLER_CHARACTERISTIC = UUID.fromString("00001624-1212-efde-1623-785feabcd123");
 
     private String deviceAddress;
     private BluetoothGatt bluetoothGatt = null;
@@ -36,18 +47,27 @@ public class DistillerConnectionService {
     private Context applicationContext;
     private BluetoothManager bluetoothManager;
 
+    @Inject
+    ReadDistillerDataUseCase readDistillerDataUseCase;
+
     public DistillerConnectionService(Context applicationContext, String deviceAddress) {
         this.applicationContext = applicationContext;
         this.deviceAddress = deviceAddress;
 
         bluetoothManager =
                 (BluetoothManager) applicationContext.getSystemService(Context.BLUETOOTH_SERVICE);
+
+        final ApplicationComponent applicationComponent = DistillerApplication.getDistillerApplication().getApplicationComponent();
+        DistillerConnectionComponent distillerConnectionComponent = DaggerDistillerConnectionComponent.builder()
+                .applicationComponent(applicationComponent)
+                .useCasesModule(new UseCasesModule())
+                .build();
+        distillerConnectionComponent.inject(this);
     }
 
     public void setDistillerConnectionServiceSubscriber(DistillerConnectionServiceSubscriber distillerConnectionServiceSubscriber) {
         this.distillerConnectionServiceSubscriber = distillerConnectionServiceSubscriber;
     }
-
 
     public void connect() {
         Log.i(TAG, String.format("connect() called on device %s", deviceAddress));
@@ -67,6 +87,32 @@ public class DistillerConnectionService {
 
         // for older Android than 6 use this method to connect
         bluetoothGatt = device.connectGatt(applicationContext, false, new MyBluetoothGattCallback());
+    }
+
+    public synchronized void readDistillerData() {
+        readDistillerDataUseCase.setDistillerConnectionService(this);
+
+        readDistillerDataUseCase.execute(new Subscriber<DistillerData>(){
+
+            @Override
+            public void onCompleted() {
+                Log.i(TAG, "onCompleted() called.");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.i(TAG, "onError() called.");
+            }
+
+            @Override
+            public void onNext(DistillerData distillerData) {
+                Log.i(TAG, "onNext() called.");
+            }
+        });
+    }
+
+    public BluetoothGatt getBluetoothGatt() {
+        return bluetoothGatt;
     }
 
     /***
@@ -156,7 +202,17 @@ public class DistillerConnectionService {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-            Log.d(TAG, String.format("onCharacteristicRead() called"));
+
+            byte[] bytes = characteristic.getValue();
+            if(bytes.length == 0) {
+                // no data available
+                Log.w(TAG, String.format("No data available for characteristic %s", characteristic.getUuid()));
+                return;
+            }
+
+            float value = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with float = %s", characteristic.getUuid(), value));
+
         }
 
         @Override

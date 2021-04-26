@@ -26,8 +26,8 @@ public class DistillerConnectivityService {
 
     private Set<BleScanResult> scanResults = new HashSet<>();
     private Map<String, DistillerConnectionService> distillerConnectionServices = new HashMap<>();
-
     private DeviceDiscoveryUseCase deviceDiscoveryUseCase = null;
+
     private List<DistillerConnectivityServiceSubscriber> subscribers = new ArrayList<DistillerConnectivityServiceSubscriber>();
     private DefaultDistillerConnectionServiceSubscriber distillerConnectionServiceSubscriber = new DefaultDistillerConnectionServiceSubscriber();
 
@@ -86,6 +86,16 @@ public class DistillerConnectivityService {
         }
 
         return false;
+    }
+
+    public DistillerConnectionService getConnectedDistillerConnectionService() {
+        for(DistillerConnectionService dcs : distillerConnectionServices.values()) {
+            if(dcs.isConnected()) {
+                return dcs;
+            }
+        }
+
+        return null;
     }
 
     public Set<BleScanResult> getScanResults() {

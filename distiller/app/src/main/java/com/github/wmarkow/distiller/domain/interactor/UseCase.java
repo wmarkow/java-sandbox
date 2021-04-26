@@ -13,7 +13,7 @@ import rx.subscriptions.Subscriptions;
  * Created by wmarkowski on 2018-03-23.
  */
 
-public abstract class UseCase {
+public abstract class UseCase<T> {
 
     protected final ThreadExecutor threadExecutor;
     protected final PostExecutionThread postExecutionThread;
@@ -31,11 +31,11 @@ public abstract class UseCase {
         this.postExecutionThread = postExecutionThread;
     }
 
-    protected abstract Observable buildUseCaseObservable();
+    protected abstract Observable<T>buildUseCaseObservable();
 
     public abstract void destroy();
 
-    public void execute(Subscriber useCaseSubscriber) {
+    public void execute(Subscriber<T> useCaseSubscriber) {
         unsubscribe();
 
         this.subscription = this.buildUseCaseObservable()

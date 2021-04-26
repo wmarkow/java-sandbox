@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.github.wmarkow.distiller.domain.model.DeviceInfo;
+import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityServiceSubscriber;
 import com.github.wmarkow.distiller.ui.ConnectivityViewIf;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
@@ -85,6 +86,15 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         distillerConnectivityService.startDistillerDiscovery(bluetoothAdapter);
+    }
+
+    public void readDistillerData() {
+        DistillerConnectionService dcs = distillerConnectivityService.getConnectedDistillerConnectionService();
+        if(dcs == null) {
+            return;
+        }
+
+        dcs.readDistillerData();
     }
 
     public void setView(ConnectivityViewIf connectivityViewIf) {

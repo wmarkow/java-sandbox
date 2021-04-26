@@ -127,6 +127,12 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
         connectivityPresenter.connectToDistiller();
     }
 
+    @OnClick(R.id.fab2)
+    public void onFab2Clicked()
+    {
+        connectivityPresenter.readDistillerData();
+    }
+
     @Override
     public Context getContext() {
         return this;
