@@ -16,6 +16,7 @@ import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerMainActivityComponent;
 import com.github.wmarkow.distiller.di.components.MainActivityComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
+import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.presenter.ConnectivityPresenter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -125,12 +126,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     public void onFabClicked()
     {
         connectivityPresenter.connectToDistiller();
-    }
-
-    @OnClick(R.id.fab2)
-    public void onFab2Clicked()
-    {
-        connectivityPresenter.readDistillerData();
     }
 
     @Override

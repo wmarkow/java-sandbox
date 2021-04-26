@@ -1,5 +1,7 @@
 package com.github.wmarkow.distiller.domain.service;
 
+import com.github.wmarkow.distiller.domain.model.DistillerData;
+
 public interface DistillerConnectivityServiceSubscriber {
 
     public void onDeviceDiscoveryStarted();

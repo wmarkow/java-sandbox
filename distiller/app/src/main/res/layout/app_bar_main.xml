@@ -42,14 +42,4 @@
             app:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
     </com.github.jorgecastilloprz.FABProgressCircle>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/ic_bluetooth_disconnected"
-        app:borderWidth="0dp"
-        app:srcCompat="@android:drawable/ic_menu_view" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
