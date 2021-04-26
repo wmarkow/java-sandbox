@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.github.wmarkow.distiller.domain.model.DeviceInfo;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityServiceSubscriber;
 import com.github.wmarkow.distiller.ui.ConnectivityViewIf;
@@ -148,9 +147,9 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         @Override
-        public void onDeviceDiscovered(DeviceInfo deviceInfo) {
+        public void onDeviceDiscovered(String deviceAddress) {
             // connect to that device automatically
-            distillerConnectivityService.connect(deviceInfo.getAddress());
+            distillerConnectivityService.connect(deviceAddress);
         }
 
         @Override
@@ -160,7 +159,7 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         @Override
-        public void onDeviceConnected(DeviceInfo deviceInfo) {
+        public void onDeviceConnected(String deviceAddress) {
             // This event comes directly from android.bluetooth.BluetoothGatt
             // Notification must be dispatched in UI thread in order to update widgets correctly.
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -172,7 +171,7 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         @Override
-        public void onDeviceDisconnected(DeviceInfo deviceInfo) {
+        public void onDeviceDisconnected(String deviceAddress) {
             // This event comes directly from android.bluetooth.BluetoothGatt
             // Notification must be dispatched in UI thread in order to update widgets correctly.
             new Handler(Looper.getMainLooper()).post(new Runnable() {

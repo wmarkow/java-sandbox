@@ -8,7 +8,6 @@ import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.domain.interactor.DefaultSubscriber;
 import com.github.wmarkow.distiller.domain.interactor.DeviceDiscoveryUseCase;
 import com.github.wmarkow.distiller.domain.model.BleScanResult;
-import com.github.wmarkow.distiller.domain.model.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,8 +152,8 @@ public class DistillerConnectivityService {
 
             for(DistillerConnectivityServiceSubscriber subscriber : subscribers)
             {
-                DeviceInfo deviceInfo = distillerConnectionService.getDistillerDeviceInfo();
-                subscriber.onDeviceDiscovered(deviceInfo);
+                String deviceAddress = distillerConnectionService.getDeviceAddress();
+                subscriber.onDeviceDiscovered(deviceAddress);
             }
         }
     }
@@ -162,13 +161,13 @@ public class DistillerConnectivityService {
     private class DefaultDistillerConnectionServiceSubscriber implements DistillerConnectionServiceSubscriber {
 
         @Override
-        public void onDistillerConnectivityChanged(DeviceInfo deviceInfo, boolean isConnected) {
+        public void onDistillerConnectivityChanged(String deviceAddress, boolean isConnected) {
             for(DistillerConnectivityServiceSubscriber subscriber : subscribers)
             {
                 if(isConnected) {
-                    subscriber.onDeviceConnected(deviceInfo);
+                    subscriber.onDeviceConnected(deviceAddress);
                 } else {
-                    subscriber.onDeviceDisconnected(deviceInfo);
+                    subscriber.onDeviceDisconnected(deviceAddress);
                 }
             }
         }

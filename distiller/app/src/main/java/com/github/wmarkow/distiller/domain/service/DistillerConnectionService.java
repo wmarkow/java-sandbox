@@ -19,7 +19,6 @@ import com.github.wmarkow.distiller.di.components.DaggerDistillerConnectionCompo
 import com.github.wmarkow.distiller.di.components.DistillerConnectionComponent;
 import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDataUseCase;
-import com.github.wmarkow.distiller.domain.model.DeviceInfo;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
 
 import java.nio.ByteBuffer;
@@ -137,10 +136,8 @@ public class DistillerConnectionService {
         return false;
     }
 
-    public DeviceInfo getDistillerDeviceInfo() {
-        DeviceInfo hubInfo = new DeviceInfo(deviceAddress);
-
-        return hubInfo;
+    public String getDeviceAddress() {
+        return deviceAddress;
     }
 
     private void displayGattServices(List<BluetoothGattService> gattServices) {
@@ -176,7 +173,7 @@ public class DistillerConnectionService {
                 Log.i(TAG, String.format("Disconnected from GATT server on device %s with status %s", deviceAddress, status));
                 servicesDiscovered = false;
                 if (distillerConnectionServiceSubscriber != null) {
-                    distillerConnectionServiceSubscriber.onDistillerConnectivityChanged(getDistillerDeviceInfo(), false);
+                    distillerConnectionServiceSubscriber.onDistillerConnectivityChanged(deviceAddress, false);
                 }
             }
         }
@@ -192,7 +189,7 @@ public class DistillerConnectionService {
             // services must be discovered in order to send data to HUB
             servicesDiscovered = true;
             if (distillerConnectionServiceSubscriber != null) {
-                distillerConnectionServiceSubscriber.onDistillerConnectivityChanged(getDistillerDeviceInfo(), true);
+                distillerConnectionServiceSubscriber.onDistillerConnectivityChanged(deviceAddress, true);
             }
         }
 

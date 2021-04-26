@@ -1,18 +1,16 @@
 package com.github.wmarkow.distiller.domain.service;
 
-import com.github.wmarkow.distiller.domain.model.DeviceInfo;
-
 public interface DistillerConnectivityServiceSubscriber {
 
     public void onDeviceDiscoveryStarted();
 
     public void onDeviceDiscoveryCompleted();
 
-    public void onDeviceDiscovered(DeviceInfo deviceInfo);
+    public void onDeviceDiscovered(String deviceAddress);
 
     public void onError(Throwable e);
 
-    public void onDeviceConnected(DeviceInfo deviceInfo);
+    public void onDeviceConnected(String deviceAddress);
 
-    public void onDeviceDisconnected(DeviceInfo deviceInfo);
+    public void onDeviceDisconnected(String deviceAddress);
 }

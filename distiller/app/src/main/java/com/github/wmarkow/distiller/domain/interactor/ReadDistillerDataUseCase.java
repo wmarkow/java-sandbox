@@ -69,7 +69,7 @@ public class ReadDistillerDataUseCase<DistillerData> extends UseCase {
 
     private boolean initiateDataRead() {
         if (distillerConnectionService.isConnected() == false) {
-            final String deviceAddress = distillerConnectionService.getDistillerDeviceInfo().getAddress();
+            final String deviceAddress = distillerConnectionService.getDeviceAddress();
             Log.e(TAG, String.format("Not connected to GATT server of %s device. Maybe you forgot to call connect()?", deviceAddress));
 
             return false;
