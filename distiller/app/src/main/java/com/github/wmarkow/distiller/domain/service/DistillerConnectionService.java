@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.icu.text.UFormat;
 import android.os.Build;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -204,15 +202,23 @@ public class DistillerConnectionService {
                                          int status) {
 
             byte[] bytes = characteristic.getValue();
-            if(bytes.length == 0) {
-                // no data available
-                Log.w(TAG, String.format("No data available for characteristic %s", characteristic.getUuid()));
+            if(bytes.length != 20) {
+                // wrong data length or no data available
+                Log.w(TAG, String.format("Wrong data length or no data available for characteristic %s", characteristic.getUuid()));
                 return;
             }
 
-            float value = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with float = %s", characteristic.getUuid(), value));
+            float coldWaterTemp = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            float hotWaterTemp = ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            float waterRpm = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            float headerTemp = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            float kegTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), coldWaterTemp));
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), hotWaterTemp));
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), waterRpm));
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), headerTemp));
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), kegTemp));
         }
 
         @Override
