@@ -23,6 +23,7 @@ import com.github.wmarkow.distiller.domain.model.DistillerData;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class DistillerConnectionService {
     private BluetoothGatt bluetoothGatt = null;
     private boolean servicesDiscovered = false;
     private DistillerConnectionServiceSubscriber distillerConnectionServiceSubscriber;
+    private List<BluetoothGattCharacteristicReadCalback> bluetoothGattCharacteristicReadCallbacks = new ArrayList<>();
 
     private Context applicationContext;
     private BluetoothManager bluetoothManager;
@@ -66,6 +68,14 @@ public class DistillerConnectionService {
         this.distillerConnectionServiceSubscriber = distillerConnectionServiceSubscriber;
     }
 
+    public void addBluetoothGattCharacteristicReadCallback(BluetoothGattCharacteristicReadCalback callback) {
+        bluetoothGattCharacteristicReadCallbacks.add(callback);
+    }
+
+    public void removeBluetoothGattCharacteristicReadCallback(BluetoothGattCharacteristicReadCalback callback) {
+        this.bluetoothGattCharacteristicReadCallbacks.remove(callback);
+    }
+
     public void connect() {
         Log.i(TAG, String.format("connect() called on device %s", deviceAddress));
 
@@ -86,26 +96,10 @@ public class DistillerConnectionService {
         bluetoothGatt = device.connectGatt(applicationContext, false, new MyBluetoothGattCallback());
     }
 
-    public synchronized void readDistillerData() {
+    public synchronized void readDistillerData(Subscriber<DistillerData> subscriber) {
         readDistillerDataUseCase.setDistillerConnectionService(this);
 
-        readDistillerDataUseCase.execute(new Subscriber<DistillerData>(){
-
-            @Override
-            public void onCompleted() {
-                Log.i(TAG, "onCompleted() called.");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.i(TAG, "onError() called.");
-            }
-
-            @Override
-            public void onNext(DistillerData distillerData) {
-                Log.i(TAG, "onNext() called.");
-            }
-        });
+        readDistillerDataUseCase.execute(subscriber);
     }
 
     public BluetoothGatt getBluetoothGatt() {
@@ -197,25 +191,9 @@ public class DistillerConnectionService {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-
-            byte[] bytes = characteristic.getValue();
-            if(bytes.length != 20) {
-                // wrong data length or no data available
-                Log.w(TAG, String.format("Wrong data length or no data available for characteristic %s", characteristic.getUuid()));
-                return;
+            for(BluetoothGattCharacteristicReadCalback listener: bluetoothGattCharacteristicReadCallbacks) {
+                listener.onCharacteristicRead(characteristic, status);
             }
-
-            float coldWaterTemp = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            float hotWaterTemp = ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            float waterRpm = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            float headerTemp = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            float kegTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), coldWaterTemp));
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), hotWaterTemp));
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), waterRpm));
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), headerTemp));
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), kegTemp));
         }
 
         @Override

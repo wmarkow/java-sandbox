@@ -1,6 +1,7 @@
 package com.github.wmarkow.distiller.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +17,11 @@ import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerHomeFragmentComponent;
-import com.github.wmarkow.distiller.di.components.DaggerMainActivityComponent;
 import com.github.wmarkow.distiller.di.components.HomeFragmentComponent;
-import com.github.wmarkow.distiller.di.components.MainActivityComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
-import com.github.wmarkow.distiller.ui.presenter.ConnectivityPresenter;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
 
@@ -33,6 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeFragment extends Fragment implements DistillerDataViewIf {
+    private final static String TAG = "HomeFragment";
 
     private HomeViewModel homeViewModel;
 
@@ -69,8 +67,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     }
 
     @Override
-    public void showDistillerData(String deviceAddress, DistillerData distillerData) {
-
+    public void showDistillerData(DistillerData distillerData) {
+        Log.i(TAG, "New distiller data arrived.");
     }
 
     @OnClick(R.id.fab2)
