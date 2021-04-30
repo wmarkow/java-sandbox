@@ -82,6 +82,18 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        this.distillerDataPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.distillerDataPresenter.pause();
+    }
+
+    @Override
     public void showDistillerData(DistillerData distillerData) {
         Log.i(TAG, "New distiller data arrived.");
 
