@@ -23,6 +23,9 @@ import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 
+import java.time.Duration;
+import java.time.Period;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -34,8 +37,20 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
 
     private HomeViewModel homeViewModel;
 
-    @BindView(R.id.text_home)
-    TextView textView;
+    @BindView(R.id.systemUpTimeTextView)
+    TextView systemUpTimeTextView;
+    @BindView(R.id.coldWaterTempTextView)
+    TextView coldWaterTempTextView;
+    @BindView(R.id.hotWaterTempTextView)
+    TextView hotWaterTempTextView;
+    @BindView(R.id.waterFlowTextView)
+    TextView waterFlowTextView;
+
+    @BindView(R.id.headerTempTextView)
+    TextView headerTempTextView;
+
+    @BindView(R.id.kegTempTextView)
+    TextView kegTempTextView;
 
     @Inject
     DistillerDataPresenter distillerDataPresenter;
@@ -47,13 +62,6 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         ButterKnife.bind(this, root);
-
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
 
         final ApplicationComponent applicationComponent = DistillerApplication.getDistillerApplication().getApplicationComponent();
         HomeFragmentComponent homeFragmentComponent = DaggerHomeFragmentComponent.builder()
@@ -69,6 +77,16 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     @Override
     public void showDistillerData(DistillerData distillerData) {
         Log.i(TAG, "New distiller data arrived.");
+
+        systemUpTimeTextView.setText(formatSystemUpTime(distillerData.systemUpTime));
+
+        coldWaterTempTextView.setText(String.valueOf(distillerData.coldWaterTemp));
+        hotWaterTempTextView.setText(String.valueOf(distillerData.hotWaterTemp));
+        waterFlowTextView.setText(String.valueOf(distillerData.waterRpm));
+
+        headerTempTextView.setText(String.valueOf(distillerData.headerTemp));
+
+        kegTempTextView.setText(String.valueOf(distillerData.kegTemp));
     }
 
     @OnClick(R.id.fab2)
@@ -77,4 +95,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
         distillerDataPresenter.readDistillerData();
     }
 
+    public static String formatSystemUpTime(long systemUpTimeInMillis) {
+        long seconds = systemUpTimeInMillis / 1000;
+        return String.format( "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+    }
 }

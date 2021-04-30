@@ -115,7 +115,7 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
         @Override
         public void onCharacteristicRead(BluetoothGattCharacteristic characteristic, int status) {
             byte[] bytes = characteristic.getValue();
-            if(bytes.length != 20) {
+            if(bytes.length != 24) {
                 // wrong data length or no data available
                 Log.w(TAG, String.format("Wrong data length or no data available for characteristic %s", characteristic.getUuid()));
                 return;
@@ -123,12 +123,14 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
 
             distillerData = new DistillerData();
             distillerData.deviceAddress = distillerConnectionService.getDeviceAddress();
-            distillerData.coldWaterTemp = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.hotWaterTemp = ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.waterRpm = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.headerTemp = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.kegTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.systemUpTime = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+            distillerData.coldWaterTemp = ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.hotWaterTemp = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.waterRpm = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.headerTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.kegTemp = ByteBuffer.wrap(bytes, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with systemUpTime = %s", characteristic.getUuid(), distillerData.systemUpTime));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), distillerData.coldWaterTemp));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with hotWaterTemp = %s", characteristic.getUuid(), distillerData.hotWaterTemp));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with waterRpm = %s", characteristic.getUuid(), distillerData.waterRpm));
