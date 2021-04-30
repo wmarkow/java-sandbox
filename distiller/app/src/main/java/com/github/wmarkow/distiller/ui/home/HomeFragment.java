@@ -19,6 +19,9 @@ import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerHomeFragmentComponent;
 import com.github.wmarkow.distiller.di.components.HomeFragmentComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
+import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
+import com.github.wmarkow.distiller.domain.calc.InvalidArgumentException;
+import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
@@ -45,6 +48,10 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     TextView hotWaterTempTextView;
     @BindView(R.id.waterFlowTextView)
     TextView waterFlowTextView;
+    @BindView(R.id.waterFlowTextView2)
+    TextView waterFlowTextView2;
+    @BindView(R.id.condenserPowerTextView)
+    TextView condenserPowerTextView;
 
     @BindView(R.id.headerTempTextView)
     TextView headerTempTextView;
@@ -80,13 +87,27 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
 
         systemUpTimeTextView.setText(formatSystemUpTime(distillerData.systemUpTime));
 
-        coldWaterTempTextView.setText(String.valueOf(distillerData.coldWaterTemp));
-        hotWaterTempTextView.setText(String.valueOf(distillerData.hotWaterTemp));
-        waterFlowTextView.setText(String.valueOf(distillerData.waterRpm));
+        coldWaterTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.coldWaterTemp)));
+        hotWaterTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.hotWaterTemp)));
+        waterFlowTextView.setText(String.valueOf(String.format("%.2f", distillerData.waterRpm)));
 
-        headerTempTextView.setText(String.valueOf(distillerData.headerTemp));
+        headerTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.headerTemp)));
 
-        kegTempTextView.setText(String.valueOf(distillerData.kegTemp));
+        kegTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.kegTemp)));
+
+        SeaWaterFlowCalc waterFlowCalc = new SeaWaterFlowCalc();
+        try {
+            double waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(distillerData.waterRpm);
+            double waterFlowInLPerH = waterFlowInM3PerS * 1000 * 3600;
+            CondenserCalc condenserCalc = new CondenserCalc();
+            double condenserPowerInW = condenserCalc.calculateCoolingPower(distillerData.coldWaterTemp, distillerData.hotWaterTemp, waterFlowInM3PerS);
+            waterFlowTextView2.setText(String.format("%.2f", waterFlowInLPerH));
+            condenserPowerTextView.setText(String.format("%.2f", condenserPowerInW));
+        } catch (InvalidArgumentException e) {
+            Log.e(TAG, e.getMessage(), e);
+            waterFlowTextView2.setText("ERROR");
+            condenserPowerTextView.setText("ERROR");
+        }
     }
 
     @OnClick(R.id.fab2)
