@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="10"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:weightSum="10">
 
         <TextView
             android:layout_width="0dp"
@@ -27,24 +27,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="16sp"
             android:inputType="numberDecimal"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="16sp"
-            android:text="HH:mm:ss"/>
+            android:text="HH:mm:ss"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearlayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_below="@id/linearlayout1"
+        android:orientation="vertical"
         android:padding="10dp">
 
         <LinearLayout
@@ -73,8 +73,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
-                android:text="&#176;C" />
+                android:text="&#176;C"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -97,15 +97,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
-                android:text="&#176;C" />
+                android:text="&#176;C"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -128,16 +128,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
                 android:inputType="numberDecimal"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
-                android:text="RPM" />
+                android:text="RPM"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -159,16 +159,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
                 android:inputType="numberDecimal"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
-                android:text="L/h" />
+                android:text="L/h"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -190,16 +190,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
                 android:inputType="numberDecimal"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="16sp"
-                android:text="W" />
+                android:text="W"
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -207,10 +207,10 @@
         android:id="@+id/linearlayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="10"
         android:layout_below="@id/linearlayout2"
-        android:padding="10dp">
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:weightSum="10">
 
         <TextView
             android:layout_width="0dp"
@@ -225,26 +225,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="16sp"
             android:inputType="numberDecimal"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="16sp"
-            android:text="&#176;C" />
+            android:text="&#176;C"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearlayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="10"
         android:layout_below="@id/linearlayout3"
-        android:padding="10dp">
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:weightSum="10">
 
         <TextView
             android:layout_width="0dp"
@@ -255,32 +255,28 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/kegTempTextView"
+            android:id="@+id/boilerTempTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="16sp"
             android:inputType="numberDecimal"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="16sp"
-            android:text="&#176;C" />
+            android:text="&#176;C"
+            android:textSize="16sp" />
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab2"
-        android:layout_width="wrap_content"
+    <com.github.wmarkow.distiller.ui.DistillerDataChartView
+        android:id="@+id/distillerDataChartView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        app:backgroundTint="@color/ic_bluetooth_disconnected"
-        app:borderWidth="0dp"
-        app:srcCompat="@android:drawable/ic_menu_view" />
+        android:layout_below="@+id/linearlayout4">
+
+    </com.github.wmarkow.distiller.ui.DistillerDataChartView>
 
 </RelativeLayout>

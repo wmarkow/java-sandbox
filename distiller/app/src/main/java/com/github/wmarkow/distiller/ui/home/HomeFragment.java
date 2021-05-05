@@ -1,5 +1,7 @@
 package com.github.wmarkow.distiller.ui.home;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
@@ -23,6 +34,7 @@ import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
 import com.github.wmarkow.distiller.domain.calc.InvalidArgumentException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 
@@ -56,8 +68,11 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     @BindView(R.id.headerTempTextView)
     TextView headerTempTextView;
 
-    @BindView(R.id.kegTempTextView)
-    TextView kegTempTextView;
+    @BindView(R.id.boilerTempTextView)
+    TextView boilerTempTextView;
+
+    @BindView(R.id.distillerDataChartView)
+    DistillerDataChartView chart;
 
     @Inject
     DistillerDataPresenter distillerDataPresenter;
@@ -105,7 +120,7 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
 
         headerTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.headerTemp)));
 
-        kegTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.kegTemp)));
+        boilerTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.boilerTemp)));
 
         SeaWaterFlowCalc waterFlowCalc = new SeaWaterFlowCalc();
         try {
@@ -120,12 +135,6 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
             waterFlowTextView2.setText("ERROR");
             condenserPowerTextView.setText("ERROR");
         }
-    }
-
-    @OnClick(R.id.fab2)
-    public void onFab2Clicked()
-    {
-        distillerDataPresenter.readDistillerData();
     }
 
     public static String formatSystemUpTime(long systemUpTimeInMillis) {

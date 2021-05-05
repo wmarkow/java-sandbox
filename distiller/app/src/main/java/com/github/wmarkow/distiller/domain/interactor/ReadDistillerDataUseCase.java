@@ -128,14 +128,14 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
             distillerData.hotWaterTemp = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             distillerData.waterRpm = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             distillerData.headerTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.kegTemp = ByteBuffer.wrap(bytes, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.boilerTemp = ByteBuffer.wrap(bytes, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
             Log.d(TAG, String.format("onCharacteristicRead() %s called with systemUpTime = %s", characteristic.getUuid(), distillerData.systemUpTime));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), distillerData.coldWaterTemp));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with hotWaterTemp = %s", characteristic.getUuid(), distillerData.hotWaterTemp));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with waterRpm = %s", characteristic.getUuid(), distillerData.waterRpm));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with headerTemp = %s", characteristic.getUuid(), distillerData.headerTemp));
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with kegTemp = %s", characteristic.getUuid(), distillerData.kegTemp));
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with boilerTemp = %s", characteristic.getUuid(), distillerData.boilerTemp));
 
             countDownLatch.countDown();
         }
