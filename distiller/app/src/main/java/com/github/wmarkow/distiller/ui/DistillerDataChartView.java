@@ -118,8 +118,6 @@ public class DistillerDataChartView extends RelativeLayout {
         data.addDataSet(kegTempDataSet);
         ILineDataSet headerTempDataSet = createHeaderDataSet();
         data.addDataSet(headerTempDataSet);
-
-        feedMultiple();
     }
 
     private void addRandomEntry() {
@@ -173,40 +171,5 @@ public class DistillerDataChartView extends RelativeLayout {
         set.setColor(Color.rgb(255,165,0));
 
         return set;
-    }
-
-    private Thread thread;
-
-    private void feedMultiple() {
-
-        if (thread != null)
-            thread.interrupt();
-
-        final Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                addRandomEntry();
-            }
-        };
-
-        thread = new Thread(new Runnable() {
-            Handler handler = new Handler(Looper.getMainLooper());
-            @Override
-            public void run() {
-                for (int i = 0; i < 1000; i++) {
-
-                    // Don't generate garbage runnables inside the loop.
-                    handler.post(runnable);
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        thread.start();
     }
 }

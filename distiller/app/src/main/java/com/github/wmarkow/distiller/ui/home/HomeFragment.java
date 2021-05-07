@@ -37,6 +37,7 @@ import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
+import com.github.wmarkow.distiller.ui.presenter.DistillerFakeDataPresenter;
 
 import java.time.Duration;
 import java.time.Period;
@@ -91,6 +92,10 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
                 .presentersModule(new PresentersModule())
                 .build();
         homeFragmentComponent.inject(this);
+
+        // uncomment the line below if you want to use a fake distiller data presenter
+        distillerDataPresenter = new DistillerFakeDataPresenter();
+
         distillerDataPresenter.setView(this);
 
         return root;
@@ -135,6 +140,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
             waterFlowTextView2.setText("ERROR");
             condenserPowerTextView.setText("ERROR");
         }
+
+        this.chart.addDistillerData(distillerData);
     }
 
     public static String formatSystemUpTime(long systemUpTimeInMillis) {

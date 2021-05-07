@@ -60,6 +60,10 @@ public class DistillerDataPresenter implements Presenter {
 
     }
 
+    protected DistillerDataViewIf getDistillerDataView() {
+        return this.distillerDataView;
+    }
+
     private class DefaultDistillerDataServiceSubscriber extends Subscriber<DistillerData> {
 
         @Override
