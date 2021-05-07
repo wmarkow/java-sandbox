@@ -13,10 +13,11 @@ public class DistillerFakeDataPresenter extends DistillerDataPresenter {
     @Override
     public void readDistillerData() {
         DistillerData dd = new DistillerData();
-        dd.coldWaterTemp = (float) (Math.random() * 2) + 20f;
+        dd.coldWaterTemp = (float) (Math.random() * 2) + 15f;
         dd.hotWaterTemp = (float) (Math.random() * 2) + 70f;
         dd.boilerTemp = (float) (Math.random() * 2) + 91f;
         dd.headerTemp = (float) (Math.random() * 0.5) + 78f;
+        dd.waterRpm = (float)(Math.random() * 50) + 1800f;
 
         getDistillerDataView().showDistillerData(dd);
     }
