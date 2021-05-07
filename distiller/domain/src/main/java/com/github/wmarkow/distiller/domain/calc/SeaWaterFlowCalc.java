@@ -11,15 +11,15 @@ public class SeaWaterFlowCalc {
      * @return calculated water flow in m3/s
      */
     public double calculateWaterFlow(double rpm) throws InvalidArgumentException {
-        if(rpm < 380)
-        {
-            throw new InvalidArgumentException(String.format("Provided %s as RPM value is to small. Minimal valid value is 380.", rpm));
-        }
-
-        if(rpm > 4500)
-        {
-            throw new InvalidArgumentException(String.format("Provided %s as RPM value is to big. Maximal valid value is 4500.", rpm));
-        }
+     //   if(rpm < 380)
+     //   {
+     //       throw new InvalidArgumentException(String.format("Provided %s as RPM value is to small. Minimal valid value is 380.", rpm));
+     //   }
+     //
+     //   if(rpm > 4500)
+     //   {
+     //       throw new InvalidArgumentException(String.format("Provided %s as RPM value is to big. Maximal valid value is 4500.", rpm));
+     //   }
 
         double flowLitresPerHour = 0.0115 * rpm + 1.6001;
 
