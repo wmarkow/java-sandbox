@@ -29,25 +29,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.github.jorgecastilloprz.FABProgressCircle
-                android:id="@+id/fabProgressCircle"
+            <ProgressBar
+                android:id="@+id/bluetoothProgressBar"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
                 android:layout_alignParentRight="true"
-                app:arcColor="@color/design_default_color_primary"
-                app:arcWidth="3dp"
-                app:reusable="true">
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/fab_margin"
-                    app:backgroundTint="@color/ic_bluetooth_disconnected"
-                    app:borderWidth="0dp"
-                    app:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
-            </com.github.jorgecastilloprz.FABProgressCircle>
+                android:layout_gravity="end" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/bluetoothFloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/ic_bluetooth_disconnected"
+                app:borderWidth="0dp"
+                app:fabCustomSize="30dp"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 

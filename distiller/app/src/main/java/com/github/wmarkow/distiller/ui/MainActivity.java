@@ -8,23 +8,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ProgressBar;
 
-import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerMainActivityComponent;
 import com.github.wmarkow.distiller.di.components.MainActivityComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.presenter.ConnectivityPresenter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -44,10 +41,10 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    @BindView(R.id.fab)
+    @BindView(R.id.bluetoothFloatingActionButton)
     FloatingActionButton fab;
-    @BindView(R.id.fabProgressCircle)
-    FABProgressCircle fabProgressCircle;
+    @BindView(R.id.bluetoothProgressBar)
+    ProgressBar bluetoothProgressBar;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -65,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        // make bluetooth progress bar invisible
+        bluetoothProgressBar.setVisibility(View.INVISIBLE);
 
         setSupportActionBar(toolbar);
         // Passing each menu ID as a set of Ids because each
@@ -122,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
         }
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R.id.bluetoothFloatingActionButton)
     public void onFabClicked()
     {
         connectivityPresenter.connectToDistiller();
@@ -141,19 +140,20 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     @Override
     public void showDistillerConnected() {
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connected)));
-        fabProgressCircle.hide();
+        bluetoothProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showDistillerDisconnected() {
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_disconnected)));
-        fabProgressCircle.hide();
+        bluetoothProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showDistillerConnectionInProgress() {
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connecting)));
-        fabProgressCircle.show();
+        bluetoothProgressBar.setIndeterminate(true);
+        bluetoothProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
