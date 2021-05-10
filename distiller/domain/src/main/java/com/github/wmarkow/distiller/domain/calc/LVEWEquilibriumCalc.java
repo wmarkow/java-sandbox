@@ -22,10 +22,21 @@ public class LVEWEquilibriumCalc {
     private static Double minValidTemp = null;
     private static Double maxValidTemp = null;
 
-    public LVEWEquilibrium calculateEquilibrium(double temperature) {
+    /***
+     * Calculates liquid-vapor of ethanol-water equilibrium
+     * @param temperature
+     * @return
+     * @throws OutOfRangeException when temperature is out of range (see {@link #isValidPoint(double)}
+     */
+    public LVEWEquilibrium calculateEquilibrium(double temperature) throws OutOfRangeException {
         init();
 
-        double ethanolLiquidMoleFraction = liquidData.value(temperature);
+        double ethanolLiquidMoleFraction;
+        try {
+            ethanolLiquidMoleFraction = liquidData.value(temperature);
+        } catch (org.apache.commons.math3.exception.OutOfRangeException e) {
+            throw new OutOfRangeException(e.getMessage());
+        }
         double ethanolVaporMoleFraction = vaporData.value(temperature);
 
         return new LVEWEquilibrium(temperature, ethanolLiquidMoleFraction, ethanolVaporMoleFraction);

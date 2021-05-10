@@ -28,8 +28,9 @@ public class CondenserCalc {
      * @param flow condenser water flow in m3/s
      * @param tHeader temperature under the condenser in Celsius degree
      * @return the speed of condensation process
+     * @throws OutOfRangeException when tHeader is out of range (see {@link LVEWEquilibriumCalc})
      */
-    public CondensationSpeed calculateCondensationSpeed(double tIn, double tOut, double flow, double tHeader) {
+    public CondensationSpeed calculateCondensationSpeed(double tIn, double tOut, double flow, double tHeader) throws OutOfRangeException {
         // calculate the current power of condenser
         double power = calculateCoolingPower(tIn, tOut, flow);
 

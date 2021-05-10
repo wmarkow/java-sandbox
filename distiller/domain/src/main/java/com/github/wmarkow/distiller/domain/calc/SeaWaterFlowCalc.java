@@ -10,7 +10,7 @@ public class SeaWaterFlowCalc {
      * @param rpm rotates per minute returned by water flow sensor
      * @return calculated water flow in m3/s
      */
-    public double calculateWaterFlow(double rpm) throws InvalidArgumentException {
+    public double calculateWaterFlow(double rpm) throws OutOfRangeException {
      //   if(rpm < 380)
      //   {
      //       throw new InvalidArgumentException(String.format("Provided %s as RPM value is to small. Minimal valid value is 380.", rpm));

@@ -1,5 +1,8 @@
 package com.github.wmarkow.distiller.domain.calc;
 
+import com.github.wmarkow.distiller.domain.constants.Ethanol;
+import com.github.wmarkow.distiller.domain.constants.Water;
+
 import org.apache.commons.math3.analysis.interpolation.BicubicInterpolatingFunction;
 import org.apache.commons.math3.analysis.interpolation.BicubicInterpolator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
@@ -26,11 +29,32 @@ public class EthanolSolutionCalc {
      *
      * @param ethanolMolarFraction ethanol molar fraction concentration
      * @param temperature solution temperature in Celsius degree
-     * @return denisty in kg/l
+     * @return density in kg/l
      */
     public double calculateDensity(double ethanolMolarFraction, double temperature) {
         init();
         return densityData.value(temperature, ethanolMolarFraction);
+    }
+
+    /***
+     * Calculates the volume ethanol concentration for a given ethanol molar fraction concentration and temperature.
+     * @param ethanolMolarFraction ethanol molar fraction concentration
+     * @param temperature solution temperature in Celsius degree
+     * @return ethanol concentration in % vol
+     */
+    public double calculateVolumeConcentration(double ethanolMolarFraction, double temperature) {
+        final double waterMolarFraction = 1.0 - ethanolMolarFraction;
+
+        double ethanolMassInKg = Ethanol.MOLAR_MASS * ethanolMolarFraction / 1000;
+        double waterMassInKg = Water.MOLAR_MASS * waterMolarFraction / 1000;
+        double solutionMassInKg = ethanolMassInKg + waterMassInKg;
+        double solutionDensityInKgPerL = calculateDensity(ethanolMolarFraction, temperature);
+
+        double solutionVolumeInL = solutionMassInKg / solutionDensityInKgPerL;
+        double ethanolDensityInKgPerL = calculateDensity(1.0, temperature);
+        double ethanolVolumeInL = ethanolMassInKg / ethanolDensityInKgPerL;
+
+        return 100 * ethanolVolumeInL / solutionVolumeInL;
     }
 
     /***

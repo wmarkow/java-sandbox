@@ -1,6 +1,5 @@
 package com.github.wmarkow.distiller.domain.calc;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +68,7 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void testGetEquilibriumForValidTemperature() {
+    public void testGetEquilibriumForValidTemperature() throws OutOfRangeException {
         double steps = 100;
         double delta = (subject.getMaxValidTemp() - subject.getMinValidTemp()) / steps;
         double minTemp = subject.getMinValidTemp();
@@ -82,7 +81,7 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void testGetLiquidMoleFraction() {
+    public void testGetLiquidMoleFraction() throws OutOfRangeException {
         assertEquals(0.8943, subject.calculateEquilibrium(78.15).ethanolLiquidMoleFraction, 0.0001);
         assertEquals(0.5079, subject.calculateEquilibrium(79.8).ethanolLiquidMoleFraction, 0.0001);
         assertEquals(0.3273, subject.calculateEquilibrium(81.5).ethanolLiquidMoleFraction, 0.0001);
@@ -91,7 +90,7 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void testGetVaporMoleFraction() {
+    public void testGetVaporMoleFraction() throws OutOfRangeException {
         assertEquals(0.8943, subject.calculateEquilibrium(78.15).ethanolVaporMoleFraction, 0.0001);
         assertEquals(0.6564, subject.calculateEquilibrium(79.8).ethanolVaporMoleFraction, 0.0001);
         assertEquals(0.5826, subject.calculateEquilibrium(81.5).ethanolVaporMoleFraction, 0.0001);
@@ -100,7 +99,7 @@ public class LVEWEquilibriumCalcTest {
     }
 
     @Test
-    public void createFishPlots() throws IOException {
+    public void createFishPlots() throws IOException, OutOfRangeException {
         int pixels = 200;
         BufferedImage xytImage = new BufferedImage(pixels, pixels, BufferedImage.TYPE_INT_RGB);
         BufferedImage xyImage = new BufferedImage(pixels, pixels, BufferedImage.TYPE_INT_RGB);
