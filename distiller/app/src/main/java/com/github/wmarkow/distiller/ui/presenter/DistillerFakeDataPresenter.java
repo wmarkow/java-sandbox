@@ -14,10 +14,10 @@ public class DistillerFakeDataPresenter extends DistillerDataPresenter {
     public void readDistillerData() {
         DistillerData dd = new DistillerData();
         dd.systemUpTime = System.currentTimeMillis();
-        dd.coldWaterTemp = (float) (Math.random() * 2) + 15f;
-        dd.hotWaterTemp = (float) (Math.random() * 2) + 70f;
-        dd.boilerTemp = (float) (Math.random() * 2) + 91f;
-        dd.headerTemp = (float) (Math.random() * 0.5) + 78f;
+        dd.coldWaterTemp = (float) (Math.random() * 1) + 15f;
+        dd.hotWaterTemp = (float) (Math.random() * 1) + 76f;
+        dd.boilerTemp = (float) (Math.random() * 0.2) + 91.5f;
+        dd.headerTemp = (float) (Math.random() * 0.2) + 80.8f;
         dd.waterRpm = (float)(Math.random() * 50) + 1800f;
 
         getDistillerDataView().showDistillerData(dd);

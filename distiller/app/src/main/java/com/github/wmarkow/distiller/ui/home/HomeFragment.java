@@ -1,7 +1,5 @@
 package com.github.wmarkow.distiller.ui.home;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,28 +8,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerHomeFragmentComponent;
 import com.github.wmarkow.distiller.di.components.HomeFragmentComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
+import com.github.wmarkow.distiller.domain.calc.CondensationSpeed;
 import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
-import com.github.wmarkow.distiller.domain.calc.InvalidArgumentException;
+import com.github.wmarkow.distiller.domain.calc.EthanolSolutionCalc;
+import com.github.wmarkow.distiller.domain.calc.LVEWEquilibrium;
+import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
+import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
@@ -39,14 +30,10 @@ import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 import com.github.wmarkow.distiller.ui.presenter.DistillerFakeDataPresenter;
 
-import java.time.Duration;
-import java.time.Period;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class HomeFragment extends Fragment implements DistillerDataViewIf {
     private final static String TAG = "HomeFragment";
@@ -65,12 +52,15 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     TextView waterFlowTextView2;
     @BindView(R.id.condenserPowerTextView)
     TextView condenserPowerTextView;
-
     @BindView(R.id.headerTempTextView)
     TextView headerTempTextView;
-
     @BindView(R.id.boilerTempTextView)
     TextView boilerTempTextView;
+
+    @BindView(R.id.condensateStrengthTextView)
+    TextView condensateStrengthTextView;
+    @BindView(R.id.condensationSpeedTextView)
+    TextView condensationSpeedTextView;
 
     @BindView(R.id.distillerDataChartView)
     DistillerDataChartView chart;
@@ -135,11 +125,29 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
             double condenserPowerInW = condenserCalc.calculateCoolingPower(distillerData.coldWaterTemp, distillerData.hotWaterTemp, waterFlowInM3PerS);
             waterFlowTextView2.setText(String.format("%.2f", waterFlowInLPerH));
             condenserPowerTextView.setText(String.format("%.2f", condenserPowerInW));
-        } catch (InvalidArgumentException e) {
+
+            // calculate condensate strength
+            LVEWEquilibriumCalc ec = new LVEWEquilibriumCalc();
+            LVEWEquilibrium equilibrium = ec.calculateEquilibrium(distillerData.headerTemp);
+
+            EthanolSolutionCalc esc = new EthanolSolutionCalc();
+            double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolLiquidMoleFraction, distillerData.headerTemp);
+            condensateStrengthTextView.setText(String.format("%.2f", volConcentration));
+
+            // calculate condensation speed
+            CondenserCalc cc = new CondenserCalc();
+            CondensationSpeed cSpeed = cc.calculateCondensationSpeed(distillerData.coldWaterTemp, distillerData.hotWaterTemp, waterFlowInM3PerS, distillerData.headerTemp);
+            double condensationSpeedInLPerMin = cSpeed.speedInLPerSec * 1000 * 60;
+            condensationSpeedTextView.setText(String.format("%.2f", condensationSpeedInLPerMin));
+        } catch (OutOfRangeException e) {
             Log.e(TAG, e.getMessage(), e);
             waterFlowTextView2.setText("ERROR");
             condenserPowerTextView.setText("ERROR");
+            condensateStrengthTextView.setText("ERROR");
+            condensationSpeedTextView.setText("ERROR");
         }
+
+
 
         this.chart.addDistillerData(distillerData);
     }

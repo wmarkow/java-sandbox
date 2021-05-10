@@ -7,11 +7,10 @@
     tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
-        android:id="@+id/linearlayout1"
+        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
         android:weightSum="10">
 
         <TextView
@@ -40,12 +39,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearlayout2"
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearlayout1"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_below="@id/linearLayout1"
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -204,12 +202,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearlayout3"
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearlayout2"
+        android:layout_below="@id/linearLayout2"
         android:orientation="horizontal"
-        android:padding="10dp"
         android:weightSum="10">
 
         <TextView
@@ -238,12 +235,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearlayout4"
+        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearlayout3"
+        android:layout_below="@id/linearLayout3"
         android:orientation="horizontal"
-        android:padding="10dp"
         android:weightSum="10">
 
         <TextView
@@ -271,11 +267,80 @@
             android:textSize="16sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout4"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Condensate strength"
+                android:textAlignment="textEnd"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/condensateStrengthTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textAlignment="center"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="% vol"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Condensation speed"
+                android:textAlignment="textEnd"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/condensationSpeedTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textAlignment="center"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="ml/min"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
     <com.github.wmarkow.distiller.ui.DistillerDataChartView
         android:id="@+id/distillerDataChartView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearlayout4">
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/linearLayout5">
 
     </com.github.wmarkow.distiller.ui.DistillerDataChartView>
 

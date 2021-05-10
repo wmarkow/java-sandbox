@@ -3,36 +3,27 @@ package com.github.wmarkow.distiller.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.wmarkow.distiller.R;
-import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
-import com.github.wmarkow.distiller.domain.calc.InvalidArgumentException;
+import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
-import com.github.wmarkow.distiller.ui.home.HomeFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,7 +82,7 @@ public class DistillerDataChartView extends RelativeLayout {
             float waterFlowInLPerH = calculateWaterFlow(distillerData.waterRpm);
 
             data.addEntry(new Entry(x, waterFlowInLPerH), WATER_FLOW_DATA_SET_INDEX);
-        } catch (InvalidArgumentException e) {
+        } catch (OutOfRangeException e) {
             data.addEntry(new Entry(x, -1.0f), WATER_FLOW_DATA_SET_INDEX);
         }
 
@@ -252,7 +243,7 @@ public class DistillerDataChartView extends RelativeLayout {
         return set;
     }
 
-    private float calculateWaterFlow(double waterRpm) throws InvalidArgumentException {
+    private float calculateWaterFlow(double waterRpm) throws OutOfRangeException {
         SeaWaterFlowCalc waterFlowCalc = new SeaWaterFlowCalc();
 
         double waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(waterRpm);
