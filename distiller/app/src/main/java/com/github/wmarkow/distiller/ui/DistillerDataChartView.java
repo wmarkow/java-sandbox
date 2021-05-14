@@ -28,7 +28,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DistillerDataChartView extends RelativeLayout {
+public class DistillerDataChartView extends RelativeLayout implements DistillerDataViewIf {
     private final static String TAG = "DistillerDataChartView";
 
     private final static int COLD_WATER_TEMP_DATA_SET_INDEX = 0;
@@ -55,7 +55,8 @@ public class DistillerDataChartView extends RelativeLayout {
         inflate(context);
     }
 
-    public void addDistillerData(DistillerData distillerData) {
+    @Override
+    public void showDistillerData(DistillerData distillerData) {
         LineData data = chart.getData();
 
         // Warning: the chart library has issues when x value is to big (like ine milliseconds since epoch)
@@ -101,7 +102,7 @@ public class DistillerDataChartView extends RelativeLayout {
     }
 
     private void inflate(Context context) {
-        inflate(context, R.layout.distiller_data_chart_view, this);
+        inflate(context, R.layout.view_distiller_data_chart, this);
 
         ButterKnife.bind(this);
         init();
