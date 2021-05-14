@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.github.wmarkow.distiller.ui.gallery.GalleryFragment"
+        android:name="com.github.wmarkow.distiller.ui.gallery.SpecificHeatMeasureFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_specific_heat_measure" />
 
     <fragment
         android:id="@+id/nav_slideshow"

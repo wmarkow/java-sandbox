@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.wmarkow.distiller.R;
 
-public class GalleryFragment extends Fragment {
+public class SpecificHeatMeasureFragment extends Fragment {
 
     private GalleryViewModel galleryViewModel;
 
@@ -22,7 +22,7 @@ public class GalleryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
                 new ViewModelProvider(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View root = inflater.inflate(R.layout.fragment_specific_heat_measure, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
         galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
