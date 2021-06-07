@@ -31,11 +31,11 @@ import butterknife.ButterKnife;
 public class DistillerDataChartView extends RelativeLayout implements DistillerDataViewIf {
     private final static String TAG = "DistillerDataChartView";
 
-    private final static int COLD_WATER_TEMP_DATA_SET_INDEX = 0;
-    private final static int HOT_WATER_TEMP_DATA_SET_INDEX = 1;
-    private final static int BOILER_TEMP_DATA_SET_INDEX = 2;
-    private final static int HEADER_TEMP_DATA_SET_INDEX = 3;
-    private final static int WATER_FLOW_DATA_SET_INDEX = 4;
+    private final static String COLD_WATER_TEMP_DATA_SET_LABEL = "Cold water";
+    private final static String HOT_WATER_TEMP_DATA_SET_LABEL = "Hot water";
+    private final static String BOILER_TEMP_DATA_SET_LABEL = "Boiler";
+    private final static String HEADER_TEMP_DATA_SET_LABEL = "Header";
+    private final static String WATER_FLOW_DATA_SET_LABEL = "Water flow";
 
     @BindView(R.id.chart)
     LineChart chart;
@@ -69,22 +69,26 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         int millis = calendar.get(Calendar.MILLISECOND);
         float x = seconds + 60 * minutes +  3600 * hour24hrs;
 
-        ILineDataSet coldWaterTempDataSet = data.getDataSetByIndex(COLD_WATER_TEMP_DATA_SET_INDEX);
-        data.addEntry(new Entry(x, (float)distillerData.coldWaterTemp), COLD_WATER_TEMP_DATA_SET_INDEX);
-        ILineDataSet hotWaterTempDataSet = data.getDataSetByIndex(HOT_WATER_TEMP_DATA_SET_INDEX);
-        data.addEntry(new Entry(x, (float)distillerData.hotWaterTemp), HOT_WATER_TEMP_DATA_SET_INDEX);
-        ILineDataSet boilerTempDataSet = data.getDataSetByIndex(BOILER_TEMP_DATA_SET_INDEX);
-        data.addEntry(new Entry(x, (float)distillerData.boilerTemp), BOILER_TEMP_DATA_SET_INDEX);
-        ILineDataSet headerTempDataSet = data.getDataSetByIndex(HEADER_TEMP_DATA_SET_INDEX);
-        data.addEntry(new Entry(x, (float)distillerData.headerTemp), HEADER_TEMP_DATA_SET_INDEX);
+        ILineDataSet coldWaterTempDataSet = data.getDataSetByLabel(COLD_WATER_TEMP_DATA_SET_LABEL, false);
+        coldWaterTempDataSet.addEntry(new Entry(x, (float)distillerData.coldWaterTemp));
+        ILineDataSet hotWaterTempDataSet = data.getDataSetByLabel(HOT_WATER_TEMP_DATA_SET_LABEL, false);
+        hotWaterTempDataSet.addEntry(new Entry(x, (float)distillerData.hotWaterTemp));
+        ILineDataSet boilerTempDataSet = data.getDataSetByLabel(BOILER_TEMP_DATA_SET_LABEL, false);
+        if(boilerTempDataSet != null) {
+            boilerTempDataSet.addEntry(new Entry(x, (float) distillerData.boilerTemp));
+        }
+        ILineDataSet headerTempDataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
+        if(headerTempDataSet != null) {
+            headerTempDataSet.addEntry(new Entry(x, (float) distillerData.headerTemp));
+        }
 
-        ILineDataSet waterFlowDataSet = data.getDataSetByIndex(WATER_FLOW_DATA_SET_INDEX);
+        ILineDataSet waterFlowDataSet = data.getDataSetByLabel(WATER_FLOW_DATA_SET_LABEL, false);
         try {
             float waterFlowInLPerH = calculateWaterFlow(distillerData.waterRpm);
 
-            data.addEntry(new Entry(x, waterFlowInLPerH), WATER_FLOW_DATA_SET_INDEX);
+            waterFlowDataSet.addEntry(new Entry(x, waterFlowInLPerH));
         } catch (OutOfRangeException e) {
-            data.addEntry(new Entry(x, -1.0f), WATER_FLOW_DATA_SET_INDEX);
+            waterFlowDataSet.addEntry(new Entry(x, -1.0f));
         }
 
 
@@ -99,6 +103,18 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
 
         // move to the latest entry
         chart.moveViewToX(x);
+    }
+
+    public void removeBoilerTemp() {
+        LineData data = chart.getData();
+        ILineDataSet dataSet = data.getDataSetByLabel(BOILER_TEMP_DATA_SET_LABEL, false);
+        data.removeDataSet(dataSet);
+    }
+
+    public void removeHeaderTemp() {
+        LineData data = chart.getData();
+        ILineDataSet dataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
+        data.removeDataSet(dataSet);
     }
 
     private void inflate(Context context) {
@@ -210,34 +226,34 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
     }
 
     private LineDataSet createColdWaterDataSet() {
-        LineDataSet set =createDefaultDataSet("Cold water");
+        LineDataSet set =createDefaultDataSet(COLD_WATER_TEMP_DATA_SET_LABEL);
 
         return set;
     }
 
     private LineDataSet createHotWaterDataSet() {
-        LineDataSet set = createDefaultDataSet("Hot water");
+        LineDataSet set = createDefaultDataSet(HOT_WATER_TEMP_DATA_SET_LABEL);
         set.setColor(Color.rgb(255,255,0));
 
         return set;
     }
 
     private LineDataSet createBoilerDataSet() {
-        LineDataSet set = createDefaultDataSet("Boiler");
+        LineDataSet set = createDefaultDataSet(BOILER_TEMP_DATA_SET_LABEL);
         set.setColor(Color.rgb(255,0,0));
 
         return set;
     }
 
     private LineDataSet createHeaderDataSet() {
-        LineDataSet set = createDefaultDataSet("Header");
+        LineDataSet set = createDefaultDataSet(HEADER_TEMP_DATA_SET_LABEL);
         set.setColor(Color.rgb(255,165,0));
 
         return set;
     }
 
     private LineDataSet createWaterFlowDataSet() {
-        LineDataSet set = createDefaultDataSet("Water flow");
+        LineDataSet set = createDefaultDataSet(WATER_FLOW_DATA_SET_LABEL);
         set.setColor(Color.rgb(0,0,0));
         set.setAxisDependency(YAxis.AxisDependency.RIGHT);
 

@@ -21,6 +21,19 @@ public class CondenserCalc {
     }
 
     /***
+     * Calculates the condenser energy used during cooling process in a small amount of time. It assumes that
+     * a cold water comes into the condenser and a hot water comes out of it.
+     * @param tIn temperature of water that comes into condenser - in Celsius degree
+     * @param tOut temperature of water that comes out of the condenser - in Celsius degree
+     * @param flow flow of the water in m3/s
+     * @param dt a small amount of time in s
+     * @return energy in J
+     */
+    public double calculateCoolingEnergy(double tIn, double tOut, double flow, double dt) {
+        return calculateCoolingPower(tIn, tOut, flow) * dt;
+    }
+
+    /***
      * Calculates the speed of condensation at the given input parameters. It describes how fast the condenser can turn vapor into liquid.
      *
      * @param tIn condenser input water temperature in Celsius degree
@@ -62,4 +75,6 @@ public class CondenserCalc {
 
         return new CondensationSpeed(condensationSpeedInKgPerSec, condensationSpeedInLPerSec);
     }
+
+
 }

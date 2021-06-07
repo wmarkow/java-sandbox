@@ -3,6 +3,8 @@ package com.github.wmarkow.distiller.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +23,16 @@ import butterknife.ButterKnife;
 
 public class DistillerDataTextView extends RelativeLayout implements DistillerDataViewIf {
     private final static String TAG = "DistillerDataTextView";
+
+
+    @BindView(R.id.condensationSpeedLayout)
+    ViewGroup condensationSpeedLayout;
+    @BindView(R.id.condensateStrengthLayout)
+    ViewGroup condensateStrengthLayout;
+    @BindView(R.id.boilerTempLayout)
+    ViewGroup boilerTempLayout;
+    @BindView(R.id.headerTempLayout)
+    ViewGroup headerTempLayout;
 
     @BindView(R.id.systemUpTimeTextView)
     TextView systemUpTimeTextView;
@@ -75,14 +87,21 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
         boilerTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.boilerTemp)));
 
         SeaWaterFlowCalc waterFlowCalc = new SeaWaterFlowCalc();
+        Double waterFlowInM3PerS = null;
         try {
-            double waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(distillerData.waterRpm);
+            waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(distillerData.waterRpm);
             double waterFlowInLPerH = waterFlowInM3PerS * 1000 * 3600;
             CondenserCalc condenserCalc = new CondenserCalc();
             double condenserPowerInW = condenserCalc.calculateCoolingPower(distillerData.coldWaterTemp, distillerData.hotWaterTemp, waterFlowInM3PerS);
             waterFlowTextView2.setText(String.format("%.2f", waterFlowInLPerH));
             condenserPowerTextView.setText(String.format("%.2f", condenserPowerInW));
+        } catch (OutOfRangeException e) {
+            Log.e(TAG, e.getMessage(), e);
+            waterFlowTextView2.setText("ERROR");
+            condensationSpeedTextView.setText("ERROR");
+        }
 
+        try {
             // calculate condensate strength
             LVEWEquilibriumCalc ec = new LVEWEquilibriumCalc();
             LVEWEquilibrium equilibrium = ec.calculateEquilibrium(distillerData.headerTemp);
@@ -90,22 +109,42 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
             EthanolSolutionCalc esc = new EthanolSolutionCalc();
             double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolLiquidMoleFraction, distillerData.headerTemp);
             condensateStrengthTextView.setText(String.format("%.2f", volConcentration));
-
-            // calculate condensation speed
-            CondenserCalc cc = new CondenserCalc();
-            CondensationSpeed cSpeed = cc.calculateCondensationSpeed(distillerData.coldWaterTemp, distillerData.hotWaterTemp, waterFlowInM3PerS, distillerData.headerTemp);
-            double condensationSpeedInLPerMin = cSpeed.speedInLPerSec * 1000 * 60;
-            condensationSpeedTextView.setText(String.format("%.2f", condensationSpeedInLPerMin));
         } catch (OutOfRangeException e) {
             Log.e(TAG, e.getMessage(), e);
-            waterFlowTextView2.setText("ERROR");
-            condenserPowerTextView.setText("ERROR");
             condensateStrengthTextView.setText("ERROR");
+        }
+
+        try {
+            // calculate condensation speed
+            if(waterFlowInM3PerS != null) {
+                CondenserCalc cc = new CondenserCalc();
+                CondensationSpeed cSpeed = cc.calculateCondensationSpeed(distillerData.coldWaterTemp, distillerData.hotWaterTemp, waterFlowInM3PerS, distillerData.headerTemp);
+                double condensationSpeedInLPerMin = cSpeed.speedInLPerSec * 1000 * 60;
+                condensationSpeedTextView.setText(String.format("%.2f", condensationSpeedInLPerMin));
+            }
+        } catch (OutOfRangeException e) {
+            Log.e(TAG, e.getMessage(), e);
             condensationSpeedTextView.setText("ERROR");
         }
     }
 
-    public static String formatSystemUpTime(long systemUpTimeInMillis) {
+    public void hideHeaderTemp() {
+        headerTempLayout.setVisibility(View.GONE);
+    }
+
+    public void hideBoilerTemp() {
+        boilerTempLayout.setVisibility(View.GONE);
+    }
+
+    public void hideCondensateStrength() {
+        condensateStrengthLayout.setVisibility(View.GONE);
+    }
+
+    public void hideCondensationSpeed() {
+        condensationSpeedLayout.setVisibility(View.GONE);
+    }
+
+    private static String formatSystemUpTime(long systemUpTimeInMillis) {
         long seconds = systemUpTimeInMillis / 1000;
         return String.format( "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
     }

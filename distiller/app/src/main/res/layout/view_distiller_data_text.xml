@@ -200,7 +200,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/headerTempLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout2"
@@ -233,10 +233,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/boilerTempLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout3"
+        android:layout_below="@id/headerTempLayout"
         android:orientation="horizontal"
         android:weightSum="10">
 
@@ -269,11 +269,12 @@
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout4"
+        android:layout_below="@id/boilerTempLayout"
         android:layout_marginTop="10dp"
         android:orientation="vertical" >
 
         <LinearLayout
+            android:id="@+id/condensateStrengthLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -304,6 +305,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/condensationSpeedLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

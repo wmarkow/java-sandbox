@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
         homeFragmentComponent.inject(this);
 
         // uncomment the line below if you want to use a fake distiller data presenter
-        distillerDataPresenter = new DistillerFakeDataPresenter();
+        //distillerDataPresenter = new DistillerFakeDataPresenter();
 
         distillerDataPresenter.setView(this);
 
