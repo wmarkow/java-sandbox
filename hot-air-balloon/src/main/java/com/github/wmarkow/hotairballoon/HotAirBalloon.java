@@ -30,47 +30,9 @@ public class HotAirBalloon {
 		frame.getContentPane().add(balloon);
 		frame.pack();
 		frame.setVisible(true);
-		frame.addKeyListener(new KeyListener() {
+		
 
-			@Override
-			public void keyTyped(KeyEvent e) {
 
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					leftArrowPressed = true;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					rightArrowPressed = true;
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					leftArrowPressed = false;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					rightArrowPressed = false;
-				}
-			}
-		});
-
-		int requiredFps = 30;
-		long period = 1000 / requiredFps;
-
-		timer = new Timer();
-		timerTask = new TimerTask() {
-
-			@Override
-			public void run() {
-				onFrame();
-			}
-		};
-
-		timer.scheduleAtFixedRate(timerTask, 0, period);
 	}
 
 	public static void main(String[] args) {
@@ -82,25 +44,7 @@ public class HotAirBalloon {
 			}
 		});
 	}
-	
-	private static void onFrame() {
-		if (rightArrowPressed == true) {
-			int newX = balloon.getX() + 10;
-			if (newX > 1024 - 64) {
-				newX = 1024 - 64;
-			}
-			balloon.setX(newX);
 
-		}
-
-		if (leftArrowPressed == true) {
-			int newX = balloon.getX() - 10;
-			if (newX < 0) {
-				newX = 0;
-			}
-			balloon.setX(newX);
-		}
-	}
 }
 
 //error: Kiedy przytrzymam myszke i klikne strzalke, to moge sterowac okienkiem
