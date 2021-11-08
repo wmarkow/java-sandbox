@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -25,6 +26,9 @@ import com.github.wmarkow.distiller.ui.MainActivity;
 public class DistillerForegroundService extends Service {
 
     public static final String CHANNEL_ID = "DistillerForegroundServiceChannel";
+
+    // Binder given to clients
+    private final IBinder binder = new LocalBinder();
 
     @Override
     public void onCreate() {
@@ -58,7 +62,7 @@ public class DistillerForegroundService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
     }
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -69,6 +73,12 @@ public class DistillerForegroundService extends Service {
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
+    public class LocalBinder extends Binder {
+        public DistillerForegroundService getService() {
+            return DistillerForegroundService.this;
         }
     }
 }

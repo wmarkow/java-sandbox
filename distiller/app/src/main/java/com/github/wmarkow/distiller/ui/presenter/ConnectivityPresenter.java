@@ -2,18 +2,24 @@ package com.github.wmarkow.distiller.ui.presenter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityServiceSubscriber;
@@ -21,13 +27,18 @@ import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
 import com.github.wmarkow.distiller.ui.ConnectivityViewIf;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 public class ConnectivityPresenter implements Presenter {
     private final static String TAG = "ConnectivityPresenter";
 
+    private ServiceConnection serviceConnection;
+
     private ConnectivityViewIf connectivityViewIf;
 
+    private DistillerForegroundService distillerForegroundService = null;
     private DistillerConnectivityService distillerConnectivityService;
     private DefaultConnectivityServiceSubscriber defaultConnectivityServiceSubscriber;
 
@@ -37,6 +48,22 @@ public class ConnectivityPresenter implements Presenter {
         defaultConnectivityServiceSubscriber = new DefaultConnectivityServiceSubscriber();
 
         this.distillerConnectivityService.subscribe(defaultConnectivityServiceSubscriber);
+
+        serviceConnection = new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                // We've bound to LocalService, cast the IBinder and get LocalService instance
+                DistillerForegroundService.LocalBinder binder = (DistillerForegroundService.LocalBinder) service;
+                distillerForegroundService = binder.getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName arg0) {
+            }
+        };
+
     }
 
     public void enableForegroundService(Activity activity, boolean enabled) {
@@ -46,6 +73,10 @@ public class ConnectivityPresenter implements Presenter {
             ContextCompat.startForegroundService(activity, serviceIntent);
 
             connectivityViewIf.showDistillerIndicatorEnabled();
+
+            // bind to service
+            Intent intent = new Intent(activity, DistillerForegroundService.class);
+            activity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         } else {
             Intent serviceIntent = new Intent(activity, DistillerForegroundService.class);
             activity.stopService(serviceIntent);
@@ -112,6 +143,9 @@ public class ConnectivityPresenter implements Presenter {
 
     @Override
     public void resume() {
+        boolean serviceRunning = isServiceRunning(DistillerForegroundService.class.getName());
+        connectivityViewIf.showDistillerSwitchChecked(serviceRunning);
+
         if(distillerConnectivityService.isConnected()) {
             connectivityViewIf.showDistillerConnected();
 
@@ -191,5 +225,18 @@ public class ConnectivityPresenter implements Presenter {
                 }
             });
         }
+    }
+
+    private boolean isServiceRunning(String serviceClassName){
+        final ActivityManager activityManager = (ActivityManager) DistillerApplication.getDistillerApplication().getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
+            if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
+                return true;
+            }
+        }
+        return false;
     }
 }

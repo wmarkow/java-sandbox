@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
                 .build();
         mainActivityConnectivityComponent.inject(this);
         connectivityPresenter.setView(this);
-
-        foregroundServiceSwitch.setChecked(false);
     }
 
     @Override
@@ -198,6 +196,11 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     public void showDistillerIndicatorEnabled() {
         fab.setEnabled(true);
         bluetoothProgressBar.setEnabled(true);
+    }
+
+    @Override
+    public void showDistillerSwitchChecked(boolean checked) {
+        foregroundServiceSwitch.setChecked(checked);
     }
 
     @Override
