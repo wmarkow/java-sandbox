@@ -11,4 +11,5 @@
     <color name="ic_bluetooth_disconnected">@android:color/holo_red_dark</color>
     <color name="ic_bluetooth_connected">@android:color/holo_green_dark</color>
     <color name="ic_bluetooth_connecting">@android:color/holo_orange_dark</color>
+    <color name="ic_bluetooth_icon_disabled">@android:color/darker_gray</color>
 </resources>

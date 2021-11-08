@@ -1,9 +1,11 @@
 package com.github.wmarkow.distiller.ui.presenter;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Handler;
@@ -15,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityServiceSubscriber;
+import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
 import com.github.wmarkow.distiller.ui.ConnectivityViewIf;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
 
@@ -34,6 +37,21 @@ public class ConnectivityPresenter implements Presenter {
         defaultConnectivityServiceSubscriber = new DefaultConnectivityServiceSubscriber();
 
         this.distillerConnectivityService.subscribe(defaultConnectivityServiceSubscriber);
+    }
+
+    public void enableForegroundService(Activity activity, boolean enabled) {
+        if(enabled) {
+            Intent serviceIntent = new Intent(activity, DistillerForegroundService.class);
+            serviceIntent.putExtra("inputExtra", "Manages connectivity and fetches data");
+            ContextCompat.startForegroundService(activity, serviceIntent);
+
+            connectivityViewIf.showDistillerIndicatorEnabled();
+        } else {
+            Intent serviceIntent = new Intent(activity, DistillerForegroundService.class);
+            activity.stopService(serviceIntent);
+
+            connectivityViewIf.showDistillerIndicatorDisabled();
+        }
     }
 
     public void connectToDistiller() {

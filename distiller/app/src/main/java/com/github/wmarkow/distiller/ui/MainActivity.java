@@ -1,6 +1,7 @@
 package com.github.wmarkow.distiller.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
@@ -16,12 +18,14 @@ import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerMainActivityComponent;
 import com.github.wmarkow.distiller.di.components.MainActivityComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
+import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
 import com.github.wmarkow.distiller.ui.presenter.ConnectivityPresenter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    @BindView(R.id.foregroundServiceSwitch)
+    Switch foregroundServiceSwitch;
     @BindView(R.id.bluetoothFloatingActionButton)
     FloatingActionButton fab;
     @BindView(R.id.bluetoothProgressBar)
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
                 .build();
         mainActivityConnectivityComponent.inject(this);
         connectivityPresenter.setView(this);
+
+        foregroundServiceSwitch.setChecked(false);
     }
 
     @Override
@@ -121,6 +129,11 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
         }
     }
 
+    @OnClick(R.id.foregroundServiceSwitch)
+    public void foregroundServiceSwitchClicked() {
+        connectivityPresenter.enableForegroundService(this, foregroundServiceSwitch.isChecked());
+    }
+
     @OnClick(R.id.bluetoothFloatingActionButton)
     public void onFabClicked()
     {
@@ -139,21 +152,52 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     @Override
     public void showDistillerConnected() {
+        if(!foregroundServiceSwitch.isChecked())
+        {
+            showDistillerIndicatorDisabled();
+            return;
+        }
+
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connected)));
         bluetoothProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showDistillerDisconnected() {
+        if(!foregroundServiceSwitch.isChecked())
+        {
+            showDistillerIndicatorDisabled();
+            return;
+        }
+
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_disconnected)));
         bluetoothProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showDistillerConnectionInProgress() {
+        if(!foregroundServiceSwitch.isChecked())
+        {
+            showDistillerIndicatorDisabled();
+            return;
+        }
+
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connecting)));
         bluetoothProgressBar.setIndeterminate(true);
         bluetoothProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showDistillerIndicatorDisabled() {
+        fab.setEnabled(false);
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_icon_disabled)));
+        bluetoothProgressBar.setEnabled(false);
+    }
+
+    @Override
+    public void showDistillerIndicatorEnabled() {
+        fab.setEnabled(true);
+        bluetoothProgressBar.setEnabled(true);
     }
 
     @Override

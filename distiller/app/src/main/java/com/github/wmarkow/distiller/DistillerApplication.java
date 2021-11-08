@@ -1,10 +1,12 @@
 package com.github.wmarkow.distiller;
 
+import android.app.ActivityManager;
 import android.app.Application;
 
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerApplicationComponent;
 import com.github.wmarkow.distiller.di.modules.ApplicationModule;
+import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
 
 public class DistillerApplication extends Application {
 
@@ -36,6 +38,15 @@ public class DistillerApplication extends Application {
     public static DistillerApplication getDistillerApplication() {
         return DistillerApplication.instance;
     }
+
+//    public DistillerForegroundService getDistillerForegroundService() {
+//        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+//            if (DistillerForegroundService.class.getName().equals(service.service.getClassName())) {
+//                return service.service;
+//            }
+//        }
+//    }
 
 //    private void initializeLeakDetection() {
 //        if (BuildConfig.DEBUG) {
