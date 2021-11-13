@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     }
 
     @Override
-    public void showDistillerConnectionInProgress() {
+    public void showDistillerConnecting() {
         fab.setEnabled(false);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connecting)));
         bluetoothProgressBar.setIndeterminate(true);

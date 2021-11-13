@@ -11,7 +11,7 @@ public interface ConnectivityViewIf extends MVPViewIf {
     void requestPermissions( final @NonNull String[] permissions);
     void showDistillerConnected();
     void showDistillerDisconnected();
-    void showDistillerConnectionInProgress();
+    void showDistillerConnecting();
     void showDistillerIndicatorDisabled();
     void showDistillerSwitchChecked(boolean checked);
 }

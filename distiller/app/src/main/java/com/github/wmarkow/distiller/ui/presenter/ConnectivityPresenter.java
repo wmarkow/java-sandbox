@@ -230,7 +230,7 @@ public class ConnectivityPresenter implements Presenter {
                 break;
             case BLUETOOTH_SCANNING:
             case CONNECTING_DISTILLER:
-                connectivityViewIf.showDistillerConnectionInProgress();
+                connectivityViewIf.showDistillerConnecting();
                 break;
             case CONNECTED:
                 connectivityViewIf.showDistillerConnected();
