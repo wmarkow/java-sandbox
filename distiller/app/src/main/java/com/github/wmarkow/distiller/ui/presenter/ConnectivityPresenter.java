@@ -110,17 +110,7 @@ public class ConnectivityPresenter implements Presenter {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    switch(newState) {
-                        case NOT_CONNECTED_IDLE:
-                            connectivityViewIf.showDistillerDisconnected();
-                            break;
-                        case BLUETOOTH_SCANNING:
-                        case CONNECTING_DISTILLER:
-                            connectivityViewIf.showDistillerConnectionInProgress();
-                            break;
-                        case CONNECTED:
-                            connectivityViewIf.showDistillerConnected();
-                    }
+                    updateIndicatorStatus(newState);
                 }
             });
         }
@@ -231,5 +221,19 @@ public class ConnectivityPresenter implements Presenter {
         }
 
         Log.i(TAG, "Unbounded from DistillerForegroundService");
+    }
+
+    private void updateIndicatorStatus(DistillerForegroundService.State state) {
+        switch(state) {
+            case NOT_CONNECTED_IDLE:
+                connectivityViewIf.showDistillerDisconnected();
+                break;
+            case BLUETOOTH_SCANNING:
+            case CONNECTING_DISTILLER:
+                connectivityViewIf.showDistillerConnectionInProgress();
+                break;
+            case CONNECTED:
+                connectivityViewIf.showDistillerConnected();
+        }
     }
 }

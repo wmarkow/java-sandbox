@@ -108,8 +108,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     @Override
     public void onResume() {
         super.onResume();
-
-        connectivityPresenter.resume();
     }
 
     @Override
@@ -146,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     }
 
     @Override
-    public void showDistillerConnected() {
+    public void showDistillerConnected()  {
         fab.setEnabled(false);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connected)));
         bluetoothProgressBar.setVisibility(View.INVISIBLE);
