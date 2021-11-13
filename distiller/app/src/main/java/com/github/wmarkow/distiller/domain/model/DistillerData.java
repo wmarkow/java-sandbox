@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 public class DistillerData {
     public String deviceAddress;
-    public long systemUpTime;
+    public long deviceUpTime;
     private long utcTimestampMillis;
     public double coldWaterTemp;
     public double hotWaterTemp;

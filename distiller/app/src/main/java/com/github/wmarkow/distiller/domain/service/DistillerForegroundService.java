@@ -198,7 +198,19 @@ public class DistillerForegroundService extends Service {
             return;
         }
 
-        dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
+        // Real data read
+        //dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
+
+        // Fake data read
+        DistillerData dd = new DistillerData();
+        dd.deviceUpTime = System.currentTimeMillis();
+        dd.coldWaterTemp = (float) (Math.random() * 1) + 15f;
+        dd.hotWaterTemp = (float) (Math.random() * 1) + 76f;
+        dd.boilerTemp = (float) (Math.random() * 0.2) + 91.5f;
+        dd.headerTemp = (float) (Math.random() * 0.2) + 80.8f;
+        dd.waterRpm = (float)(Math.random() * 50) + 1800f;
+
+        new DefaultDistillerDataServiceSubscriber().onNext(dd);
     }
 
     public enum State {
@@ -266,7 +278,13 @@ public class DistillerForegroundService extends Service {
         @Override
         public void onNext(DistillerData distillerData) {
             // store distiller data in the database
-
+            Log.d(TAG, String.format("onNext() UTC millis = %s", distillerData.getUtcTimestampMillis()));
+            Log.d(TAG, String.format("onNext() systemUpTime = %s", distillerData.deviceUpTime));
+            Log.d(TAG, String.format("onNext() called with coldWaterTemp = %s", distillerData.coldWaterTemp));
+            Log.d(TAG, String.format("onNext() called with hotWaterTemp = %s", distillerData.hotWaterTemp));
+            Log.d(TAG, String.format("onNext() called with waterRpm = %s", distillerData.waterRpm));
+            Log.d(TAG, String.format("onNext() called with headerTemp = %s", distillerData.headerTemp));
+            Log.d(TAG, String.format("onNext() called with boilerTemp = %s", distillerData.boilerTemp));
         }
     }
 }

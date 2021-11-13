@@ -76,7 +76,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
     @Override
     public void showDistillerData(DistillerData distillerData) {
-        systemUpTimeTextView.setText(formatSystemUpTime(distillerData.systemUpTime));
+        systemUpTimeTextView.setText(formatSystemUpTime(distillerData.deviceUpTime));
 
         coldWaterTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.coldWaterTemp)));
         hotWaterTempTextView.setText(String.valueOf(String.format("%.2f", distillerData.hotWaterTemp)));
