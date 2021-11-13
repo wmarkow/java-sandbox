@@ -11,7 +11,7 @@ import dagger.Provides;
 public class PresentersModule {
     @Provides
     @PerActivity
-    public ConnectivityPresenter provideConnectivityPresenter(DistillerConnectivityService trainConnectivityService) {
-        return new ConnectivityPresenter(trainConnectivityService);
+    public ConnectivityPresenter provideConnectivityPresenter() {
+        return new ConnectivityPresenter();
     }
 }

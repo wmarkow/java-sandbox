@@ -20,6 +20,10 @@ import androidx.core.app.NotificationCompat;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.ui.MainActivity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,6 +47,7 @@ public class DistillerForegroundService extends Service {
     private State state;
     private Timer timer = null;
     private boolean inDestroy = false;
+    private Set<DistillerForegroundServiceSubscriber> subscribers = new HashSet<>();
 
     @Override
     public void onCreate() {
@@ -63,15 +68,23 @@ public class DistillerForegroundService extends Service {
                 .setContentIntent(pendingIntent);
         startForeground(NOTIFICATION_ID, notificationBuilder.build());
 
-        //do heavy work on a background thread
-        state = State.BLUETOOTH_SCANNING;
-
         distillerConnectivityService = new DistillerConnectivityService();
         distillerConnectivityService.subscribe(new ForegroundDistillerConnectivityServiceSubscriber());
         timer = new Timer();
-        processStateMachine();
+        state = null;
+        processStateMachine(State.BLUETOOTH_SCANNING);
 
         return START_NOT_STICKY;
+    }
+
+    public void addSubscriber(DistillerForegroundServiceSubscriber subscriber) {
+        this.subscribers.add(subscriber);
+
+        subscriber.stateChanged(null, state);
+    }
+
+    public void removeSubscriber(DistillerForegroundServiceSubscriber subscriber) {
+        this.subscribers.remove(subscriber);
     }
 
     @Override
@@ -86,6 +99,8 @@ public class DistillerForegroundService extends Service {
         distillerConnectivityService.stopDistillerDiscovery();
         distillerConnectivityService = null;
         state = null;
+        subscribers.clear();
+        subscribers = null;
     }
 
     @Nullable
@@ -105,23 +120,22 @@ public class DistillerForegroundService extends Service {
         }
     }
 
-    private void processStateMachine() {
+    private void processStateMachine(State newState) {
         if(inDestroy) {
             return;
         }
 
-        switch(state) {
+        switch(newState) {
             case NOT_CONNECTED_IDLE:
             {
                 // wait 10 seconds and scan again
                 notificationBuilder.setContentText("Waiting 10 seconds...");
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
-                state = State.BLUETOOTH_SCANNING;
                 timer.schedule(new TimerTask(){
                     @Override
                     public void run() {
-                        processStateMachine();
+                        processStateMachine(State.BLUETOOTH_SCANNING);
                     }
                 }, 10000);
             };break;
@@ -137,6 +151,12 @@ public class DistillerForegroundService extends Service {
                 distillerConnectivityService.startDistillerDiscovery(bluetoothAdapter);
             };break;
         }
+
+        State oldState = state;
+        state = newState;
+        for(DistillerForegroundServiceSubscriber subscriber : subscribers) {
+            subscriber.stateChanged(oldState, newState);
+        }
     }
 
     public class LocalBinder extends Binder {
@@ -145,7 +165,7 @@ public class DistillerForegroundService extends Service {
         }
     }
 
-    private enum State {
+    public enum State {
         NOT_CONNECTED_IDLE, // it waits 10 seconds
         BLUETOOTH_SCANNING, // it scans bluetooth for 10 seconds
         CONNECTING_DISTILLER, // it connects to distiller devices
@@ -163,8 +183,7 @@ public class DistillerForegroundService extends Service {
         public void onDeviceDiscoveryCompleted() {
             Log.i(TAG, "onDeviceDiscoveryCompleted");
             if(distillerConnectivityService.getScanResults().size() == 0) {
-                state = State.NOT_CONNECTED_IDLE;
-                processStateMachine();
+                processStateMachine(State.NOT_CONNECTED_IDLE);
             }
         }
 

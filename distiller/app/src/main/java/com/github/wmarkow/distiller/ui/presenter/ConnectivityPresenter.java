@@ -25,6 +25,7 @@ import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityServiceSubscriber;
 import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
+import com.github.wmarkow.distiller.domain.service.DistillerForegroundServiceSubscriber;
 import com.github.wmarkow.distiller.ui.ConnectivityViewIf;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
 
@@ -36,17 +37,15 @@ public class ConnectivityPresenter implements Presenter {
     private final static String TAG = "ConnectivityPresenter";
     private final static String SERVICE_CLASS_NAME = DistillerForegroundService.class.getName();
 
-    private ServiceConnection serviceConnection;
-
     private ConnectivityViewIf connectivityViewIf;
 
     private DistillerForegroundService distillerForegroundService = null;
-
-    private DefaultConnectivityServiceSubscriber defaultConnectivityServiceSubscriber;
+    private ServiceConnection serviceConnection;
+    private DefaultDistillerForegroundServiceSubscriber subscriber;
 
     @Inject
-    public ConnectivityPresenter(DistillerConnectivityService distillerConnectivityService) {
-        defaultConnectivityServiceSubscriber = new DefaultConnectivityServiceSubscriber();
+    public ConnectivityPresenter() {
+        subscriber = new DefaultDistillerForegroundServiceSubscriber();
 
         serviceConnection = new ForegroundServiceConnection();
     }
@@ -55,7 +54,6 @@ public class ConnectivityPresenter implements Presenter {
 
         if(!checkRequiredPermissions()) {
             connectivityViewIf.showDistillerSwitchChecked(false);
-            connectivityViewIf.showDistillerIndicatorDisabled();
 
             return;
         }
@@ -63,20 +61,18 @@ public class ConnectivityPresenter implements Presenter {
         Context context = DistillerApplication.getDistillerApplication().getApplicationContext();
 
         if(enabled) {
+            connectivityViewIf.showDistillerDisconnected();
             Intent serviceIntent = new Intent(context, DistillerForegroundService.class);
             serviceIntent.putExtra("inputExtra", "Manages connectivity and fetches data");
             ContextCompat.startForegroundService(context, serviceIntent);
 
-            connectivityViewIf.showDistillerIndicatorEnabled();
-
             bindToForegroundService();
         } else {
+            connectivityViewIf.showDistillerIndicatorDisabled();
             unbindFromForegroundService();
 
             Intent serviceIntent = new Intent(context, DistillerForegroundService.class);
             context.stopService(serviceIntent);
-
-            connectivityViewIf.showDistillerIndicatorDisabled();
         }
     }
 
@@ -86,17 +82,15 @@ public class ConnectivityPresenter implements Presenter {
 
     @Override
     public void resume() {
-        connectivityViewIf.showDistillerSwitchChecked(isServiceRunning(SERVICE_CLASS_NAME));
+        boolean serviceRunning = isServiceRunning(SERVICE_CLASS_NAME);
+        connectivityViewIf.showDistillerSwitchChecked(serviceRunning);
+        if(serviceRunning) {
+            connectivityViewIf.showDistillerDisconnected();
+        } else {
+            connectivityViewIf.showDistillerIndicatorDisabled();
+        }
 
         bindToForegroundService();
-
-//        if(distillerForegroundService.isDistillerConnected()) {
-//            connectivityViewIf.showDistillerConnected();
-//
-//            return;
-//        }
-
-        connectivityViewIf.showDistillerDisconnected();
     }
 
     @Override
@@ -109,60 +103,24 @@ public class ConnectivityPresenter implements Presenter {
         unbindFromForegroundService( );
     }
 
-    private class DefaultConnectivityServiceSubscriber implements DistillerConnectivityServiceSubscriber {
+    private class DefaultDistillerForegroundServiceSubscriber implements DistillerForegroundServiceSubscriber {
 
         @Override
-        public void onDeviceDiscoveryStarted() {
-            connectivityViewIf.showDistillerConnectionInProgress();
-        }
-
-        @Override
-        public void onDeviceDiscoveryCompleted() {
-//            if (distillerConnectivityService.getScanResults().size() == 0) {
-//                // means no device has been found
-//                connectivityViewIf.showDistillerDisconnected();
-//                Toast.makeText(connectivityViewIf.getContext(), "No distiller device found!", Toast.LENGTH_LONG).show();
-//
-//                return;
-//            }
-
-//            if(distillerConnectivityService.isConnected()) {
-//                connectivityViewIf.showDistillerConnected();
-//            }
-        }
-
-        @Override
-        public void onDeviceDiscovered(String deviceAddress) {
-            // connect to that device automatically
-//            distillerConnectivityService.connect(deviceAddress);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            connectivityViewIf.showDistillerDisconnected();
-            Toast.makeText(connectivityViewIf.getContext(), "Error during distiller device discovery!", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onDeviceConnected(String deviceAddress) {
-            // This event comes directly from android.bluetooth.BluetoothGatt
-            // Notification must be dispatched in UI thread in order to update widgets correctly.
+        public void stateChanged(DistillerForegroundService.State oldState, DistillerForegroundService.State newState) {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    connectivityViewIf.showDistillerConnected();
-                }
-            });
-        }
-
-        @Override
-        public void onDeviceDisconnected(String deviceAddress) {
-            // This event comes directly from android.bluetooth.BluetoothGatt
-            // Notification must be dispatched in UI thread in order to update widgets correctly.
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    connectivityViewIf.showDistillerDisconnected();
+                    switch(newState) {
+                        case NOT_CONNECTED_IDLE:
+                            connectivityViewIf.showDistillerDisconnected();
+                            break;
+                        case BLUETOOTH_SCANNING:
+                        case CONNECTING_DISTILLER:
+                            connectivityViewIf.showDistillerConnectionInProgress();
+                            break;
+                        case CONNECTED:
+                            connectivityViewIf.showDistillerConnected();
+                    }
                 }
             });
         }
@@ -178,6 +136,8 @@ public class ConnectivityPresenter implements Presenter {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             DistillerForegroundService.LocalBinder binder = (DistillerForegroundService.LocalBinder) service;
             distillerForegroundService = binder.getService();
+
+            distillerForegroundService.addSubscriber(subscriber);
         }
 
         @Override
@@ -185,6 +145,7 @@ public class ConnectivityPresenter implements Presenter {
             // in the Internet they write that this method is almost never called
             Log.i(TAG, "Unbounded from DistillerForegroundService");
 
+            distillerForegroundService.removeSubscriber(subscriber);
             distillerForegroundService = null;
         }
     };
@@ -265,6 +226,7 @@ public class ConnectivityPresenter implements Presenter {
         if(distillerForegroundService != null) {
             context.unbindService(serviceConnection);
             // Need to set the reference to null because in most cases the onServiceDisconnected will be not called
+            distillerForegroundService.removeSubscriber(subscriber);
             distillerForegroundService = null;
         }
 

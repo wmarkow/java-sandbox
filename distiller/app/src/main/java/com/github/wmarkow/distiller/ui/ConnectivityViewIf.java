@@ -13,6 +13,5 @@ public interface ConnectivityViewIf extends MVPViewIf {
     void showDistillerDisconnected();
     void showDistillerConnectionInProgress();
     void showDistillerIndicatorDisabled();
-    void showDistillerIndicatorEnabled();
     void showDistillerSwitchChecked(boolean checked);
 }

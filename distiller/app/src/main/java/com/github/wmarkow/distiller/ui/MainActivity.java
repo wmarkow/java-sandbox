@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     @Override
     public void onResume() {
         super.onResume();
+
+        connectivityPresenter.resume();
     }
 
     @Override
@@ -133,12 +135,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
         connectivityPresenter.enableForegroundService(foregroundServiceSwitch.isChecked());
     }
 
-    @OnClick(R.id.bluetoothFloatingActionButton)
-    public void onFabClicked()
-    {
-        //connectivityPresenter.connectToDistiller();
-    }
-
     @Override
     public Context getContext() {
         return this;
@@ -151,36 +147,21 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     @Override
     public void showDistillerConnected() {
-        if(!foregroundServiceSwitch.isChecked())
-        {
-            showDistillerIndicatorDisabled();
-            return;
-        }
-
+        fab.setEnabled(false);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connected)));
         bluetoothProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showDistillerDisconnected() {
-        if(!foregroundServiceSwitch.isChecked())
-        {
-            showDistillerIndicatorDisabled();
-            return;
-        }
-
+        fab.setEnabled(false);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_disconnected)));
         bluetoothProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showDistillerConnectionInProgress() {
-        if(!foregroundServiceSwitch.isChecked())
-        {
-            showDistillerIndicatorDisabled();
-            return;
-        }
-
+        fab.setEnabled(false);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_connecting)));
         bluetoothProgressBar.setIndeterminate(true);
         bluetoothProgressBar.setVisibility(View.VISIBLE);
@@ -188,15 +169,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     @Override
     public void showDistillerIndicatorDisabled() {
-        fab.setEnabled(false);
+        showDistillerDisconnected();
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.ic_bluetooth_icon_disabled)));
-        bluetoothProgressBar.setEnabled(false);
-    }
-
-    @Override
-    public void showDistillerIndicatorEnabled() {
-        fab.setEnabled(true);
-        bluetoothProgressBar.setEnabled(true);
     }
 
     @Override
