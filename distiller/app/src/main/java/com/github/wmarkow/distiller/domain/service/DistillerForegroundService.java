@@ -97,6 +97,7 @@ public class DistillerForegroundService extends Service {
         binder = null;
         notificationBuilder = null;
         distillerConnectivityService.stopDistillerDiscovery();
+        distillerConnectivityService.disconnectAll();
         distillerConnectivityService = null;
         state = null;
         subscribers.clear();
@@ -150,6 +151,16 @@ public class DistillerForegroundService extends Service {
 
                 distillerConnectivityService.startDistillerDiscovery(bluetoothAdapter);
             };break;
+            case CONNECTING_DISTILLER: {
+                notificationBuilder.setContentText("Connecting to distiller...");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+            };break;
+            case CONNECTED: {
+                notificationBuilder.setContentText("Connected.");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+            };break;
         }
 
         State oldState = state;
@@ -190,6 +201,9 @@ public class DistillerForegroundService extends Service {
         @Override
         public void onDeviceDiscovered(String deviceAddress) {
             Log.i(TAG, "onDeviceDiscovered");
+
+            distillerConnectivityService.connect(deviceAddress);
+            processStateMachine(State.CONNECTING_DISTILLER);
         }
 
         @Override
@@ -200,6 +214,8 @@ public class DistillerForegroundService extends Service {
         @Override
         public void onDeviceConnected(String deviceAddress) {
             Log.i(TAG, "onDeviceConnected");
+
+            processStateMachine(State.CONNECTED);
         }
 
         @Override

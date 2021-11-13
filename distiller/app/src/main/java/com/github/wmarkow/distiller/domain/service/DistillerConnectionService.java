@@ -96,6 +96,14 @@ public class DistillerConnectionService {
         bluetoothGatt = device.connectGatt(applicationContext, false, new MyBluetoothGattCallback());
     }
 
+    public void disconnect() {
+        if(bluetoothGatt != null) {
+            bluetoothGatt.disconnect();
+            bluetoothGatt = null;
+            servicesDiscovered = false;
+        }
+    }
+
     public synchronized void readDistillerData(Subscriber<DistillerData> subscriber) {
         readDistillerDataUseCase.setDistillerConnectionService(this);
 

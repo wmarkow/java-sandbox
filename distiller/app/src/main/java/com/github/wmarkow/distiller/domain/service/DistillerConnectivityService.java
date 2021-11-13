@@ -84,6 +84,12 @@ public class DistillerConnectivityService {
         getDistillerConnectionService(deviceAddress).connect();
     }
 
+    public void disconnectAll() {
+        for( DistillerConnectionService dcs : distillerConnectionServices.values()) {
+            dcs.disconnect();
+        }
+    }
+
     public boolean isConnected() {
         // if at least one device is connected then return true
         for(DistillerConnectionService dcs : distillerConnectionServices.values()) {
