@@ -19,7 +19,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 /***
- * Used do keep the connectivity between the application and Lego hubs devices.
+ * Used do keep the connectivity between the application and distiller devices.
  */
 public class DistillerConnectivityService {
 
@@ -70,6 +70,14 @@ public class DistillerConnectivityService {
         deviceDiscoveryUseCase.execute(bluetoothAdapter, new DeviceDiscoveryUseCaseSubscriber());
 
         return true;
+    }
+
+    public void stopDistillerDiscovery() {
+        if(deviceDiscoveryUseCase == null) {
+            return;
+        }
+
+        deviceDiscoveryUseCase.stopScan();
     }
 
     public void connect(String deviceAddress) {

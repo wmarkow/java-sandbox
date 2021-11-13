@@ -5,16 +5,23 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.ui.MainActivity;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /***
  * A service that works in the foreground. Its purpose are:
@@ -24,11 +31,18 @@ import com.github.wmarkow.distiller.ui.MainActivity;
  * </ul>
  */
 public class DistillerForegroundService extends Service {
-
+    private final static String TAG = "DistForegService";
     public static final String CHANNEL_ID = "DistillerForegroundServiceChannel";
+    public static final int NOTIFICATION_ID = 1500;
 
     // Binder given to clients
-    private final IBinder binder = new LocalBinder();
+    private IBinder binder = new LocalBinder();
+    private NotificationChannel notificationChannel;
+    private NotificationCompat.Builder notificationBuilder;
+    private DistillerConnectivityService distillerConnectivityService;
+    private State state;
+    private Timer timer = null;
+    private boolean inDestroy = false;
 
     @Override
     public void onCreate() {
@@ -42,21 +56,36 @@ public class DistillerForegroundService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Distiller Foreground Service")
                 .setContentText(input)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentIntent(pendingIntent)
-                .build();
-        startForeground(1, notification);
+                .setContentIntent(pendingIntent);
+        startForeground(NOTIFICATION_ID, notificationBuilder.build());
+
         //do heavy work on a background thread
-        //stopSelf();
+        state = State.BLUETOOTH_SCANNING;
+
+        distillerConnectivityService = new DistillerConnectivityService();
+        distillerConnectivityService.subscribe(new ForegroundDistillerConnectivityServiceSubscriber());
+        timer = new Timer();
+        processStateMachine();
+
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        inDestroy = true;
         super.onDestroy();
+        timer.cancel();
+        timer.purge();
+        timer = null;
+        binder = null;
+        notificationBuilder = null;
+        distillerConnectivityService.stopDistillerDiscovery();
+        distillerConnectivityService = null;
+        state = null;
     }
 
     @Nullable
@@ -66,19 +95,97 @@ public class DistillerForegroundService extends Service {
     }
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
+            notificationChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Manages connectivity and fetches data",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
+            manager.createNotificationChannel(notificationChannel);
+        }
+    }
+
+    private void processStateMachine() {
+        if(inDestroy) {
+            return;
+        }
+
+        switch(state) {
+            case NOT_CONNECTED_IDLE:
+            {
+                // wait 10 seconds and scan again
+                notificationBuilder.setContentText("Waiting 10 seconds...");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+                state = State.BLUETOOTH_SCANNING;
+                timer.schedule(new TimerTask(){
+                    @Override
+                    public void run() {
+                        processStateMachine();
+                    }
+                }, 10000);
+            };break;
+            case BLUETOOTH_SCANNING: {
+                notificationBuilder.setContentText("Bluetooth scanning...");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+
+                final BluetoothManager bluetoothManager =
+                        (BluetoothManager) this.getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+                BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+
+                distillerConnectivityService.startDistillerDiscovery(bluetoothAdapter);
+            };break;
         }
     }
 
     public class LocalBinder extends Binder {
         public DistillerForegroundService getService() {
             return DistillerForegroundService.this;
+        }
+    }
+
+    private enum State {
+        NOT_CONNECTED_IDLE, // it waits 10 seconds
+        BLUETOOTH_SCANNING, // it scans bluetooth for 10 seconds
+        CONNECTING_DISTILLER, // it connects to distiller devices
+        CONNECTED;
+    }
+
+    private class ForegroundDistillerConnectivityServiceSubscriber implements DistillerConnectivityServiceSubscriber {
+
+        @Override
+        public void onDeviceDiscoveryStarted() {
+            Log.i(TAG, "onDeviceDiscoveryStarted");
+        }
+
+        @Override
+        public void onDeviceDiscoveryCompleted() {
+            Log.i(TAG, "onDeviceDiscoveryCompleted");
+            if(distillerConnectivityService.getScanResults().size() == 0) {
+                state = State.NOT_CONNECTED_IDLE;
+                processStateMachine();
+            }
+        }
+
+        @Override
+        public void onDeviceDiscovered(String deviceAddress) {
+            Log.i(TAG, "onDeviceDiscovered");
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.i(TAG, "onError");
+        }
+
+        @Override
+        public void onDeviceConnected(String deviceAddress) {
+            Log.i(TAG, "onDeviceConnected");
+        }
+
+        @Override
+        public void onDeviceDisconnected(String deviceAddress) {
+            Log.i(TAG, "onDeviceDisconnected");
         }
     }
 }

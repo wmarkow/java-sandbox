@@ -3,7 +3,6 @@ package com.github.wmarkow.distiller.domain.interactor;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -12,6 +11,8 @@ import com.github.wmarkow.distiller.domain.executor.ThreadExecutor;
 import com.github.wmarkow.distiller.domain.model.BleScanResult;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -22,7 +23,7 @@ public class DeviceDiscoveryUseCase extends UseCase {
     private final static String TAG = "DeviceDiscoveryUseCase";
     private static final long SCAN_PERIOD = 10000;
 
-    private Handler handler = new Handler();
+    private Timer timer = new Timer();
     private ScanCallback scanCallback;
     private BluetoothAdapter bluetoothAdapter;
     private DefaultSubscriber<BleScanResult> subscriber;
@@ -47,7 +48,7 @@ public class DeviceDiscoveryUseCase extends UseCase {
         scanCallback = new TrainScanCallback();
         bluetoothAdapter.getBluetoothLeScanner().startScan(scanCallback);
 
-        handler.postDelayed(new Runnable() {
+        timer.schedule(new TimerTask(){
             @Override
             public void run() {
                 Log.i(TAG, String.format("Stop distiller device discovery after %s ms", SCAN_PERIOD));
@@ -56,9 +57,13 @@ public class DeviceDiscoveryUseCase extends UseCase {
         }, SCAN_PERIOD);
     }
 
-    public void stopScan()
+    public synchronized void stopScan()
     {
-        handler.removeCallbacksAndMessages(null);
+        if(scanCallback == null) {
+            // already stopped
+            return;
+        }
+        timer.cancel();
         bluetoothAdapter.getBluetoothLeScanner().stopScan(scanCallback);
         subscriber.onCompleted();
         scanCallback = null;
@@ -77,7 +82,9 @@ public class DeviceDiscoveryUseCase extends UseCase {
 
     @Override
     public void destroy() {
-        handler = null;
+        timer.cancel();
+        timer.purge();
+        timer = null;
         bluetoothAdapter = null;
         subscriber = null;
         scanCallback = null;

@@ -112,8 +112,9 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     @Override
     public void onPause() {
-        super.onPause();
         connectivityPresenter.pause();
+
+        super.onPause();
     }
 
     @Override
@@ -129,13 +130,13 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
 
     @OnClick(R.id.foregroundServiceSwitch)
     public void foregroundServiceSwitchClicked() {
-        connectivityPresenter.enableForegroundService(this, foregroundServiceSwitch.isChecked());
+        connectivityPresenter.enableForegroundService(foregroundServiceSwitch.isChecked());
     }
 
     @OnClick(R.id.bluetoothFloatingActionButton)
     public void onFabClicked()
     {
-        connectivityPresenter.connectToDistiller();
+        //connectivityPresenter.connectToDistiller();
     }
 
     @Override

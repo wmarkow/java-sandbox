@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -33,108 +34,50 @@ import javax.inject.Inject;
 
 public class ConnectivityPresenter implements Presenter {
     private final static String TAG = "ConnectivityPresenter";
+    private final static String SERVICE_CLASS_NAME = DistillerForegroundService.class.getName();
 
     private ServiceConnection serviceConnection;
 
     private ConnectivityViewIf connectivityViewIf;
 
     private DistillerForegroundService distillerForegroundService = null;
-    private DistillerConnectivityService distillerConnectivityService;
+
     private DefaultConnectivityServiceSubscriber defaultConnectivityServiceSubscriber;
 
     @Inject
     public ConnectivityPresenter(DistillerConnectivityService distillerConnectivityService) {
-        this.distillerConnectivityService = distillerConnectivityService;
         defaultConnectivityServiceSubscriber = new DefaultConnectivityServiceSubscriber();
 
-        this.distillerConnectivityService.subscribe(defaultConnectivityServiceSubscriber);
-
-        serviceConnection = new ServiceConnection() {
-
-            @Override
-            public void onServiceConnected(ComponentName className,
-                                           IBinder service) {
-                // We've bound to LocalService, cast the IBinder and get LocalService instance
-                DistillerForegroundService.LocalBinder binder = (DistillerForegroundService.LocalBinder) service;
-                distillerForegroundService = binder.getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName arg0) {
-            }
-        };
-
+        serviceConnection = new ForegroundServiceConnection();
     }
 
-    public void enableForegroundService(Activity activity, boolean enabled) {
+    public void enableForegroundService(boolean enabled) {
+
+        if(!checkRequiredPermissions()) {
+            connectivityViewIf.showDistillerSwitchChecked(false);
+            connectivityViewIf.showDistillerIndicatorDisabled();
+
+            return;
+        }
+
+        Context context = DistillerApplication.getDistillerApplication().getApplicationContext();
+
         if(enabled) {
-            Intent serviceIntent = new Intent(activity, DistillerForegroundService.class);
+            Intent serviceIntent = new Intent(context, DistillerForegroundService.class);
             serviceIntent.putExtra("inputExtra", "Manages connectivity and fetches data");
-            ContextCompat.startForegroundService(activity, serviceIntent);
+            ContextCompat.startForegroundService(context, serviceIntent);
 
             connectivityViewIf.showDistillerIndicatorEnabled();
 
-            // bind to service
-            Intent intent = new Intent(activity, DistillerForegroundService.class);
-            activity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+            bindToForegroundService();
         } else {
-            Intent serviceIntent = new Intent(activity, DistillerForegroundService.class);
-            activity.stopService(serviceIntent);
+            unbindFromForegroundService();
+
+            Intent serviceIntent = new Intent(context, DistillerForegroundService.class);
+            context.stopService(serviceIntent);
 
             connectivityViewIf.showDistillerIndicatorDisabled();
         }
-    }
-
-    public void connectToDistiller() {
-        // Initializes Bluetooth adapter.
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) connectivityViewIf.getContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Toast.makeText(connectivityViewIf.getContext(), "Bluetooth musi być włączony!", Toast.LENGTH_LONG).show();
-
-            connectivityViewIf.showDistillerDisconnected();
-
-            return;
-        }
-
-        LocationManager locationManager = (LocationManager) connectivityViewIf.getContext().getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast.makeText(connectivityViewIf.getContext(), "Lokalizacja musi być włączona!", Toast.LENGTH_LONG).show();
-
-            connectivityViewIf.showDistillerDisconnected();
-
-            return;
-        }
-
-        // check for Location access permission
-        if (ContextCompat.checkSelfPermission(
-                connectivityViewIf.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_DENIED) {
-
-            // ask user to grant permission
-            connectivityViewIf.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION});
-
-            // check permission again
-            if (ContextCompat.checkSelfPermission(
-                    connectivityViewIf.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-                    PackageManager.PERMISSION_DENIED) {
-
-                Toast.makeText(connectivityViewIf.getContext(), "Uprawnienia do Lokalizacji muszą być nadane!", Toast.LENGTH_LONG).show();
-
-                connectivityViewIf.showDistillerDisconnected();
-
-                return;
-            }
-        }
-
-        // do not connect if already connected
-        if(distillerConnectivityService.isConnected()) {
-            return;
-        }
-
-        distillerConnectivityService.startDistillerDiscovery(bluetoothAdapter);
     }
 
     public void setView(ConnectivityViewIf connectivityViewIf) {
@@ -143,29 +86,27 @@ public class ConnectivityPresenter implements Presenter {
 
     @Override
     public void resume() {
-        boolean serviceRunning = isServiceRunning(DistillerForegroundService.class.getName());
-        connectivityViewIf.showDistillerSwitchChecked(serviceRunning);
+        connectivityViewIf.showDistillerSwitchChecked(isServiceRunning(SERVICE_CLASS_NAME));
 
-        if(distillerConnectivityService.isConnected()) {
-            connectivityViewIf.showDistillerConnected();
+        bindToForegroundService();
 
-            return;
-        }
+//        if(distillerForegroundService.isDistillerConnected()) {
+//            connectivityViewIf.showDistillerConnected();
+//
+//            return;
+//        }
 
         connectivityViewIf.showDistillerDisconnected();
-
-        // start device discovery
-        connectToDistiller();
     }
 
     @Override
     public void pause() {
-        //trainDiscoveryUseCase.unsubscribe();
+        unbindFromForegroundService();
     }
 
     @Override
     public void destroy() {
-        distillerConnectivityService.unsubscribe(defaultConnectivityServiceSubscriber);
+        unbindFromForegroundService( );
     }
 
     private class DefaultConnectivityServiceSubscriber implements DistillerConnectivityServiceSubscriber {
@@ -177,23 +118,23 @@ public class ConnectivityPresenter implements Presenter {
 
         @Override
         public void onDeviceDiscoveryCompleted() {
-            if (distillerConnectivityService.getScanResults().size() == 0) {
-                // means no device has been found
-                connectivityViewIf.showDistillerDisconnected();
-                Toast.makeText(connectivityViewIf.getContext(), "No distiller device found!", Toast.LENGTH_LONG).show();
+//            if (distillerConnectivityService.getScanResults().size() == 0) {
+//                // means no device has been found
+//                connectivityViewIf.showDistillerDisconnected();
+//                Toast.makeText(connectivityViewIf.getContext(), "No distiller device found!", Toast.LENGTH_LONG).show();
+//
+//                return;
+//            }
 
-                return;
-            }
-
-            if(distillerConnectivityService.isConnected()) {
-                connectivityViewIf.showDistillerConnected();
-            }
+//            if(distillerConnectivityService.isConnected()) {
+//                connectivityViewIf.showDistillerConnected();
+//            }
         }
 
         @Override
         public void onDeviceDiscovered(String deviceAddress) {
             // connect to that device automatically
-            distillerConnectivityService.connect(deviceAddress);
+//            distillerConnectivityService.connect(deviceAddress);
         }
 
         @Override
@@ -227,6 +168,68 @@ public class ConnectivityPresenter implements Presenter {
         }
     }
 
+    private class ForegroundServiceConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            Log.i(TAG, "Bounded to DistillerForegroundService");
+
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            DistillerForegroundService.LocalBinder binder = (DistillerForegroundService.LocalBinder) service;
+            distillerForegroundService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            // in the Internet they write that this method is almost never called
+            Log.i(TAG, "Unbounded from DistillerForegroundService");
+
+            distillerForegroundService = null;
+        }
+    };
+
+    private boolean checkRequiredPermissions() {
+        // Initializes Bluetooth adapter.
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) connectivityViewIf.getContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            Toast.makeText(connectivityViewIf.getContext(), "Bluetooth musi być włączony!", Toast.LENGTH_LONG).show();
+
+            return false;
+        }
+
+        LocationManager locationManager = (LocationManager) connectivityViewIf.getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Toast.makeText(connectivityViewIf.getContext(), "Lokalizacja musi być włączona!", Toast.LENGTH_LONG).show();
+
+            return false;
+        }
+
+        // check for Location access permission
+        if (ContextCompat.checkSelfPermission(
+                connectivityViewIf.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_DENIED) {
+
+            // ask user to grant permission
+            connectivityViewIf.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION});
+
+            // check permission again
+            if (ContextCompat.checkSelfPermission(
+                    connectivityViewIf.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_DENIED) {
+
+                Toast.makeText(connectivityViewIf.getContext(), "Uprawnienia do Lokalizacji muszą być nadane!", Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private boolean isServiceRunning(String serviceClassName){
         final ActivityManager activityManager = (ActivityManager) DistillerApplication.getDistillerApplication().getApplicationContext()
                 .getSystemService(Context.ACTIVITY_SERVICE);
@@ -238,5 +241,33 @@ public class ConnectivityPresenter implements Presenter {
             }
         }
         return false;
+    }
+
+    private void bindToForegroundService( ) {
+        if(!isServiceRunning(SERVICE_CLASS_NAME)) {
+            Log.i(TAG,"Foreground service not started. No bounding possible.");
+            return;
+        }
+
+        Context context = DistillerApplication.getDistillerApplication().getApplicationContext();
+
+        Log.i(TAG, "Binding to the foreground service...");
+
+        Intent intent = new Intent(context, DistillerForegroundService.class);
+        context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void unbindFromForegroundService( ) {
+        Context context = DistillerApplication.getDistillerApplication().getApplicationContext();
+
+        Log.i(TAG, "Unbinding from the foreground service...");
+
+        if(distillerForegroundService != null) {
+            context.unbindService(serviceConnection);
+            // Need to set the reference to null because in most cases the onServiceDisconnected will be not called
+            distillerForegroundService = null;
+        }
+
+        Log.i(TAG, "Unbounded from DistillerForegroundService");
     }
 }
