@@ -221,6 +221,8 @@ public class DistillerForegroundService extends Service {
         @Override
         public void onDeviceDisconnected(String deviceAddress) {
             Log.i(TAG, "onDeviceDisconnected");
+
+            processStateMachine(State.NOT_CONNECTED_IDLE);
         }
     }
 }
