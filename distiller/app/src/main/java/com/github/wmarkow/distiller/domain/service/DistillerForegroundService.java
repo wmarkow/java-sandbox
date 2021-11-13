@@ -18,7 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.github.wmarkow.distiller.R;
+import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.ui.MainActivity;
+import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import rx.Subscriber;
 
 /***
  * A service that works in the foreground. Its purpose are:
@@ -38,6 +42,7 @@ public class DistillerForegroundService extends Service {
     private final static String TAG = "DistForegService";
     public static final String CHANNEL_ID = "DistillerForegroundServiceChannel";
     public static final int NOTIFICATION_ID = 1500;
+    private final static long AUTOREFRESH_PERIOD_MILLIS = 2000;
 
     // Binder given to clients
     private IBinder binder = new LocalBinder();
@@ -48,6 +53,7 @@ public class DistillerForegroundService extends Service {
     private Timer timer = null;
     private boolean inDestroy = false;
     private Set<DistillerForegroundServiceSubscriber> subscribers = new HashSet<>();
+
 
     @Override
     public void onCreate() {
@@ -160,6 +166,12 @@ public class DistillerForegroundService extends Service {
                 notificationBuilder.setContentText("Connected.");
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        readDistillerData();
+                    }
+                }, AUTOREFRESH_PERIOD_MILLIS, AUTOREFRESH_PERIOD_MILLIS);
             };break;
         }
 
@@ -174,6 +186,19 @@ public class DistillerForegroundService extends Service {
         public DistillerForegroundService getService() {
             return DistillerForegroundService.this;
         }
+    }
+
+    private void readDistillerData() {
+        if(distillerConnectivityService == null) {
+            return;
+        }
+
+        DistillerConnectionService dcs = distillerConnectivityService.getConnectedDistillerConnectionService();
+        if(dcs == null) {
+            return;
+        }
+
+        dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
     }
 
     public enum State {
@@ -223,6 +248,25 @@ public class DistillerForegroundService extends Service {
             Log.i(TAG, "onDeviceDisconnected");
 
             processStateMachine(State.NOT_CONNECTED_IDLE);
+        }
+    }
+
+    private class DefaultDistillerDataServiceSubscriber extends Subscriber<DistillerData> {
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(DistillerData distillerData) {
+            // store distiller data in the database
+
         }
     }
 }

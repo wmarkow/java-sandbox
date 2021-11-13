@@ -84,9 +84,7 @@ public class ConnectivityPresenter implements Presenter {
     public void resume() {
         boolean serviceRunning = isServiceRunning(SERVICE_CLASS_NAME);
         connectivityViewIf.showDistillerSwitchChecked(serviceRunning);
-        if(serviceRunning) {
-            connectivityViewIf.showDistillerDisconnected();
-        } else {
+        if(!serviceRunning) {
             connectivityViewIf.showDistillerIndicatorDisabled();
         }
 
@@ -197,6 +195,11 @@ public class ConnectivityPresenter implements Presenter {
     private void bindToForegroundService( ) {
         if(!isServiceRunning(SERVICE_CLASS_NAME)) {
             Log.i(TAG,"Foreground service not started. No bounding possible.");
+            return;
+        }
+
+        if(distillerForegroundService != null) {
+            // already bounded. No need to bind again.
             return;
         }
 
