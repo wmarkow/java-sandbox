@@ -1,12 +1,6 @@
 package com.github.wmarkow.distiller.ui.presenter;
 
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
-import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
-import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DistillerFakeDataPresenter extends DistillerDataPresenter {
 
@@ -16,8 +10,7 @@ public class DistillerFakeDataPresenter extends DistillerDataPresenter {
 
     @Override
     public void readDistillerData() {
-        DistillerData dd = new DistillerData();
-        dd.deviceUpTimeMillis = System.currentTimeMillis();
+        DistillerDataEntity dd = new DistillerDataEntity();
         dd.coldWaterTemp = (Math.random() * 1) + 15f;
         dd.hotWaterTemp = (Math.random() * 1) + 76f;
         dd.boilerTemp = (Math.random() * 0.2) + 91.5f;

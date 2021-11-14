@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 @Entity(tableName = "DistillerData")
 public class DistillerDataEntity {
     @PrimaryKey
@@ -26,4 +29,8 @@ public class DistillerDataEntity {
 
     @ColumnInfo(name = "water_rpm")
     public double waterRpm;
+
+    public DistillerDataEntity() {
+        utcTimestampMillis = ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
+    }
 }

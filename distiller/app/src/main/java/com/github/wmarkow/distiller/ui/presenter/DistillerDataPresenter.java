@@ -1,11 +1,8 @@
 package com.github.wmarkow.distiller.ui.presenter;
 
 import com.github.wmarkow.distiller.DistillerApplication;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
-import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
-import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 
 import java.util.List;
@@ -13,8 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 public class DistillerDataPresenter implements Presenter {
     private final static String TAG = "DistDataPresenter";

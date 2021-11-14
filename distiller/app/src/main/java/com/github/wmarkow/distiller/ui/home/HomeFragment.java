@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,20 +16,11 @@ import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerHomeFragmentComponent;
 import com.github.wmarkow.distiller.di.components.HomeFragmentComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
-import com.github.wmarkow.distiller.domain.calc.CondensationSpeed;
-import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
-import com.github.wmarkow.distiller.domain.calc.EthanolSolutionCalc;
-import com.github.wmarkow.distiller.domain.calc.LVEWEquilibrium;
-import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
-import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
-import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
-import com.github.wmarkow.distiller.ui.presenter.DistillerFakeDataPresenter;
 
 import java.util.List;
 

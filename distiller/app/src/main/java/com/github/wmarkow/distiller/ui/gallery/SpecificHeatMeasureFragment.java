@@ -8,30 +8,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
-import com.github.wmarkow.distiller.di.components.DaggerHomeFragmentComponent;
 import com.github.wmarkow.distiller.di.components.DaggerSpecificHeatMeasureFragmentComponent;
-import com.github.wmarkow.distiller.di.components.HomeFragmentComponent;
 import com.github.wmarkow.distiller.di.components.SpecificHeatMeasureFragmentComponent;
 import com.github.wmarkow.distiller.di.modules.PresentersModule;
 import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
-import com.github.wmarkow.distiller.ui.home.HomeViewModel;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
-import com.github.wmarkow.distiller.ui.presenter.DistillerFakeDataPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

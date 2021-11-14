@@ -16,7 +16,6 @@ import com.github.wmarkow.distiller.domain.calc.LVEWEquilibrium;
 import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
 import java.util.List;

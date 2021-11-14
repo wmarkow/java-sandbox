@@ -19,10 +19,8 @@ import com.github.wmarkow.distiller.di.components.DaggerDistillerConnectionCompo
 import com.github.wmarkow.distiller.di.components.DistillerConnectionComponent;
 import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDataUseCase;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +102,7 @@ public class DistillerConnectionService {
         }
     }
 
-    public synchronized void readDistillerData(Subscriber<DistillerData> subscriber) {
+    public synchronized void readDistillerData(Subscriber<DistillerDataEntity> subscriber) {
         readDistillerDataUseCase.setDistillerConnectionService(this);
 
         readDistillerDataUseCase.execute(subscriber);

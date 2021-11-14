@@ -7,20 +7,18 @@ import android.util.Log;
 
 import com.github.wmarkow.distiller.domain.executor.PostExecutionThread;
 import com.github.wmarkow.distiller.domain.executor.ThreadExecutor;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.service.BluetoothGattCharacteristicReadCalback;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import dagger.Provides;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -28,7 +26,7 @@ import rx.Subscriber;
  * Reads the data directly from the device.
  * @param <T>
  */
-public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
+public class ReadDistillerDataUseCase<T extends DistillerDataEntity> extends UseCase {
     private final static String TAG = "ReadDistDataUseCase";
 
     private final static UUID DISTILLER_SERVICE_UUID = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
@@ -37,7 +35,7 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
     private DistillerConnectionService distillerConnectionService;
     private DefaultBluetoothGattCharacteristicReadCallback bluetoothGattCharacteristicReadCallback;
     private CountDownLatch countDownLatch;
-    private DistillerData distillerData;
+    private DistillerDataEntity distillerData;
 
     @Inject
     public ReadDistillerDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
@@ -63,10 +61,10 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
     }
 
     @Override
-    protected Observable<DistillerData> buildUseCaseObservable() {
-        return Observable.create(new Observable.OnSubscribe<DistillerData>() {
+    protected Observable<DistillerDataEntity> buildUseCaseObservable() {
+        return Observable.create(new Observable.OnSubscribe<DistillerDataEntity>() {
             @Override
-            public void call(Subscriber<? super DistillerData> subscriber) {
+            public void call(Subscriber<? super DistillerDataEntity> subscriber) {
 
                 try {
                     Log.i(TAG, String.format("Fetching distiller data ..."));
@@ -125,7 +123,7 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
                 return;
             }
 
-            distillerData = new DistillerData();
+            distillerData = new DistillerDataEntity();
             distillerData.deviceUpTimeMillis = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
             distillerData.coldWaterTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
             distillerData.hotWaterTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());

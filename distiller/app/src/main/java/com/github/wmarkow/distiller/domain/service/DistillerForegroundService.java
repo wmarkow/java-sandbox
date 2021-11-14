@@ -1,6 +1,5 @@
 package com.github.wmarkow.distiller.domain.service;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,15 +18,11 @@ import androidx.core.app.NotificationCompat;
 
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
-import com.github.wmarkow.distiller.domain.model.DistillerData;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
 import com.github.wmarkow.distiller.ui.MainActivity;
-import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -205,8 +200,7 @@ public class DistillerForegroundService extends Service {
         //dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
 
         // Fake data read
-        DistillerData dd = new DistillerData();
-        dd.deviceUpTimeMillis = System.currentTimeMillis();
+        DistillerDataEntity dd = new DistillerDataEntity();
         dd.coldWaterTemp = (Math.random() * 1) + 15f;
         dd.hotWaterTemp = (Math.random() * 1) + 76f;
         dd.boilerTemp = (Math.random() * 0.2) + 91.5f;
@@ -266,7 +260,7 @@ public class DistillerForegroundService extends Service {
         }
     }
 
-    private class DefaultDistillerDataServiceSubscriber extends Subscriber<DistillerData> {
+    private class DefaultDistillerDataServiceSubscriber extends Subscriber<DistillerDataEntity> {
 
         @Override
         public void onCompleted() {
@@ -279,21 +273,12 @@ public class DistillerForegroundService extends Service {
         }
 
         @Override
-        public void onNext(DistillerData distillerData) {
+        public void onNext(DistillerDataEntity distillerData) {
             // store distiller data in the database
-            DistillerDataEntity entity = new DistillerDataEntity();
-            entity.utcTimestampMillis = distillerData.getUtcTimestampMillis();
-            entity.deviceUpTimeMillis = distillerData.deviceUpTimeMillis;
-            entity.coldWaterTemp = distillerData.coldWaterTemp;
-            entity.hotWaterTemp = distillerData.hotWaterTemp;
-            entity.headerTemp = distillerData.headerTemp;
-            entity.boilerTemp = distillerData.boilerTemp;
-            entity.waterRpm = distillerData.waterRpm;
-
             DistillerDatabase distillerDatabase = DistillerApplication.getDistillerApplication().getDistillerDatabase();
-            distillerDatabase.distillerDataDao().insert(entity);
+            distillerDatabase.distillerDataDao().insert(distillerData);
 
-            Log.d(TAG, String.format("onNext() UTC millis = %s", distillerData.getUtcTimestampMillis()));
+            Log.d(TAG, String.format("onNext() UTC millis = %s", distillerData.utcTimestampMillis));
             Log.d(TAG, String.format("onNext() systemUpTime = %s", distillerData.deviceUpTimeMillis));
             Log.d(TAG, String.format("onNext() called with coldWaterTemp = %s", distillerData.coldWaterTemp));
             Log.d(TAG, String.format("onNext() called with hotWaterTemp = %s", distillerData.hotWaterTemp));
