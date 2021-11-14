@@ -83,23 +83,45 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
         systemUpTimeTextView.setText(formatSystemUpTime(latestData.utcTimestampMillis));
 
-        coldWaterTempTextView.setText(String.valueOf(String.format("%.2f", latestData.coldWaterTemp)));
-        hotWaterTempTextView.setText(String.valueOf(String.format("%.2f", latestData.hotWaterTemp)));
+        if(latestData.coldWaterTemp == null) {
+            coldWaterTempTextView.setText("UNAVAL");
+        }else {
+            coldWaterTempTextView.setText(String.valueOf(String.format("%.2f", latestData.coldWaterTemp)));
+        }
+
+        if(latestData.hotWaterTemp == null) {
+            hotWaterTempTextView.setText("UNAVAL");
+        }else {
+            hotWaterTempTextView.setText(String.valueOf(String.format("%.2f", latestData.hotWaterTemp)));
+        }
+
         waterFlowTextView.setText(String.valueOf(String.format("%.2f", latestData.waterRpm)));
 
-        headerTempTextView.setText(String.valueOf(String.format("%.2f", latestData.headerTemp)));
+        if(latestData.headerTemp == null) {
+            headerTempTextView.setText("UNAVAL");
+        }else {
+            headerTempTextView.setText(String.valueOf(String.format("%.2f", latestData.headerTemp)));
+        }
 
-        boilerTempTextView.setText(String.valueOf(String.format("%.2f", latestData.boilerTemp)));
+        if(latestData.boilerTemp == null) {
+            boilerTempTextView.setText("UNAVAL");
+        }else {
+            boilerTempTextView.setText(String.valueOf(String.format("%.2f", latestData.boilerTemp)));
+        }
 
         SeaWaterFlowCalc waterFlowCalc = new SeaWaterFlowCalc();
         Double waterFlowInM3PerS = null;
         try {
-            waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(latestData.waterRpm);
-            double waterFlowInLPerH = waterFlowInM3PerS * 1000 * 3600;
-            CondenserCalc condenserCalc = new CondenserCalc();
-            double condenserPowerInW = condenserCalc.calculateCoolingPower(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS);
-            waterFlowTextView2.setText(String.format("%.2f", waterFlowInLPerH));
-            condenserPowerTextView.setText(String.format("%.2f", condenserPowerInW));
+                waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(latestData.waterRpm);
+                double waterFlowInLPerH = waterFlowInM3PerS * 1000 * 3600;
+                waterFlowTextView2.setText(String.format("%.2f", waterFlowInLPerH));
+                if(latestData.coldWaterTemp == null || latestData.hotWaterTemp == null) {
+                    condenserPowerTextView.setText("UNAVAL");
+                }else {
+                    CondenserCalc condenserCalc = new CondenserCalc();
+                    double condenserPowerInW = condenserCalc.calculateCoolingPower(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS);
+                    condenserPowerTextView.setText(String.format("%.2f", condenserPowerInW));
+                }
         } catch (OutOfRangeException e) {
             Log.e(TAG, e.getMessage(), e);
             waterFlowTextView2.setText("ERROR");
@@ -108,12 +130,17 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
         try {
             // calculate condensate strength
-            LVEWEquilibriumCalc ec = new LVEWEquilibriumCalc();
-            LVEWEquilibrium equilibrium = ec.calculateEquilibrium(latestData.headerTemp);
+            if(latestData.headerTemp == null)
+            {
+                condensateStrengthTextView.setText("UNAVAL");
+            } else {
+                LVEWEquilibriumCalc ec = new LVEWEquilibriumCalc();
+                LVEWEquilibrium equilibrium = ec.calculateEquilibrium(latestData.headerTemp);
 
-            EthanolSolutionCalc esc = new EthanolSolutionCalc();
-            double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolLiquidMoleFraction, latestData.headerTemp);
-            condensateStrengthTextView.setText(String.format("%.2f", volConcentration));
+                EthanolSolutionCalc esc = new EthanolSolutionCalc();
+                double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolLiquidMoleFraction, latestData.headerTemp);
+                condensateStrengthTextView.setText(String.format("%.2f", volConcentration));
+            }
         } catch (OutOfRangeException e) {
             Log.e(TAG, e.getMessage(), e);
             condensateStrengthTextView.setText("ERROR");
@@ -121,7 +148,9 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
         try {
             // calculate condensation speed
-            if(waterFlowInM3PerS != null) {
+            if(waterFlowInM3PerS == null || latestData.coldWaterTemp == null || latestData.hotWaterTemp == null || latestData.headerTemp == null) {
+                condensationSpeedTextView.setText("UNAVAL");
+            } else {
                 CondenserCalc cc = new CondenserCalc();
                 CondensationSpeed cSpeed = cc.calculateCondensationSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
                 double condensationSpeedInLPerMin = cSpeed.speedInLPerSec * 1000 * 60;

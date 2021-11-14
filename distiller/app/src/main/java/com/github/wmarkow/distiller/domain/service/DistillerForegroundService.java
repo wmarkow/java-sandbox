@@ -206,6 +206,11 @@ public class DistillerForegroundService extends Service {
         dd.boilerTemp = (Math.random() * 0.2) + 91.5f;
         dd.headerTemp = (Math.random() * 0.2) + 80.8f;
         dd.waterRpm = (Math.random() * 50) + 1800f;
+        // uncomment below to simulate null temperatures
+        //dd.coldWaterTemp = null;
+        //dd.hotWaterTemp = null;
+        //dd.headerTemp = null;
+        //dd.boilerTemp = null;
 
         new DefaultDistillerDataServiceSubscriber().onNext(dd);
     }
