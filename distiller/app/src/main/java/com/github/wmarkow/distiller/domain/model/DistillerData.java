@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 
 public class DistillerData {
-    public String deviceAddress;
     public long deviceUpTimeMillis;
     private long utcTimestampMillis;
     public Double coldWaterTemp = null;

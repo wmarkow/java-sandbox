@@ -126,7 +126,6 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
             }
 
             distillerData = new DistillerData();
-            distillerData.deviceAddress = distillerConnectionService.getDeviceAddress();
             distillerData.deviceUpTimeMillis = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
             distillerData.coldWaterTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
             distillerData.hotWaterTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
