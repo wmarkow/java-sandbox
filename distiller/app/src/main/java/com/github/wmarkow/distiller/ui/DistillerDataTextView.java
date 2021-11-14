@@ -162,6 +162,16 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
         }
     }
 
+    @Override
+    public void setXRangeResolutionSeconds(int xRangeResolutionSeconds) {
+
+    }
+
+    @Override
+    public void setXRangeVisibleSpanSeconds(int xRangeVisibleSpanSeconds) {
+
+    }
+
     public void hideHeaderTemp() {
         headerTempLayout.setVisibility(View.GONE);
     }

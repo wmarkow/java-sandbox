@@ -47,6 +47,8 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
 
     private LineData data = new LineData();
     protected Typeface tfLight = Typeface.DEFAULT;
+    private int xRangeResolutionSeconds = 2;
+    private int xRangeVisibleSpanSeconds = 120;
 
     public DistillerDataChartView(Context context) {
         super(context);
@@ -121,11 +123,21 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         chart.notifyDataSetChanged();
 
         // limit the number of visible entries
-        chart.setVisibleXRangeMaximum(30);
+        chart.setVisibleXRangeMaximum(xRangeVisibleSpanSeconds / xRangeResolutionSeconds);
         // chart.setVisibleYRange(30, AxisDependency.LEFT);
 
         // move to the latest entry
         chart.moveViewToX(todaySecondsLocal);
+    }
+
+    @Override
+    public void setXRangeResolutionSeconds(int xRangeResolutionSeconds) {
+        this.xRangeResolutionSeconds = xRangeResolutionSeconds;
+    }
+
+    @Override
+    public void setXRangeVisibleSpanSeconds(int xRangeVisibleSpanSeconds) {
+        this.xRangeVisibleSpanSeconds = xRangeVisibleSpanSeconds;
     }
 
     public void removeBoilerTemp() {

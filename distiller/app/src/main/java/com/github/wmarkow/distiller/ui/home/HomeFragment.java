@@ -62,7 +62,6 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
         //distillerDataPresenter = new DistillerFakeDataPresenter();
 
         distillerDataPresenter.setView(this);
-
         return root;
     }
 
@@ -84,5 +83,15 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
 
         distillerDataTextView.showNewDistillerData(distillerData);
         distillerDataChartView.showNewDistillerData(distillerData);
+    }
+
+    @Override
+    public void setXRangeResolutionSeconds(int xRangeResolutionSeconds) {
+        distillerDataChartView.setXRangeResolutionSeconds(xRangeResolutionSeconds);
+    }
+
+    @Override
+    public void setXRangeVisibleSpanSeconds(int xRangeVisibleSpanSeconds) {
+        distillerDataChartView.setXRangeVisibleSpanSeconds(xRangeVisibleSpanSeconds);
     }
 }

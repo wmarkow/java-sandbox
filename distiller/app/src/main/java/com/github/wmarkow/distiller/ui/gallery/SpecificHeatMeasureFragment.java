@@ -126,6 +126,16 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
         }
     }
 
+    @Override
+    public void setXRangeResolutionSeconds(int xRangeResolutionSeconds) {
+
+    }
+
+    @Override
+    public void setXRangeVisibleSpanSeconds(int xRangeVisibleSpanSeconds) {
+
+    }
+
     @OnClick(R.id.buttonStart)
     public void onButtonStartClicked() {
         measureData.clear();

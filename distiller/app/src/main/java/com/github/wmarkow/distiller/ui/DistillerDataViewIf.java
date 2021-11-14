@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DistillerDataViewIf {
     void showNewDistillerData(List<DistillerDataEntity> newData);
+    void setXRangeResolutionSeconds(int resolutionInSeconds);
+    void setXRangeVisibleSpanSeconds(int spanInSeconds);
 }

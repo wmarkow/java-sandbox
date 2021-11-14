@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class DistillerDataPresenter implements Presenter {
     private final static String TAG = "DistDataPresenter";
 
-    private final static long AUTOREFRESH_PERIOD_MILLIS = 2000;
+    private final static int AUTOREFRESH_PERIOD_SECONDS = 2;
 
     private DistillerDataViewIf distillerDataView;
     private Timer timer = null;
@@ -30,6 +30,11 @@ public class DistillerDataPresenter implements Presenter {
 
     public void setView(DistillerDataViewIf distillerViewIf) {
         this.distillerDataView = distillerViewIf;
+
+        // data comes every 2 seconds
+        distillerViewIf.setXRangeResolutionSeconds(AUTOREFRESH_PERIOD_SECONDS);
+        // default chart span is 120 seconds
+        distillerViewIf.setXRangeVisibleSpanSeconds(120);
     }
 
     public void readDistillerData() {
@@ -50,7 +55,7 @@ public class DistillerDataPresenter implements Presenter {
     public void resume() {
         // enable autorefresh
         timer = new Timer();
-        timer.schedule(new AutorefreshTimerTask(), 0, AUTOREFRESH_PERIOD_MILLIS);
+        timer.schedule(new AutorefreshTimerTask(), 0, 1000 * AUTOREFRESH_PERIOD_SECONDS);
     }
 
     @Override
