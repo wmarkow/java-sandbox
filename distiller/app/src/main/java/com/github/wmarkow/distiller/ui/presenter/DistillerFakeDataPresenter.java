@@ -1,13 +1,17 @@
 package com.github.wmarkow.distiller.ui.presenter;
 
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DistillerFakeDataPresenter extends DistillerDataPresenter {
 
     public DistillerFakeDataPresenter() {
-        super(null);
+        super();
     }
 
     @Override
@@ -20,6 +24,6 @@ public class DistillerFakeDataPresenter extends DistillerDataPresenter {
         dd.headerTemp = (float) (Math.random() * 0.2) + 80.8f;
         dd.waterRpm = (float)(Math.random() * 50) + 1800f;
 
-        getDistillerDataView().showDistillerData(dd);
+        //getDistillerDataView().showNewDistillerData(dd);
     }
 }

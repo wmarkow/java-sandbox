@@ -1,10 +1,14 @@
 package com.github.wmarkow.distiller.ui.presenter;
 
+import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
+import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectionService;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,13 +22,11 @@ public class DistillerDataPresenter implements Presenter {
     private final static long AUTOREFRESH_PERIOD_MILLIS = 2000;
 
     private DistillerDataViewIf distillerDataView;
-
-    private DistillerConnectivityService distillerConnectivityService;
     private Timer timer = null;
+    private long lastTimestampInMillis = 0;
 
     @Inject
-    public DistillerDataPresenter(DistillerConnectivityService distillerConnectivityService) {
-        this.distillerConnectivityService = distillerConnectivityService;
+    public DistillerDataPresenter() {
     }
 
     public void setView(DistillerDataViewIf distillerViewIf) {
@@ -32,12 +34,17 @@ public class DistillerDataPresenter implements Presenter {
     }
 
     public void readDistillerData() {
-        DistillerConnectionService dcs = distillerConnectivityService.getConnectedDistillerConnectionService();
-        if(dcs == null) {
+        DistillerDatabase distillerDatabase = DistillerApplication.getDistillerApplication().getDistillerDatabase();
+
+        List<DistillerDataEntity> data = distillerDatabase.distillerDataDao().loadLatestByTimestamp(lastTimestampInMillis);
+
+        if(data.size() == 0) {
             return;
         }
 
-        dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
+        lastTimestampInMillis = data.get(data.size() - 1).utcTimestampMillis;
+
+        distillerDataView.showNewDistillerData(data);
     }
 
     @Override
@@ -62,24 +69,6 @@ public class DistillerDataPresenter implements Presenter {
 
     protected DistillerDataViewIf getDistillerDataView() {
         return this.distillerDataView;
-    }
-
-    private class DefaultDistillerDataServiceSubscriber extends Subscriber<DistillerData> {
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(DistillerData distillerData) {
-            distillerDataView.showDistillerData(distillerData);
-        }
     }
 
     private class AutorefreshTimerTask extends TimerTask {

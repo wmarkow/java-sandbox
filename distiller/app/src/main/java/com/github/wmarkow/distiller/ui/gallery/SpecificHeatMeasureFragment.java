@@ -25,6 +25,7 @@ import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
@@ -57,8 +58,8 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
     DistillerDataPresenter distillerDataPresenter;
 
     private boolean measureInProgress = false;
-    private List<DistillerData> measureData = new ArrayList<>();
-    private double t0;
+    private List<DistillerDataEntity> measureData = new ArrayList<>();
+    private Double t0 = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -101,18 +102,18 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
     }
 
     @Override
-    public void showDistillerData(DistillerData distillerData) {
+    public void showNewDistillerData(List<DistillerDataEntity> distillerData) {
         Log.i(TAG, "New distiller data arrived.");
 
-        distillerDataTextView.showDistillerData(distillerData);
-        distillerDataChartView.showDistillerData(distillerData);
+        distillerDataTextView.showNewDistillerData(distillerData);
+        distillerDataChartView.showNewDistillerData(distillerData);
 
         if(measureInProgress) {
             // need to collect incoming distiller data and calculate specific heat
-            measureData.add(distillerData);
-            if(measureData .size() == 1) {
+            measureData.addAll(distillerData);
+            if(measureData.size() > 0 && t0 == null) {
                 // store the initial water temperature
-                t0 = distillerData.hotWaterTemp;
+                t0 = distillerData.get(0).hotWaterTemp;
             }
         }
 
@@ -144,7 +145,7 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
         measureInProgress = false;
     }
 
-    private Double calculateSpecificHeat(double t0, List<DistillerData> measureData) throws OutOfRangeException {
+    private Double calculateSpecificHeat(double t0, List<DistillerDataEntity> measureData) throws OutOfRangeException {
         double sum = 0;
         CondenserCalc condenserCalc = new CondenserCalc();
         SeaWaterFlowCalc flowCalc = new SeaWaterFlowCalc();
@@ -157,14 +158,14 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
         }
 
         for (int q = 0; q < measureData.size() - 1; q++) {
-            DistillerData first = measureData.get(q);
-            DistillerData second = measureData.get(q + 1);
+            DistillerDataEntity first = measureData.get(q);
+            DistillerDataEntity second = measureData.get(q + 1);
 
             double tIn = second.coldWaterTemp;
             double tOut = second.hotWaterTemp;
             tk = tOut;
             double flow = flowCalc.calculateWaterFlow(second.waterRpm);
-            double dtMillis = (second.getUtcTimestampMillis() - first.getUtcTimestampMillis());
+            double dtMillis = (second.utcTimestampMillis - first.utcTimestampMillis);
             double dt = dtMillis / 1000.0;
 
             sum += condenserCalc.calculateCoolingEnergy(tIn, tOut, flow, dt);

@@ -20,9 +20,13 @@ import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -56,41 +60,59 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
     }
 
     @Override
-    public void showDistillerData(DistillerData distillerData) {
+    public void showNewDistillerData(List<DistillerDataEntity> distillerData) {
+        if(distillerData.size() == 0) {
+            return;
+        }
+
         LineData data = chart.getData();
 
-        // Warning: the chart library has issues when x value is to big (like ine milliseconds since epoch)
+        // Warning: the chart library has issues when x value is to big (like milliseconds since epoch)
         // The chart doesn't look good then.
         // It works ok when a number of seconds since last midnight is used.
-        Calendar calendar = Calendar.getInstance();
-        int hour24hrs = calendar.get(Calendar.HOUR_OF_DAY);
-        int minutes = calendar.get(Calendar.MINUTE);
-        int seconds = calendar.get(Calendar.SECOND);
-        int millis = calendar.get(Calendar.MILLISECOND);
-        float x = seconds + 60 * minutes +  3600 * hour24hrs;
+        // TODO: improve this because the graph may not work nice when operating at midnight
+        long midnightSeconds = (long)(ZonedDateTime.now(ZoneId.of("UTC")).withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli() / 1000.0);
+        float x = midnightSeconds;
 
-        ILineDataSet coldWaterTempDataSet = data.getDataSetByLabel(COLD_WATER_TEMP_DATA_SET_LABEL, false);
-        coldWaterTempDataSet.addEntry(new Entry(x, (float)distillerData.coldWaterTemp));
-        ILineDataSet hotWaterTempDataSet = data.getDataSetByLabel(HOT_WATER_TEMP_DATA_SET_LABEL, false);
-        hotWaterTempDataSet.addEntry(new Entry(x, (float)distillerData.hotWaterTemp));
-        ILineDataSet boilerTempDataSet = data.getDataSetByLabel(BOILER_TEMP_DATA_SET_LABEL, false);
-        if(boilerTempDataSet != null) {
-            boilerTempDataSet.addEntry(new Entry(x, (float) distillerData.boilerTemp));
+        for(DistillerDataEntity distillerDataEntity : distillerData) {
+
+            float millisSinceMidnight = (long)(distillerDataEntity.utcTimestampMillis / 1000.0) - midnightSeconds;
+            if(millisSinceMidnight < 0) {
+                continue;
+            }
+
+            x = millisSinceMidnight;
+
+            if(distillerDataEntity.coldWaterTemp != null) {
+                ILineDataSet coldWaterTempDataSet = data.getDataSetByLabel(COLD_WATER_TEMP_DATA_SET_LABEL, false);
+                coldWaterTempDataSet.addEntry(new Entry(x, distillerDataEntity.coldWaterTemp.floatValue()));
+            }
+            if(distillerDataEntity.hotWaterTemp != null) {
+                ILineDataSet hotWaterTempDataSet = data.getDataSetByLabel(HOT_WATER_TEMP_DATA_SET_LABEL, false);
+                hotWaterTempDataSet.addEntry(new Entry(x, distillerDataEntity.hotWaterTemp.floatValue()));
+            }
+            if(distillerDataEntity.boilerTemp != null) {
+                ILineDataSet boilerTempDataSet = data.getDataSetByLabel(BOILER_TEMP_DATA_SET_LABEL, false);
+                if (boilerTempDataSet != null) {
+                    boilerTempDataSet.addEntry(new Entry(x, distillerDataEntity.boilerTemp.floatValue()));
+                }
+            }
+            if(distillerDataEntity.headerTemp != null) {
+                ILineDataSet headerTempDataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
+                if (headerTempDataSet != null) {
+                    headerTempDataSet.addEntry(new Entry(x, distillerDataEntity.headerTemp.floatValue()));
+                }
+            }
+
+            ILineDataSet waterFlowDataSet = data.getDataSetByLabel(WATER_FLOW_DATA_SET_LABEL, false);
+            try {
+                float waterFlowInLPerH = calculateWaterFlow(distillerDataEntity.waterRpm);
+
+                waterFlowDataSet.addEntry(new Entry(x, waterFlowInLPerH));
+            } catch (OutOfRangeException e) {
+                waterFlowDataSet.addEntry(new Entry(x, -1.0f));
+            }
         }
-        ILineDataSet headerTempDataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
-        if(headerTempDataSet != null) {
-            headerTempDataSet.addEntry(new Entry(x, (float) distillerData.headerTemp));
-        }
-
-        ILineDataSet waterFlowDataSet = data.getDataSetByLabel(WATER_FLOW_DATA_SET_LABEL, false);
-        try {
-            float waterFlowInLPerH = calculateWaterFlow(distillerData.waterRpm);
-
-            waterFlowDataSet.addEntry(new Entry(x, waterFlowInLPerH));
-        } catch (OutOfRangeException e) {
-            waterFlowDataSet.addEntry(new Entry(x, -1.0f));
-        }
-
 
         data.notifyDataChanged();
 

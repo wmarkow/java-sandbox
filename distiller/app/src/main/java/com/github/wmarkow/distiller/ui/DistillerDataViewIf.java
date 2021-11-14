@@ -1,7 +1,10 @@
 package com.github.wmarkow.distiller.ui;
 
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
+
+import java.util.List;
 
 public interface DistillerDataViewIf {
-    void showDistillerData(DistillerData distillerData);
+    void showNewDistillerData(List<DistillerDataEntity> newData);
 }

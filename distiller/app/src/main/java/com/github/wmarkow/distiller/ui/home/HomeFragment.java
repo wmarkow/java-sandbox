@@ -25,11 +25,14 @@ import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 import com.github.wmarkow.distiller.ui.presenter.DistillerFakeDataPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -86,10 +89,10 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     }
 
     @Override
-    public void showDistillerData(DistillerData distillerData) {
+    public void showNewDistillerData(List<DistillerDataEntity> distillerData) {
         Log.i(TAG, "New distiller data arrived.");
 
-        distillerDataTextView.showDistillerData(distillerData);
-        distillerDataChartView.showDistillerData(distillerData);
+        distillerDataTextView.showNewDistillerData(distillerData);
+        distillerDataChartView.showNewDistillerData(distillerData);
     }
 }

@@ -24,6 +24,10 @@ import dagger.Provides;
 import rx.Observable;
 import rx.Subscriber;
 
+/***
+ * Reads the data directly from the device.
+ * @param <T>
+ */
 public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
     private final static String TAG = "ReadDistDataUseCase";
 
