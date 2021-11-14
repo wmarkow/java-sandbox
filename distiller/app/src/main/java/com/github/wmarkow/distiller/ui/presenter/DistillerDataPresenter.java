@@ -5,6 +5,8 @@ import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +24,8 @@ public class DistillerDataPresenter implements Presenter {
 
     @Inject
     public DistillerDataPresenter() {
+        // calculate it as 4 hours before now, in UTC of course
+        lastTimestampInMillis = ZonedDateTime.now(ZoneId.of("UTC")).minusHours(4).toInstant().toEpochMilli();
     }
 
     public void setView(DistillerDataViewIf distillerViewIf) {
