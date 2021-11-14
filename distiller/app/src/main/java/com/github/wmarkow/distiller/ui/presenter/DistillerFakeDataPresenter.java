@@ -2,6 +2,9 @@ package com.github.wmarkow.distiller.ui.presenter;
 
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DistillerFakeDataPresenter extends DistillerDataPresenter {
 
     public DistillerFakeDataPresenter() {
@@ -17,6 +20,9 @@ public class DistillerFakeDataPresenter extends DistillerDataPresenter {
         dd.headerTemp = (Math.random() * 0.2) + 80.8f;
         dd.waterRpm = (Math.random() * 50) + 1800f;
 
-        //getDistillerDataView().showNewDistillerData(dd);
+        List<DistillerDataEntity> list = new ArrayList<>();
+        list.add(dd);
+
+        getDistillerDataView().showNewDistillerData(list);
     }
 }
