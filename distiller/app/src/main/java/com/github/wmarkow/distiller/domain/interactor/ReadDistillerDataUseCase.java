@@ -128,11 +128,11 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
             distillerData = new DistillerData();
             distillerData.deviceAddress = distillerConnectionService.getDeviceAddress();
             distillerData.deviceUpTimeMillis = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
-            distillerData.coldWaterTemp = ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.hotWaterTemp = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.coldWaterTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+            distillerData.hotWaterTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
             distillerData.waterRpm = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.headerTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-            distillerData.boilerTemp = ByteBuffer.wrap(bytes, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+            distillerData.headerTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+            distillerData.boilerTemp = getRealTempOrNull(ByteBuffer.wrap(bytes, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
 
             Log.d(TAG, String.format("onCharacteristicRead() %s called with systemUpTime = %s", characteristic.getUuid(), distillerData.deviceUpTimeMillis));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), distillerData.coldWaterTemp));
@@ -142,6 +142,15 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
             Log.d(TAG, String.format("onCharacteristicRead() %s called with boilerTemp = %s", characteristic.getUuid(), distillerData.boilerTemp));
 
             countDownLatch.countDown();
+        }
+
+        private Double getRealTempOrNull(float temp) {
+            // -273.0 send from the device means that the temperature is unknown (i.e. thermometer not connected)
+            if(temp <= -273.0) {
+                return null;
+            }
+
+            return (double)temp;
         }
     }
 }

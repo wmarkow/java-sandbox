@@ -8,10 +8,10 @@ public class DistillerData {
     public String deviceAddress;
     public long deviceUpTimeMillis;
     private long utcTimestampMillis;
-    public double coldWaterTemp;
-    public double hotWaterTemp;
-    public double headerTemp;
-    public double boilerTemp;
+    public Double coldWaterTemp = null;
+    public Double hotWaterTemp = null;
+    public Double headerTemp = null;
+    public Double boilerTemp = null;
     public double waterRpm;
 
     public DistillerData() {

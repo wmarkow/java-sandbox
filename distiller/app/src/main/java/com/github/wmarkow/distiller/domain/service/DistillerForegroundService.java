@@ -207,11 +207,11 @@ public class DistillerForegroundService extends Service {
         // Fake data read
         DistillerData dd = new DistillerData();
         dd.deviceUpTimeMillis = System.currentTimeMillis();
-        dd.coldWaterTemp = (float) (Math.random() * 1) + 15f;
-        dd.hotWaterTemp = (float) (Math.random() * 1) + 76f;
-        dd.boilerTemp = (float) (Math.random() * 0.2) + 91.5f;
-        dd.headerTemp = (float) (Math.random() * 0.2) + 80.8f;
-        dd.waterRpm = (float)(Math.random() * 50) + 1800f;
+        dd.coldWaterTemp = (Math.random() * 1) + 15f;
+        dd.hotWaterTemp = (Math.random() * 1) + 76f;
+        dd.boilerTemp = (Math.random() * 0.2) + 91.5f;
+        dd.headerTemp = (Math.random() * 0.2) + 80.8f;
+        dd.waterRpm = (Math.random() * 50) + 1800f;
 
         new DefaultDistillerDataServiceSubscriber().onNext(dd);
     }
@@ -284,11 +284,11 @@ public class DistillerForegroundService extends Service {
             DistillerDataEntity entity = new DistillerDataEntity();
             entity.utcTimestampMillis = distillerData.getUtcTimestampMillis();
             entity.deviceUpTimeMillis = distillerData.deviceUpTimeMillis;
-            entity.coldWaterTemp = getRealTempOrNull(distillerData.coldWaterTemp);
-            entity.hotWaterTemp = getRealTempOrNull(distillerData.hotWaterTemp);
-            entity.headerTemp = getRealTempOrNull(distillerData.headerTemp);
-            entity.boilerTemp = getRealTempOrNull(distillerData.boilerTemp);
-            entity.waterRpm = getRealTempOrNull(distillerData.waterRpm);
+            entity.coldWaterTemp = distillerData.coldWaterTemp;
+            entity.hotWaterTemp = distillerData.hotWaterTemp;
+            entity.headerTemp = distillerData.headerTemp;
+            entity.boilerTemp = distillerData.boilerTemp;
+            entity.waterRpm = distillerData.waterRpm;
 
             DistillerDatabase distillerDatabase = DistillerApplication.getDistillerApplication().getDistillerDatabase();
             distillerDatabase.distillerDataDao().insert(entity);
@@ -300,14 +300,6 @@ public class DistillerForegroundService extends Service {
             Log.d(TAG, String.format("onNext() called with waterRpm = %s", distillerData.waterRpm));
             Log.d(TAG, String.format("onNext() called with headerTemp = %s", distillerData.headerTemp));
             Log.d(TAG, String.format("onNext() called with boilerTemp = %s", distillerData.boilerTemp));
-        }
-
-        private Double getRealTempOrNull(double temp) {
-            if(temp <= -273.0) {
-                return null;
-            }
-
-            return temp;
         }
     }
 }
