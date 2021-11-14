@@ -22,10 +22,13 @@ import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,36 +72,36 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         // The chart doesn't look good then.
         // It works ok when a number of seconds since last midnight is used.
         // TODO: improve this because the graph may not work nice when operating at midnight
-        long midnightSeconds = (long)(ZonedDateTime.now(ZoneId.of("UTC")).withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli() / 1000.0);
-        float x = midnightSeconds;
+        long midnightSecondsUtc = (long)(ZonedDateTime.now(ZoneId.of("UTC")).withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli() / 1000.0);
+        float todaySecondsLocal = midnightSecondsUtc;
 
         for(DistillerDataEntity distillerDataEntity : distillerData) {
 
-            float millisSinceMidnight = (long)(distillerDataEntity.utcTimestampMillis / 1000.0) - midnightSeconds;
-            if(millisSinceMidnight < 0) {
+            float secondsSinceMidnightUtc = (long)(distillerDataEntity.utcTimestampMillis / 1000.0) - midnightSecondsUtc;
+            if(secondsSinceMidnightUtc < 0) {
                 continue;
             }
-
-            x = millisSinceMidnight;
+            ZoneOffset localZoneOffset = ZonedDateTime.now().getOffset();
+            todaySecondsLocal = secondsSinceMidnightUtc + localZoneOffset.getTotalSeconds();
 
             if(distillerDataEntity.coldWaterTemp != null) {
                 ILineDataSet coldWaterTempDataSet = data.getDataSetByLabel(COLD_WATER_TEMP_DATA_SET_LABEL, false);
-                coldWaterTempDataSet.addEntry(new Entry(x, distillerDataEntity.coldWaterTemp.floatValue()));
+                coldWaterTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.coldWaterTemp.floatValue()));
             }
             if(distillerDataEntity.hotWaterTemp != null) {
                 ILineDataSet hotWaterTempDataSet = data.getDataSetByLabel(HOT_WATER_TEMP_DATA_SET_LABEL, false);
-                hotWaterTempDataSet.addEntry(new Entry(x, distillerDataEntity.hotWaterTemp.floatValue()));
+                hotWaterTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.hotWaterTemp.floatValue()));
             }
             if(distillerDataEntity.boilerTemp != null) {
                 ILineDataSet boilerTempDataSet = data.getDataSetByLabel(BOILER_TEMP_DATA_SET_LABEL, false);
                 if (boilerTempDataSet != null) {
-                    boilerTempDataSet.addEntry(new Entry(x, distillerDataEntity.boilerTemp.floatValue()));
+                    boilerTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.boilerTemp.floatValue()));
                 }
             }
             if(distillerDataEntity.headerTemp != null) {
                 ILineDataSet headerTempDataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
                 if (headerTempDataSet != null) {
-                    headerTempDataSet.addEntry(new Entry(x, distillerDataEntity.headerTemp.floatValue()));
+                    headerTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.headerTemp.floatValue()));
                 }
             }
 
@@ -106,9 +109,9 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
             try {
                 float waterFlowInLPerH = calculateWaterFlow(distillerDataEntity.waterRpm);
 
-                waterFlowDataSet.addEntry(new Entry(x, waterFlowInLPerH));
+                waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, waterFlowInLPerH));
             } catch (OutOfRangeException e) {
-                waterFlowDataSet.addEntry(new Entry(x, -1.0f));
+                waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, -1.0f));
             }
         }
 
@@ -122,7 +125,7 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         // chart.setVisibleYRange(30, AxisDependency.LEFT);
 
         // move to the latest entry
-        chart.moveViewToX(x);
+        chart.moveViewToX(todaySecondsLocal);
     }
 
     public void removeBoilerTemp() {
