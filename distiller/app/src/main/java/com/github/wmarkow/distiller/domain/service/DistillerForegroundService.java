@@ -17,8 +17,11 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.domain.model.DistillerData;
+import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
+import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
 import com.github.wmarkow.distiller.ui.MainActivity;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 
@@ -203,7 +206,7 @@ public class DistillerForegroundService extends Service {
 
         // Fake data read
         DistillerData dd = new DistillerData();
-        dd.deviceUpTime = System.currentTimeMillis();
+        dd.deviceUpTimeMillis = System.currentTimeMillis();
         dd.coldWaterTemp = (float) (Math.random() * 1) + 15f;
         dd.hotWaterTemp = (float) (Math.random() * 1) + 76f;
         dd.boilerTemp = (float) (Math.random() * 0.2) + 91.5f;
@@ -278,13 +281,33 @@ public class DistillerForegroundService extends Service {
         @Override
         public void onNext(DistillerData distillerData) {
             // store distiller data in the database
+            DistillerDataEntity entity = new DistillerDataEntity();
+            entity.utcTimestampMillis = distillerData.getUtcTimestampMillis();
+            entity.deviceUpTimeMillis = distillerData.deviceUpTimeMillis;
+            entity.coldWaterTemp = getRealTempOrNull(distillerData.coldWaterTemp);
+            entity.hotWaterTemp = getRealTempOrNull(distillerData.hotWaterTemp);
+            entity.headerTemp = getRealTempOrNull(distillerData.headerTemp);
+            entity.boilerTemp = getRealTempOrNull(distillerData.boilerTemp);
+            entity.waterRpm = getRealTempOrNull(distillerData.waterRpm);
+
+            DistillerDatabase distillerDatabase = DistillerApplication.getDistillerApplication().getDistillerDatabase();
+            distillerDatabase.distillerDataDao().insert(entity);
+
             Log.d(TAG, String.format("onNext() UTC millis = %s", distillerData.getUtcTimestampMillis()));
-            Log.d(TAG, String.format("onNext() systemUpTime = %s", distillerData.deviceUpTime));
+            Log.d(TAG, String.format("onNext() systemUpTime = %s", distillerData.deviceUpTimeMillis));
             Log.d(TAG, String.format("onNext() called with coldWaterTemp = %s", distillerData.coldWaterTemp));
             Log.d(TAG, String.format("onNext() called with hotWaterTemp = %s", distillerData.hotWaterTemp));
             Log.d(TAG, String.format("onNext() called with waterRpm = %s", distillerData.waterRpm));
             Log.d(TAG, String.format("onNext() called with headerTemp = %s", distillerData.headerTemp));
             Log.d(TAG, String.format("onNext() called with boilerTemp = %s", distillerData.boilerTemp));
+        }
+
+        private Double getRealTempOrNull(double temp) {
+            if(temp <= -273.0) {
+                return null;
+            }
+
+            return temp;
         }
     }
 }

@@ -3,9 +3,12 @@ package com.github.wmarkow.distiller;
 import android.app.ActivityManager;
 import android.app.Application;
 
+import androidx.room.Room;
+
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerApplicationComponent;
 import com.github.wmarkow.distiller.di.modules.ApplicationModule;
+import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
 import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
 
 public class DistillerApplication extends Application {
@@ -13,6 +16,7 @@ public class DistillerApplication extends Application {
     private static DistillerApplication instance;
 
     private ApplicationComponent applicationComponent;
+    private DistillerDatabase distillerDatabase = null;
 
     @Override
     public void onCreate() {
@@ -37,6 +41,15 @@ public class DistillerApplication extends Application {
 
     public static DistillerApplication getDistillerApplication() {
         return DistillerApplication.instance;
+    }
+
+    public synchronized DistillerDatabase getDistillerDatabase() {
+        if(distillerDatabase == null) {
+            distillerDatabase = Room.databaseBuilder(getApplicationContext(),
+                    DistillerDatabase.class, "distiller-database").build();
+        }
+
+        return distillerDatabase;
     }
 
 //    public DistillerForegroundService getDistillerForegroundService() {

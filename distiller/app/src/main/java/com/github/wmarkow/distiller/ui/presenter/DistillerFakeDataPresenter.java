@@ -13,7 +13,7 @@ public class DistillerFakeDataPresenter extends DistillerDataPresenter {
     @Override
     public void readDistillerData() {
         DistillerData dd = new DistillerData();
-        dd.deviceUpTime = System.currentTimeMillis();
+        dd.deviceUpTimeMillis = System.currentTimeMillis();
         dd.coldWaterTemp = (float) (Math.random() * 1) + 15f;
         dd.hotWaterTemp = (float) (Math.random() * 1) + 76f;
         dd.boilerTemp = (float) (Math.random() * 0.2) + 91.5f;

@@ -123,14 +123,14 @@ public class ReadDistillerDataUseCase<T extends DistillerData> extends UseCase {
 
             distillerData = new DistillerData();
             distillerData.deviceAddress = distillerConnectionService.getDeviceAddress();
-            distillerData.deviceUpTime = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+            distillerData.deviceUpTimeMillis = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
             distillerData.coldWaterTemp = ByteBuffer.wrap(bytes, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             distillerData.hotWaterTemp = ByteBuffer.wrap(bytes, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             distillerData.waterRpm = ByteBuffer.wrap(bytes, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             distillerData.headerTemp = ByteBuffer.wrap(bytes, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             distillerData.boilerTemp = ByteBuffer.wrap(bytes, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
-            Log.d(TAG, String.format("onCharacteristicRead() %s called with systemUpTime = %s", characteristic.getUuid(), distillerData.deviceUpTime));
+            Log.d(TAG, String.format("onCharacteristicRead() %s called with systemUpTime = %s", characteristic.getUuid(), distillerData.deviceUpTimeMillis));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with coldWaterTemp = %s", characteristic.getUuid(), distillerData.coldWaterTemp));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with hotWaterTemp = %s", characteristic.getUuid(), distillerData.hotWaterTemp));
             Log.d(TAG, String.format("onCharacteristicRead() %s called with waterRpm = %s", characteristic.getUuid(), distillerData.waterRpm));
