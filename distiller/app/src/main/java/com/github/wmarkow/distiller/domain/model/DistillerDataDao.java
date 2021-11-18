@@ -11,6 +11,6 @@ public interface DistillerDataDao {
     @Insert
     void insert(DistillerDataEntity entity);
 
-    @Query("SELECT * FROM DistillerData WHERE utcTimestampMillis > (:lastTimestampInMillis) ORDER BY utcTimestampMillis ASC LIMIT 200")
+    @Query("SELECT * FROM DistillerData WHERE utcTimestampMillis > (:lastTimestampInMillis) ORDER BY utcTimestampMillis ASC LIMIT 500")
     List<DistillerDataEntity> loadLatestByTimestamp(long lastTimestampInMillis);
 }
