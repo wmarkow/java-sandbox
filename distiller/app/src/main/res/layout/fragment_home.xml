@@ -19,8 +19,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/distillerDataTextView">
-
+        android:layout_below="@+id/distillerDataTextView"
+        android:layout_alignParentBottom="false"
+        android:layout_above="@+id/timeSpanSeekBar">
     </com.github.wmarkow.distiller.ui.DistillerDataChartView>
+
+    <SeekBar
+        android:id="@+id/timeSpanSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

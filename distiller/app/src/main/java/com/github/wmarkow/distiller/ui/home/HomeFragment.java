@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -29,8 +30,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements DistillerDataViewIf {
+public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekBar.OnSeekBarChangeListener {
     private final static String TAG = "HomeFragment";
+    private final static int MIN_TIME_SPAN_SECONDS = 60;
+    private final static int MAX_TIME_SPAN_SECONDS = 3600;
 
     private HomeViewModel homeViewModel;
 
@@ -39,6 +42,9 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
 
     @BindView(R.id.distillerDataChartView)
     DistillerDataChartView distillerDataChartView;
+
+    @BindView(R.id.timeSpanSeekBar)
+    SeekBar timeSpanSeekBar;
 
     @Inject
     DistillerDataPresenter distillerDataPresenter;
@@ -62,18 +68,26 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
         //distillerDataPresenter = new DistillerFakeDataPresenter();
 
         distillerDataPresenter.setView(this);
+
+        timeSpanSeekBar.setMin(MIN_TIME_SPAN_SECONDS);
+        timeSpanSeekBar.setMax(MAX_TIME_SPAN_SECONDS);
+        timeSpanSeekBar.setProgress(MIN_TIME_SPAN_SECONDS);
+        distillerDataChartView.setXRangeVisibleSpanSeconds(MIN_TIME_SPAN_SECONDS);
+
         return root;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        timeSpanSeekBar.setOnSeekBarChangeListener(this);
         this.distillerDataPresenter.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        timeSpanSeekBar.setOnSeekBarChangeListener(null);
         this.distillerDataPresenter.pause();
     }
 
@@ -93,5 +107,21 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf {
     @Override
     public void setXRangeVisibleSpanSeconds(int xRangeVisibleSpanSeconds) {
         distillerDataChartView.setXRangeVisibleSpanSeconds(xRangeVisibleSpanSeconds);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Log.i(TAG, String.format("New time span is %s", progress));
+        distillerDataChartView.setXRangeVisibleSpanSeconds(progress);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // do nothing
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // do nothing
     }
 }
