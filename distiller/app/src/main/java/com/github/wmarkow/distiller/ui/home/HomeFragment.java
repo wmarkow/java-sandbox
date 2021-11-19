@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekBar.OnSeekBarChangeListener {
     private final static String TAG = "HomeFragment";
@@ -45,6 +47,9 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
 
     @BindView(R.id.timeSpanSeekBar)
     SeekBar timeSpanSeekBar;
+
+    @BindView(R.id.followLatestEntrySwitch)
+    Switch followLatestEntrySwitch;
 
     @Inject
     DistillerDataPresenter distillerDataPresenter;
@@ -81,6 +86,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
     public void onResume() {
         super.onResume();
         timeSpanSeekBar.setOnSeekBarChangeListener(this);
+        followLatestEntrySwitch.setChecked(true);
+        distillerDataChartView.setFollowLatestEntry(true);
         this.distillerDataPresenter.resume();
     }
 
@@ -113,6 +120,11 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         Log.i(TAG, String.format("New time span is %s", progress));
         distillerDataChartView.setXRangeVisibleSpanSeconds(progress);
+    }
+
+    @OnClick(R.id.followLatestEntrySwitch)
+    public void onFollowLatestEntrySwitchClicked() {
+        distillerDataChartView.setFollowLatestEntry(followLatestEntrySwitch.isChecked());
     }
 
     @Override

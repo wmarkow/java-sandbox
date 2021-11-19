@@ -21,15 +21,29 @@
         android:layout_marginTop="10dp"
         android:layout_below="@+id/distillerDataTextView"
         android:layout_alignParentBottom="false"
-        android:layout_above="@+id/timeSpanSeekBar">
+        android:layout_above="@+id/bottomLayout">
     </com.github.wmarkow.distiller.ui.DistillerDataChartView>
 
-    <SeekBar
-        android:id="@+id/timeSpanSeekBar"
+    <RelativeLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_alignParentBottom="true"/>
-
+        android:layout_marginRight="10dp"
+        android:layout_alignParentBottom="true">
+        <SeekBar
+            android:id="@+id/timeSpanSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+        <Switch
+            android:id="@+id/followLatestEntrySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Follow latest entry"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/timeSpanSeekBar"/>
+    </RelativeLayout>
 </RelativeLayout>

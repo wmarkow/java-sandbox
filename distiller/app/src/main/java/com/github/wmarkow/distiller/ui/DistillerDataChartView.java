@@ -50,7 +50,7 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
     private int xRangeResolutionSeconds = 2;
     private int xRangeVisibleSpanSeconds = 120;
     private boolean dataAvailable = false;
-
+    private boolean followLatestEntry = true;
 
     public DistillerDataChartView(Context context) {
         super(context);
@@ -128,8 +128,9 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         chart.setVisibleXRange(0, xRangeVisibleSpanSeconds / xRangeResolutionSeconds);
         dataAvailable = true;
 
-        // move to the latest entry
-        chart.moveViewToX(todaySecondsLocal);
+        if(followLatestEntry) {
+            chart.moveViewToX(todaySecondsLocal);
+        }
     }
 
     @Override
@@ -157,6 +158,10 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         LineData data = chart.getData();
         ILineDataSet dataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
         data.removeDataSet(dataSet);
+    }
+
+    public void setFollowLatestEntry(boolean followLatestEntry) {
+        this.followLatestEntry = followLatestEntry;
     }
 
     private void inflate(Context context) {
