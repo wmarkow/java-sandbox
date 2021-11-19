@@ -216,7 +216,7 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
                 {
                     return "\u00B0" + "C";
                 }
-                return String.format("%.0f", value);
+                return String.format("%.2f", value);
             }
         });
 
