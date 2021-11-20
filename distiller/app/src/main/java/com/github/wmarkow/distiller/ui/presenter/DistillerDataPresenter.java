@@ -3,6 +3,7 @@ package com.github.wmarkow.distiller.ui.presenter;
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.di.PerFragment;
 import com.github.wmarkow.distiller.domain.interactor.DefaultSubscriber;
+import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDatabaseDataUseCase;
 import com.github.wmarkow.distiller.domain.interactor.ReadDistillerFakeDatabaseDataUseCase;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
@@ -26,10 +27,11 @@ public class DistillerDataPresenter implements Presenter {
     private Timer timer = null;
     private long lastTimestampInMillis = 0;
 
-    private ReadDistillerFakeDatabaseDataUseCase readDataUseCase;
+    //private ReadDistillerFakeDatabaseDataUseCase readDataUseCase;
+    private ReadDistillerDatabaseDataUseCase readDataUseCase;
 
     @Inject
-    public DistillerDataPresenter(ReadDistillerFakeDatabaseDataUseCase readDataUseCase) {
+    public DistillerDataPresenter(ReadDistillerDatabaseDataUseCase readDataUseCase) {
         this.readDataUseCase = readDataUseCase;
         // calculate it as 4 hours before now, in UTC of course
         lastTimestampInMillis = ZonedDateTime.now(ZoneId.of("UTC")).minusHours(4).toInstant().toEpochMilli();
@@ -45,6 +47,7 @@ public class DistillerDataPresenter implements Presenter {
     }
 
     public void readDistillerData() {
+        readDataUseCase.setLastTimestampInMillis(lastTimestampInMillis);
         readDataUseCase.execute(new ReadDataSubscriber());
 
         // reads from the database

@@ -6,6 +6,7 @@ import com.github.wmarkow.distiller.di.PerFragment;
 import com.github.wmarkow.distiller.domain.executor.PostExecutionThread;
 import com.github.wmarkow.distiller.domain.executor.ThreadExecutor;
 import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDataUseCase;
+import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDatabaseDataUseCase;
 import com.github.wmarkow.distiller.domain.interactor.ReadDistillerFakeDatabaseDataUseCase;
 import com.github.wmarkow.distiller.domain.service.DistillerConnectivityService;
 import com.github.wmarkow.distiller.ui.presenter.ConnectivityPresenter;
@@ -25,5 +26,11 @@ public class UseCasesModule {
     @PerFragment
     public ReadDistillerFakeDatabaseDataUseCase provideReadDistillerFakeDatabaseDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
         return new ReadDistillerFakeDatabaseDataUseCase(threadExecutor, postExecutionThread);
+    }
+
+    @Provides
+    @PerFragment
+    public ReadDistillerDatabaseDataUseCase provideReadDistillerDatabaseDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+        return new ReadDistillerDatabaseDataUseCase(threadExecutor, postExecutionThread);
     }
 }
