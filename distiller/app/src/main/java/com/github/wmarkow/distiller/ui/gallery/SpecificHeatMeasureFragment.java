@@ -15,7 +15,8 @@ import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerSpecificHeatMeasureFragmentComponent;
 import com.github.wmarkow.distiller.di.components.SpecificHeatMeasureFragmentComponent;
-import com.github.wmarkow.distiller.di.modules.PresentersModule;
+import com.github.wmarkow.distiller.di.modules.FragmentPresentersModule;
+import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
@@ -62,7 +63,8 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
         final ApplicationComponent applicationComponent = DistillerApplication.getDistillerApplication().getApplicationComponent();
         SpecificHeatMeasureFragmentComponent component = DaggerSpecificHeatMeasureFragmentComponent.builder()
                 .applicationComponent(applicationComponent)
-                .presentersModule(new PresentersModule())
+                .fragmentPresentersModule(new FragmentPresentersModule())
+                .useCasesModule(new UseCasesModule())
                 .build();
         component.inject(this);
 

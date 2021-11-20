@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.github.wmarkow.distiller.DistillerApplication;
 import com.github.wmarkow.distiller.R;
+import com.github.wmarkow.distiller.domain.interactor.DefaultSubscriber;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.domain.model.DistillerDatabase;
 import com.github.wmarkow.distiller.ui.MainActivity;
@@ -197,22 +198,7 @@ public class DistillerForegroundService extends Service {
         }
 
         // Real data read
-        //dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
-
-        // Fake data read
-        DistillerDataEntity dd = new DistillerDataEntity();
-        dd.coldWaterTemp = (Math.random() * 1) + 15f;
-        dd.hotWaterTemp = (Math.random() * 1) + 76f;
-        dd.boilerTemp = (Math.random() * 0.2) + 91.5f;
-        dd.headerTemp = (Math.random() * 0.2) + 80.8f;
-        dd.waterRpm = (Math.random() * 50) + 1800f;
-        // uncomment below to simulate null temperatures
-        //dd.coldWaterTemp = null;
-        //dd.hotWaterTemp = null;
-        //dd.headerTemp = null;
-        //dd.boilerTemp = null;
-
-        new DefaultDistillerDataServiceSubscriber().onNext(dd);
+        dcs.readDistillerData(new DefaultDistillerDataServiceSubscriber());
     }
 
     public enum State {
@@ -265,7 +251,7 @@ public class DistillerForegroundService extends Service {
         }
     }
 
-    private class DefaultDistillerDataServiceSubscriber extends Subscriber<DistillerDataEntity> {
+    private class DefaultDistillerDataServiceSubscriber extends DefaultSubscriber<DistillerDataEntity> {
 
         @Override
         public void onCompleted() {

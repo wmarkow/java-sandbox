@@ -98,6 +98,7 @@ public class ReadDistillerDataUseCase<T extends DistillerDataEntity> extends Use
     }
 
     private boolean initiateDataRead() {
+        distillerData = null;
         if (distillerConnectionService.isConnected() == false) {
             final String deviceAddress = distillerConnectionService.getDeviceAddress();
             Log.e(TAG, String.format("Not connected to GATT server of %s device. Maybe you forgot to call connect()?", deviceAddress));

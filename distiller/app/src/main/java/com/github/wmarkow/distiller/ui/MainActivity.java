@@ -1,12 +1,8 @@
 package com.github.wmarkow.distiller.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.ProgressBar;
@@ -17,15 +13,13 @@ import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerMainActivityComponent;
 import com.github.wmarkow.distiller.di.components.MainActivityComponent;
-import com.github.wmarkow.distiller.di.modules.PresentersModule;
-import com.github.wmarkow.distiller.domain.service.DistillerForegroundService;
+import com.github.wmarkow.distiller.di.modules.ActivityPresentersModule;
 import com.github.wmarkow.distiller.ui.presenter.ConnectivityPresenter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -85,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
         final ApplicationComponent applicationComponent = ((DistillerApplication) this.getApplication()).getApplicationComponent();
         MainActivityComponent mainActivityConnectivityComponent = DaggerMainActivityComponent.builder()
                 .applicationComponent(applicationComponent)
-                .presentersModule(new PresentersModule())
+                .activityPresentersModule(new ActivityPresentersModule())
                 .build();
         mainActivityConnectivityComponent.inject(this);
         connectivityPresenter.setView(this);

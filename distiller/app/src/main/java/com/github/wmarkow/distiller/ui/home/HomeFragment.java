@@ -17,7 +17,8 @@ import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerHomeFragmentComponent;
 import com.github.wmarkow.distiller.di.components.HomeFragmentComponent;
-import com.github.wmarkow.distiller.di.modules.PresentersModule;
+import com.github.wmarkow.distiller.di.modules.FragmentPresentersModule;
+import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
@@ -65,7 +66,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
         final ApplicationComponent applicationComponent = DistillerApplication.getDistillerApplication().getApplicationComponent();
         HomeFragmentComponent homeFragmentComponent = DaggerHomeFragmentComponent.builder()
                 .applicationComponent(applicationComponent)
-                .presentersModule(new PresentersModule())
+                .useCasesModule(new UseCasesModule())
+                .fragmentPresentersModule(new FragmentPresentersModule())
                 .build();
         homeFragmentComponent.inject(this);
 
