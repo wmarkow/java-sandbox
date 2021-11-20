@@ -18,7 +18,7 @@ import com.github.wmarkow.distiller.di.components.ApplicationComponent;
 import com.github.wmarkow.distiller.di.components.DaggerDistillerConnectionComponent;
 import com.github.wmarkow.distiller.di.components.DistillerConnectionComponent;
 import com.github.wmarkow.distiller.di.modules.UseCasesModule;
-import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDataUseCase;
+import com.github.wmarkow.distiller.domain.interactor.ReadDistillerDeviceDataUseCase;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class DistillerConnectionService {
     private BluetoothManager bluetoothManager;
 
     @Inject
-    ReadDistillerDataUseCase readDistillerDataUseCase;
+    ReadDistillerDeviceDataUseCase readDistillerDataUseCase;
 
     public DistillerConnectionService(Context applicationContext, String deviceAddress) {
         this.applicationContext = applicationContext;

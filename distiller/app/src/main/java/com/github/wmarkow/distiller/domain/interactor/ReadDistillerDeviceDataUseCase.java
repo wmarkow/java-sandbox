@@ -26,8 +26,8 @@ import rx.Subscriber;
  * Reads the data directly from the device.
  * @param <T>
  */
-public class ReadDistillerDataUseCase<T extends DistillerDataEntity> extends UseCase {
-    private final static String TAG = "ReadDistDataUseCase";
+public class ReadDistillerDeviceDataUseCase<T extends DistillerDataEntity> extends UseCase {
+    private final static String TAG = "ReadDistDevDataUseCase";
 
     private final static UUID DISTILLER_SERVICE_UUID = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
     private final static UUID DISTILLER_CHARACTERISTIC_UUID = UUID.fromString("beb5483e-36e1-4688-b7f5-ea07361b26a8");
@@ -38,7 +38,7 @@ public class ReadDistillerDataUseCase<T extends DistillerDataEntity> extends Use
     private DistillerDataEntity distillerData;
 
     @Inject
-    public ReadDistillerDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+    public ReadDistillerDeviceDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
         super(threadExecutor, postExecutionThread);
 
         bluetoothGattCharacteristicReadCallback = new DefaultBluetoothGattCharacteristicReadCallback();
