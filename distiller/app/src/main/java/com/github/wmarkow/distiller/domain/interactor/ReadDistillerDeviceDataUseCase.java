@@ -21,12 +21,13 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /***
  * Reads the data directly from the device.
  * @param <T>
  */
-public class ReadDistillerDeviceDataUseCase<T extends DistillerDataEntity> extends UseCase {
+public class ReadDistillerDeviceDataUseCase<T extends DistillerDataEntity> extends ForegroundServiceUseCase {
     private final static String TAG = "ReadDistDevDataUseCase";
 
     private final static UUID DISTILLER_SERVICE_UUID = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
