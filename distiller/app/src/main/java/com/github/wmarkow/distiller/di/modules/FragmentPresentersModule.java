@@ -14,12 +14,6 @@ import dagger.Provides;
 @Module
 public class FragmentPresentersModule {
 
-//    @Provides
-//    @PerFragment
-//    public DistillerDataPresenter provideDistillerDataPresenter(ReadDistillerFakeDatabaseDataUseCase readDataUseCase) {
-//        return new DistillerDataPresenter(readDataUseCase);
-//    }
-
     @Provides
     @PerFragment
     public DistillerDataPresenter provideDistillerDataPresenter(ReadDistillerDatabaseDataUseCase readDataUseCase) {

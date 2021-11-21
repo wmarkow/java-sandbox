@@ -15,8 +15,8 @@ import dagger.Provides;
 public class UseCasesModule {
     @Provides
     @PerDistillerConnection
-    public ReadDistillerDeviceDataUseCase provideReadDistillerDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
-        return new ReadDistillerDeviceDataUseCase(threadExecutor, postExecutionThread);
+    public ReadDistillerDeviceDataUseCase provideReadDistillerDataUseCase() {
+        return new ReadDistillerDeviceDataUseCase();
     }
 
     @Provides

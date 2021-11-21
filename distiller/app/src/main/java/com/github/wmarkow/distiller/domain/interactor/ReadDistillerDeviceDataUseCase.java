@@ -39,9 +39,7 @@ public class ReadDistillerDeviceDataUseCase<T extends DistillerDataEntity> exten
     private DistillerDataEntity distillerData;
 
     @Inject
-    public ReadDistillerDeviceDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
-        super(threadExecutor, postExecutionThread);
-
+    public ReadDistillerDeviceDataUseCase() {
         bluetoothGattCharacteristicReadCallback = new DefaultBluetoothGattCharacteristicReadCallback();
     }
 
