@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityViewI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         ButterKnife.bind(this);
         // make bluetooth progress bar invisible
