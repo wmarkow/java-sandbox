@@ -6,6 +6,11 @@ import com.github.wmarkow.distiller.domain.calc.PPDS12Parameters;
 public class Ethanol {
 
     /***
+     * Specific heat capacity in J/(kg*K)
+     */
+    public final static double SPECIFIC_HEAT_CAPACITY = 2380.0;
+
+    /***
      * Molar mass in g/mol
      */
     public final static double MOLAR_MASS = 46.07;

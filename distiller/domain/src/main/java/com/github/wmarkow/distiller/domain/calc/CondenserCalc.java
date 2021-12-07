@@ -34,7 +34,8 @@ public class CondenserCalc {
     }
 
     /***
-     * Calculates the speed of condensation at the given input parameters. It describes how fast the condenser can turn vapor into liquid.
+     * Calculates the speed of condensation at the given input parameters. It assumes that the vapor with temperature tHeader is condensed
+     * at the same temperature tHeader.
      *
      * @param tIn condenser input water temperature in Celsius degree
      * @param tOut condenser output water temperature in Celsius degree
@@ -76,5 +77,51 @@ public class CondenserCalc {
         return new CondensationSpeed(condensationSpeedInKgPerSec, condensationSpeedInLPerSec);
     }
 
+    /***
+     * Calculates the speed of condensation at the given input parameters. It assumes that the vapor with temperature tHeader is condensed
+     * at the same temperature tHeader and then cooled down to the temperature tOut.
+     *
+     * @param tIn
+     * @param tOut
+     * @param flow
+     * @param tHeader
+     * @return
+     * @throws OutOfRangeException
+     */
+    public CondensationSpeed calculateCondensationAndCoolingSpeed(double tIn, double tOut, double flow, double tHeader) throws OutOfRangeException {
+        // calculate the current power of condenser
+        double power = calculateCoolingPower(tIn, tOut, flow);
 
+        // calculate the current equilibrium in cooling header
+        LVEWEquilibriumCalc equilibriumCalc = new LVEWEquilibriumCalc();
+        LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
+
+        // calculate the heat of vaporization of pure water and pure ethanol at the header temperature
+        PPDS12Calc ppds12Calc = new PPDS12Calc();
+        double hovWater = ppds12Calc.calculate(Water.PPDS12_PARAMETERS, 273.0 + tHeader);
+        double hovEthanol = ppds12Calc.calculate(Ethanol.PPDS12_PARAMETERS, 273.0 + tHeader);
+
+        // calculate the heat of vaporization of the ethanol-water mixture in the condenser
+        // this is in J/mol
+        double hov = hovWater * equilibrium.waterVaporMoleFraction + hovEthanol * equilibrium.ethanolVaporMoleFraction;
+
+        // calculate the specific heat of the ethanol-water mixture in the condenser
+        // this is in J/mol
+        double sh = Water.SPECIFIC_HEAT_CAPACITY * equilibrium.waterVaporMoleFraction + Ethanol.SPECIFIC_HEAT_CAPACITY * equilibrium.ethanolVaporMoleFraction;
+
+        // calculate the rate of condensation
+        // this is in mol/s
+        double condensationRate = power / (hov + sh * (tHeader - tOut));
+
+        // calculate the speed in kg/s
+        double gramsPerMole = Water.MOLAR_MASS * equilibrium.waterVaporMoleFraction + Ethanol.MOLAR_MASS * equilibrium.ethanolVaporMoleFraction;
+        double condensationSpeedInKgPerSec = condensationRate * gramsPerMole / 1000.0;
+
+        // calculate the speed in l/s
+        EthanolSolutionCalc ethanolSolutionCalc = new EthanolSolutionCalc();
+        double density = ethanolSolutionCalc.calculateDensity(equilibrium.waterVaporMoleFraction, tHeader);
+        double condensationSpeedInLPerSec = condensationSpeedInKgPerSec / density;
+
+        return new CondensationSpeed(condensationSpeedInKgPerSec, condensationSpeedInLPerSec);
+    }
 }
