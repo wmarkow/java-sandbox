@@ -133,4 +133,26 @@ public class LVEWEquilibriumCalcTest {
         xyFile.mkdirs();
         ImageIO.write(xyImage, "png", xyFile);
     }
+
+    @Test
+    public void printFishTableAsText() throws OutOfRangeException {
+        int maxSteps = 500;
+        double deltaTemp = (subject.getMaxValidTemp() - subject.getMinValidTemp()) / maxSteps;
+
+        EthanolSolutionCalc esc = new EthanolSolutionCalc();
+        esc.calculateVolumeConcentration(0, 0);
+
+        System.out.println("Liquid %   Temp   Vapour %");
+
+        for (int q = 0; q <= maxSteps; q++) {
+            double temp = subject.getMaxValidTemp() - q * deltaTemp;
+
+            LVEWEquilibrium equlibrium = subject.calculateEquilibrium(temp);
+            double ethanolLiquidVolumeConcentration = esc.calculateVolumeConcentration(equlibrium.ethanolLiquidMoleFraction, temp);
+            double ethanolVapourVolumeConcentration = esc.calculateVolumeConcentration(equlibrium.ethanolVaporMoleFraction, temp);
+
+            String text = String.format("%-10.2f %-6.1f %-4.1f", ethanolLiquidVolumeConcentration, temp, ethanolVapourVolumeConcentration);
+            System.out.println(text);
+        }
+    }
 }
