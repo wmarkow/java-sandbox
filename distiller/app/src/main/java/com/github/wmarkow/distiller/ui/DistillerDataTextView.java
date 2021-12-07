@@ -152,9 +152,14 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 condensationSpeedTextView.setText("UNAVAL");
             } else {
                 CondenserCalc cc = new CondenserCalc();
+
                 CondensationSpeed cSpeed = cc.calculateCondensationSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
-                double condensationSpeedInLPerMin = cSpeed.speedInLPerSec * 1000 * 60;
-                condensationSpeedTextView.setText(String.format("%.2f", condensationSpeedInLPerMin));
+                double condensationSpeedInMlPerMin = cSpeed.speedInLPerSec * 1000 * 60;
+
+                CondensationSpeed condAndCoolingSpeed = cc.calculateCondensationAndCoolingSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
+                double condensationAndCoolingSpeedInMlPerMin = condAndCoolingSpeed.speedInLPerSec * 1000 * 60;
+
+                condensationSpeedTextView.setText(String.format("%.1f (%.1f)", condensationAndCoolingSpeedInMlPerMin, condensationSpeedInMlPerMin));
             }
         } catch (OutOfRangeException e) {
             Log.e(TAG, e.getMessage(), e);
