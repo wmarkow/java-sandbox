@@ -81,7 +81,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
         DistillerDataEntity latestData = distillerData.get(distillerData.size() - 1);
 
-        systemUpTimeTextView.setText(formatSystemUpTime(latestData.utcTimestampMillis));
+        systemUpTimeTextView.setText(formatSystemUpTime(latestData.deviceUpTimeMillis));
 
         if(latestData.coldWaterTemp == null) {
             coldWaterTempTextView.setText("UNAVAL");
