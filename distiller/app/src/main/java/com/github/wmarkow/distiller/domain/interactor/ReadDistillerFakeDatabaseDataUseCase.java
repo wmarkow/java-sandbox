@@ -31,6 +31,7 @@ import rx.Subscriber;
 public class ReadDistillerFakeDatabaseDataUseCase<T extends DistillerDataEntity> extends UseCase {
     private final static String TAG = "ReadDistDataUseCase";
 
+    private long initialTimeMillis = System.currentTimeMillis();
 
     @Inject
     public ReadDistillerFakeDatabaseDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
@@ -56,6 +57,8 @@ public class ReadDistillerFakeDatabaseDataUseCase<T extends DistillerDataEntity>
                     Log.i(TAG, String.format("Fetching fake database distiller data ..."));
 
                     DistillerDataEntity dd = new DistillerDataEntity();
+                    dd.utcTimestampMillis = System.currentTimeMillis();
+                    dd.deviceUpTimeMillis = System.currentTimeMillis() - initialTimeMillis;
                     dd.coldWaterTemp = (Math.random() * 1) + 15f;
                     dd.hotWaterTemp = (Math.random() * 1) + 76f;
                     dd.boilerTemp = (Math.random() * 0.2) + 91.5f;
