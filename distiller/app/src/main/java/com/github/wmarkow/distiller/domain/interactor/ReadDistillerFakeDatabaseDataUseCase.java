@@ -42,6 +42,10 @@ public class ReadDistillerFakeDatabaseDataUseCase<T extends DistillerDataEntity>
 
     }
 
+    public void setLastTimestampInMillis(long lastTimestampInMillis) {
+        // do nothing
+    }
+
     @Override
     protected Observable<List<DistillerDataEntity>> buildUseCaseObservable() {
         return Observable.create(new Observable.OnSubscribe<List<DistillerDataEntity>>() {

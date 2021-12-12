@@ -38,14 +38,10 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
     @BindView(R.id.systemUpTimeTextView)
     TextView systemUpTimeTextView;
-    @BindView(R.id.coldWaterTempTextView)
-    TextView coldWaterTempTextView;
-    @BindView(R.id.hotWaterTempTextView)
-    TextView hotWaterTempTextView;
+    @BindView(R.id.coldHotWaterTempTextView)
+    TextView coldHotWaterTempTextView;
     @BindView(R.id.waterFlowTextView)
     TextView waterFlowTextView;
-    @BindView(R.id.waterFlowTextView2)
-    TextView waterFlowTextView2;
     @BindView(R.id.condenserPowerTextView)
     TextView condenserPowerTextView;
     @BindView(R.id.headerTempTextView)
@@ -83,17 +79,16 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
 
         systemUpTimeTextView.setText(formatSystemUpTime(latestData.deviceUpTimeMillis));
 
-        if(latestData.coldWaterTemp == null) {
-            coldWaterTempTextView.setText("UNAVAL");
-        }else {
-            coldWaterTempTextView.setText(String.valueOf(String.format("%.2f", latestData.coldWaterTemp)));
-        }
+        String coldWaterTempAsString = "UNAVAL";
+        String hotWaterTempAsString = "UNAVAL";
 
-        if(latestData.hotWaterTemp == null) {
-            hotWaterTempTextView.setText("UNAVAL");
-        }else {
-            hotWaterTempTextView.setText(String.valueOf(String.format("%.2f", latestData.hotWaterTemp)));
+        if(latestData.coldWaterTemp != null) {
+            coldWaterTempAsString = String.valueOf(String.format("%.2f", latestData.coldWaterTemp));
         }
+        if(latestData.hotWaterTemp != null) {
+            hotWaterTempAsString = String.valueOf(String.format("%.2f", latestData.hotWaterTemp));
+        }
+        coldHotWaterTempTextView.setText(coldWaterTempAsString + " / " + hotWaterTempAsString);
 
         waterFlowTextView.setText(String.valueOf(String.format("%.2f", latestData.waterRpm)));
 
@@ -114,7 +109,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
         try {
                 waterFlowInM3PerS = waterFlowCalc.calculateWaterFlow(latestData.waterRpm);
                 double waterFlowInLPerH = waterFlowInM3PerS * 1000 * 3600;
-                waterFlowTextView2.setText(String.format("%.2f", waterFlowInLPerH));
+                waterFlowTextView.setText(String.format("%.2f (%.0f)", waterFlowInLPerH, latestData.waterRpm));
                 if(latestData.coldWaterTemp == null || latestData.hotWaterTemp == null) {
                     condenserPowerTextView.setText("UNAVAL");
                 }else {
@@ -124,7 +119,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 }
         } catch (OutOfRangeException e) {
             Log.e(TAG, e.getMessage(), e);
-            waterFlowTextView2.setText("ERROR");
+            waterFlowTextView.setText(String.format("ERROR (%.0f)", latestData.waterRpm));
             condensationSpeedTextView.setText("ERROR");
         }
 
