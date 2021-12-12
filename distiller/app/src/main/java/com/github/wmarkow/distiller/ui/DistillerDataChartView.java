@@ -186,8 +186,10 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         xAxis.setTextColor(Color.BLACK);
         xAxis.setDrawGridLines(false);
         xAxis.setAvoidFirstLastClipping(true);
-        xAxis.setLabelRotationAngle(-25);
+        xAxis.setLabelCount(10, true);
+        xAxis.setLabelRotationAngle(-90);
         xAxis.setEnabled(true);
+        xAxis.setDrawGridLines(true);
         xAxis.setValueFormatter(new ValueFormatter() {
             private final SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
 
