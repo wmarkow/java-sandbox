@@ -5,6 +5,12 @@ import com.github.wmarkow.distiller.domain.constants.Water;
 
 public class CondenserCalc {
 
+    private LVEWEquilibriumCalc equilibriumCalc;
+
+    public CondenserCalc(LVEWEquilibriumCalc equilibriumCalc) {
+        this.equilibriumCalc = equilibriumCalc;
+    }
+
     /***
      * Calculates the cooling power of the condenser. It assumes that a cold water comes into the condenser
      * and a hot water comes out of it.
@@ -49,7 +55,6 @@ public class CondenserCalc {
         double power = calculateCoolingPower(tIn, tOut, flow);
 
         // calculate the current equilibrium in cooling header
-        LVEWEquilibriumCalc equilibriumCalc = new LVEWEquilibriumCalc();
         LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
 
         // calculate the heat of vaporization of pure water and pure ethanol at the header temperature
@@ -93,7 +98,6 @@ public class CondenserCalc {
         double power = calculateCoolingPower(tIn, tOut, flow);
 
         // calculate the current equilibrium in cooling header
-        LVEWEquilibriumCalc equilibriumCalc = new LVEWEquilibriumCalc();
         LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
 
         // calculate the heat of vaporization of pure water and pure ethanol at the header temperature

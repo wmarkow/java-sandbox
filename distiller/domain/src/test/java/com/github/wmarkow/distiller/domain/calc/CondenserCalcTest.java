@@ -11,7 +11,7 @@ public class CondenserCalcTest {
 
     @Before
     public void init() {
-        subject = new CondenserCalc();
+        subject = new CondenserCalc(new LVEWEquilibriumCalc());
     }
 
     @Test

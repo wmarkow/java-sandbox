@@ -151,7 +151,7 @@ public class LVEWEquilibriumCalcTest {
             double ethanolLiquidVolumeConcentration = esc.calculateVolumeConcentration(equlibrium.ethanolLiquidMoleFraction, temp);
             double ethanolVapourVolumeConcentration = esc.calculateVolumeConcentration(equlibrium.ethanolVaporMoleFraction, temp);
 
-            String text = String.format("%-10.2f %-6.1f %-4.1f", ethanolLiquidVolumeConcentration, temp, ethanolVapourVolumeConcentration);
+            String text = String.format("%-10.2f %-6.2f %-4.1f", ethanolLiquidVolumeConcentration, temp, ethanolVapourVolumeConcentration);
             System.out.println(text);
         }
     }

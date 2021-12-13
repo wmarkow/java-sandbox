@@ -14,6 +14,7 @@ import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
 import com.github.wmarkow.distiller.domain.calc.EthanolSolutionCalc;
 import com.github.wmarkow.distiller.domain.calc.LVEWEquilibrium;
 import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
+import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumExtCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
@@ -54,6 +55,8 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
     @BindView(R.id.condensationSpeedTextView)
     TextView condensationSpeedTextView;
 
+    private Double extendedModelMinTemp = null;
+
     public DistillerDataTextView(Context context) {
         super(context);
 
@@ -64,6 +67,14 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
         super(context, attributeSet);
 
         inflate(context);
+    }
+
+    public void enableExtendedModel(double minTemp) {
+        this.extendedModelMinTemp = minTemp;
+    }
+
+    public void disableExtendedModel() {
+        this.extendedModelMinTemp = null;
     }
 
     private void inflate(Context context) {
@@ -113,12 +124,12 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 if(latestData.coldWaterTemp == null || latestData.hotWaterTemp == null) {
                     condenserPowerTextView.setText("UNAVAL");
                 }else {
-                    CondenserCalc condenserCalc = new CondenserCalc();
+                    CondenserCalc condenserCalc = createCondenserCalc();
                     double condenserPowerInW = condenserCalc.calculateCoolingPower(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS);
                     condenserPowerTextView.setText(String.format("%.2f", condenserPowerInW));
                 }
         } catch (OutOfRangeException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Log.w(TAG, e.getMessage());
             waterFlowTextView.setText(String.format("ERROR (%.0f)", latestData.waterRpm));
             condensationSpeedTextView.setText("ERROR");
         }
@@ -129,7 +140,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
             {
                 condensateStrengthTextView.setText("UNAVAL");
             } else {
-                LVEWEquilibriumCalc ec = new LVEWEquilibriumCalc();
+                LVEWEquilibriumCalc ec = createLVEWEquilibriumCalc();
                 LVEWEquilibrium equilibrium = ec.calculateEquilibrium(latestData.headerTemp);
 
                 EthanolSolutionCalc esc = new EthanolSolutionCalc();
@@ -137,7 +148,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 condensateStrengthTextView.setText(String.format("%.2f", volConcentration));
             }
         } catch (OutOfRangeException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Log.w(TAG, e.getMessage());
             condensateStrengthTextView.setText("ERROR");
         }
 
@@ -146,7 +157,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
             if(waterFlowInM3PerS == null || latestData.coldWaterTemp == null || latestData.hotWaterTemp == null || latestData.headerTemp == null) {
                 condensationSpeedTextView.setText("UNAVAL");
             } else {
-                CondenserCalc cc = new CondenserCalc();
+                CondenserCalc cc = createCondenserCalc();
 
                 CondensationSpeed cSpeed = cc.calculateCondensationSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
                 double condensationSpeedInMlPerMin = cSpeed.speedInLPerSec * 1000 * 60;
@@ -157,7 +168,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 condensationSpeedTextView.setText(String.format("%.1f (%.1f)", condensationAndCoolingSpeedInMlPerMin, condensationSpeedInMlPerMin));
             }
         } catch (OutOfRangeException e) {
-            Log.e(TAG, e.getMessage(), e);
+            Log.w(TAG, e.getMessage());
             condensationSpeedTextView.setText("ERROR");
         }
     }
@@ -187,6 +198,22 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
     public void hideCondensationSpeed() {
         condensationSpeedLayout.setVisibility(View.GONE);
     }
+
+    private LVEWEquilibriumCalc createLVEWEquilibriumCalc() {
+        if(extendedModelMinTemp == null) {
+            return new LVEWEquilibriumCalc();
+        }
+
+        LVEWEquilibriumExtCalc extCalc = new LVEWEquilibriumExtCalc();
+        extCalc.setMinExtendedTemp(extendedModelMinTemp);
+
+        return extCalc;
+    }
+
+    private CondenserCalc createCondenserCalc() {
+        return new CondenserCalc(createLVEWEquilibriumCalc());
+    }
+
 
     private static String formatSystemUpTime(long systemUpTimeInMillis) {
         long seconds = systemUpTimeInMillis / 1000;

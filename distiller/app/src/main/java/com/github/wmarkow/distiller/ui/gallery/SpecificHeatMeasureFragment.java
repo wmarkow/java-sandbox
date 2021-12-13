@@ -18,6 +18,7 @@ import com.github.wmarkow.distiller.di.components.SpecificHeatMeasureFragmentCom
 import com.github.wmarkow.distiller.di.modules.FragmentPresentersModule;
 import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.calc.CondenserCalc;
+import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
@@ -151,7 +152,7 @@ public class SpecificHeatMeasureFragment extends Fragment implements DistillerDa
 
     private Double calculateSpecificHeat(double t0, List<DistillerDataEntity> measureData) throws OutOfRangeException {
         double sum = 0;
-        CondenserCalc condenserCalc = new CondenserCalc();
+        CondenserCalc condenserCalc = new CondenserCalc(new LVEWEquilibriumCalc());
         SeaWaterFlowCalc flowCalc = new SeaWaterFlowCalc();
 
         // end temperature

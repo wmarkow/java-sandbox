@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
@@ -52,6 +53,12 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
     @BindView(R.id.followLatestEntrySwitch)
     Switch followLatestEntrySwitch;
 
+    @BindView(R.id.extendedModelSwitch)
+    Switch extendedModelSwitch;
+
+    @BindView(R.id.minExtendedTempEditText)
+    EditText minExtendedTempEditText;
+
     @Inject
     DistillerDataPresenter distillerDataPresenter;
 
@@ -80,6 +87,9 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
         timeSpanSeekBar.setMax(MAX_TIME_SPAN_SECONDS);
         timeSpanSeekBar.setProgress(MIN_TIME_SPAN_SECONDS);
         distillerDataChartView.setXRangeVisibleSpanSeconds(MIN_TIME_SPAN_SECONDS);
+
+        extendedModelSwitch.setChecked(false);
+        minExtendedTempEditText.setEnabled(false);
 
         return root;
     }
@@ -127,6 +137,23 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
     @OnClick(R.id.followLatestEntrySwitch)
     public void onFollowLatestEntrySwitchClicked() {
         distillerDataChartView.setFollowLatestEntry(followLatestEntrySwitch.isChecked());
+    }
+
+    @OnClick(R.id.extendedModelSwitch)
+    public void onExtendedModelSwitchClicked() {
+        if(extendedModelSwitch.isChecked()) {
+            if(minExtendedTempEditText.getText().length() == 0) {
+                minExtendedTempEditText.setText("75.3");
+            }
+
+            double minTemp = Double.parseDouble(minExtendedTempEditText.getText().toString());
+            distillerDataTextView.enableExtendedModel(minTemp);
+            minExtendedTempEditText.setEnabled(true);
+
+        } else {
+            distillerDataTextView.disableExtendedModel();
+            minExtendedTempEditText.setEnabled(false);
+        }
     }
 
     @Override

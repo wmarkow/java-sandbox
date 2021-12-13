@@ -39,11 +39,27 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"/>
         <Switch
+            android:id="@+id/extendedModelSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ext"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/timeSpanSeekBar"/>
+        <EditText
+            android:id="@+id/minExtendedTempEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="4"
+            android:inputType="numberDecimal"
+            android:layout_below="@+id/timeSpanSeekBar"
+            android:layout_toRightOf="@+id/extendedModelSwitch"/>
+        <Switch
             android:id="@+id/followLatestEntrySwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Follow latest entry"
+            android:text="Follow last entry"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/timeSpanSeekBar"/>
     </RelativeLayout>
+
 </RelativeLayout>

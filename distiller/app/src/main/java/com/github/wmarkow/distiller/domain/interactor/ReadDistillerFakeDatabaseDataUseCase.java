@@ -59,11 +59,11 @@ public class ReadDistillerFakeDatabaseDataUseCase<T extends DistillerDataEntity>
                     DistillerDataEntity dd = new DistillerDataEntity();
                     dd.utcTimestampMillis = System.currentTimeMillis();
                     dd.deviceUpTimeMillis = System.currentTimeMillis() - initialTimeMillis;
-                    dd.coldWaterTemp = (Math.random() * 1) + 15f;
-                    dd.hotWaterTemp = (Math.random() * 1) + 76f;
-                    dd.boilerTemp = (Math.random() * 0.2) + 91.5f;
-                    dd.headerTemp = (Math.random() * 0.2) + 80.8f;
-                    dd.waterRpm = (Math.random() * 50) + 1800f;
+                    dd.coldWaterTemp = (Math.random() * 0.5) + 17.5f;
+                    dd.hotWaterTemp = (Math.random() * 0.5) + 60.5f;
+                    dd.boilerTemp = (Math.random() * 0.2) + 92.0f;
+                    dd.headerTemp = (Math.random() * 0.2) + 75.38f;
+                    dd.waterRpm = (Math.random() * 50) + 1600f;
                     // uncomment below to simulate null temperatures
                     //dd.coldWaterTemp = null;
                     //dd.hotWaterTemp = null;
