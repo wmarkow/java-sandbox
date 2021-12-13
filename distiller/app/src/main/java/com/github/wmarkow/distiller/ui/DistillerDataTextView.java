@@ -165,7 +165,8 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 CondensationSpeed condAndCoolingSpeed = cc.calculateCondensationAndCoolingSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
                 double condensationAndCoolingSpeedInMlPerMin = condAndCoolingSpeed.speedInLPerSec * 1000 * 60;
 
-                condensationSpeedTextView.setText(String.format("%.1f (%.1f)", condensationAndCoolingSpeedInMlPerMin, condensationSpeedInMlPerMin));
+                double averageSpeed = (condensationAndCoolingSpeedInMlPerMin + condensationSpeedInMlPerMin) / 2;
+                condensationSpeedTextView.setText(String.format("%.1f / %.1f / %.1f", condensationAndCoolingSpeedInMlPerMin, averageSpeed, condensationSpeedInMlPerMin));
             }
         } catch (OutOfRangeException e) {
             Log.w(TAG, e.getMessage());
