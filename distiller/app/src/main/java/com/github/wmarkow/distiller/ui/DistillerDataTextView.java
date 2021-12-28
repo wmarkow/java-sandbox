@@ -158,11 +158,12 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 condensationSpeedTextView.setText("UNAVAL");
             } else {
                 CondenserCalc cc = createCondenserCalc();
+                double coolingPower = cc.calculateCoolingPower(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS);
 
-                CondensationSpeed cSpeed = cc.calculateCondensationSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
+                CondensationSpeed cSpeed = cc.calculateCondensationSpeed(coolingPower, latestData.headerTemp);
                 double condensationSpeedInMlPerMin = cSpeed.speedInLPerSec * 1000 * 60;
 
-                CondensationSpeed condAndCoolingSpeed = cc.calculateCondensationAndCoolingSpeed(latestData.coldWaterTemp, latestData.hotWaterTemp, waterFlowInM3PerS, latestData.headerTemp);
+                CondensationSpeed condAndCoolingSpeed = cc.calculateCondensationAndCoolingSpeed(coolingPower, latestData.headerTemp, latestData.hotWaterTemp);
                 double condensationAndCoolingSpeedInMlPerMin = condAndCoolingSpeed.speedInLPerSec * 1000 * 60;
 
                 double averageSpeed = (condensationAndCoolingSpeedInMlPerMin + condensationSpeedInMlPerMin) / 2;

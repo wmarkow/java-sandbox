@@ -43,17 +43,12 @@ public class CondenserCalc {
      * Calculates the speed of condensation at the given input parameters. It assumes that the vapor with temperature tHeader is condensed
      * at the same temperature tHeader.
      *
-     * @param tIn condenser input water temperature in Celsius degree
-     * @param tOut condenser output water temperature in Celsius degree
-     * @param flow condenser water flow in m3/s
+     * @param coolingPower condenser cooling power in Watts (calculated by {@link CondenserCalc#calculateCoolingPower(double, double, double)}
      * @param tHeader temperature under the condenser in Celsius degree
-     * @return the speed of condensation process
+     * @return the speed of condensation processS
      * @throws OutOfRangeException when tHeader is out of range (see {@link LVEWEquilibriumCalc})
      */
-    public CondensationSpeed calculateCondensationSpeed(double tIn, double tOut, double flow, double tHeader) throws OutOfRangeException {
-        // calculate the current power of condenser
-        double power = calculateCoolingPower(tIn, tOut, flow);
-
+    public CondensationSpeed calculateCondensationSpeed(double coolingPower, double tHeader) throws OutOfRangeException {
         // calculate the current equilibrium in cooling header
         LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
 
@@ -68,7 +63,7 @@ public class CondenserCalc {
 
         // calculate the rate of condensation
         // this is in mol/s
-        double condensationRate = power / hov;
+        double condensationRate = coolingPower / hov;
 
         // calculate the speed in kg/s
         double gramsPerMole = Water.MOLAR_MASS * equilibrium.waterVaporMoleFraction + Ethanol.MOLAR_MASS * equilibrium.ethanolVaporMoleFraction;
@@ -86,17 +81,13 @@ public class CondenserCalc {
      * Calculates the speed of condensation at the given input parameters. It assumes that the vapor with temperature tHeader is condensed
      * at the same temperature tHeader and then cooled down to the temperature tOut.
      *
-     * @param tIn
-     * @param tOut
-     * @param flow
+     * @param coolingPower condenser cooling power in Watts (calculated by {@link CondenserCalc#calculateCoolingPower(double, double, double)}
      * @param tHeader
+     * @param tOut temperature of water that comes out of the condenser - in Celsius degree
      * @return
      * @throws OutOfRangeException
      */
-    public CondensationSpeed calculateCondensationAndCoolingSpeed(double tIn, double tOut, double flow, double tHeader) throws OutOfRangeException {
-        // calculate the current power of condenser
-        double power = calculateCoolingPower(tIn, tOut, flow);
-
+    public CondensationSpeed calculateCondensationAndCoolingSpeed(double coolingPower, double tHeader, double tOut) throws OutOfRangeException {
         // calculate the current equilibrium in cooling header
         LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
 
@@ -115,7 +106,7 @@ public class CondenserCalc {
 
         // calculate the rate of condensation
         // this is in mol/s
-        double condensationRate = power / (hov + sh * (tHeader - tOut));
+        double condensationRate = coolingPower / (hov + sh * (tHeader - tOut));
 
         // calculate the speed in kg/s
         double gramsPerMole = Water.MOLAR_MASS * equilibrium.waterVaporMoleFraction + Ethanol.MOLAR_MASS * equilibrium.ethanolVaporMoleFraction;
