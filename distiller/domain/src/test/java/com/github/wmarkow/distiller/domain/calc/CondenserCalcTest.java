@@ -35,8 +35,8 @@ public class CondenserCalcTest {
         System.out.println(String.format("power       speed @%-5.2f C    speed from %-5.2f C to %-5.2f C", tHeader, tHeader, tCooledDistiller));
         System.out.println(String.format("[W]         [ml/min]          [ml/min]"));
 
-        for(int steps = 0 ; steps < 16 ; steps ++) {
-            double coolingPower = steps * 200;
+        for(int steps = 0 ; steps < 32 ; steps ++) {
+            double coolingPower = steps * 100;
 
             CondensationSpeed condensationSpeed = subject.calculateCondensationSpeed(coolingPower, 78.24);
             double speedInMlPerMin = condensationSpeed.speedInLPerSec * 1000 * 60;
