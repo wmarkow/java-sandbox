@@ -24,7 +24,7 @@ public class LVEWEquilibriumCalc {
 
     /***
      * Calculates liquid-vapor of ethanol-water equilibrium
-     * @param temperature
+     * @param temperature in Celsius degree
      * @return
      * @throws OutOfRangeException when temperature is out of range (see {@link #isValidPoint(double)}
      */
