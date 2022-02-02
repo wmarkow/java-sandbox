@@ -45,21 +45,17 @@ public class CondenserCalc {
      *
      * @param coolingPower condenser cooling power in Watts (calculated by {@link CondenserCalc#calculateCoolingPower(double, double, double)}
      * @param tHeader temperature under the condenser in Celsius degree
-     * @return the speed of condensation processS
+     * @return the speed of condensation process
      * @throws OutOfRangeException when tHeader is out of range (see {@link LVEWEquilibriumCalc})
      */
     public CondensationSpeed calculateCondensationSpeed(double coolingPower, double tHeader) throws OutOfRangeException {
         // calculate the current equilibrium in cooling header
         LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
 
-        // calculate the heat of vaporization of pure water and pure ethanol at the header temperature
-        PPDS12Calc ppds12Calc = new PPDS12Calc();
-        double hovWater = ppds12Calc.calculate(Water.PPDS12_PARAMETERS, 273.0 + tHeader);
-        double hovEthanol = ppds12Calc.calculate(Ethanol.PPDS12_PARAMETERS, 273.0 + tHeader);
-
         // calculate the heat of vaporization of the ethanol-water mixture in the condenser
         // this is in J/mol
-        double hov = hovWater * equilibrium.waterVaporMoleFraction + hovEthanol * equilibrium.ethanolVaporMoleFraction;
+        EthanolHovCalc ethanolHovCalc = new EthanolHovCalc();
+        double hov = ethanolHovCalc.calculateHeatOfVaporization(equilibrium);
 
         // calculate the rate of condensation
         // this is in mol/s
@@ -91,17 +87,14 @@ public class CondenserCalc {
         // calculate the current equilibrium in cooling header
         LVEWEquilibrium equilibrium = equilibriumCalc.calculateEquilibrium(tHeader);
 
-        // calculate the heat of vaporization of pure water and pure ethanol at the header temperature
-        PPDS12Calc ppds12Calc = new PPDS12Calc();
-        double hovWater = ppds12Calc.calculate(Water.PPDS12_PARAMETERS, 273.0 + tHeader);
-        double hovEthanol = ppds12Calc.calculate(Ethanol.PPDS12_PARAMETERS, 273.0 + tHeader);
-
         // calculate the heat of vaporization of the ethanol-water mixture in the condenser
         // this is in J/mol
-        double hov = hovWater * equilibrium.waterVaporMoleFraction + hovEthanol * equilibrium.ethanolVaporMoleFraction;
+        EthanolHovCalc ethanolHovCalc = new EthanolHovCalc();
+        double hov = ethanolHovCalc.calculateHeatOfVaporization(equilibrium);
 
         // calculate the specific heat of the ethanol-water mixture in the condenser
         // this is in J/mol
+        // TODO: move this to some other class
         double sh = Water.SPECIFIC_HEAT_CAPACITY * equilibrium.waterVaporMoleFraction + Ethanol.SPECIFIC_HEAT_CAPACITY * equilibrium.ethanolVaporMoleFraction;
 
         // calculate the rate of condensation
