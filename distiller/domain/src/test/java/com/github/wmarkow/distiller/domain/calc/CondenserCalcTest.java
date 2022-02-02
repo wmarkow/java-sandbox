@@ -31,9 +31,9 @@ public class CondenserCalcTest {
         subject.calculateCondensationSpeed(0.0, tHeader);
 
         System.out.println("");
-        System.out.println(String.format("Cooling     Condensation      Condensation & cooling"));
-        System.out.println(String.format("power       speed @%-5.2f C    speed from %-5.2f C to %-5.2f C", tHeader, tHeader, tCooledDistiller));
-        System.out.println(String.format("[W]         [ml/min]          [ml/min]"));
+        System.out.println(String.format("Cooling     Condensation @%-5.2f C     Condensation @%-5.2f C", tHeader, tHeader));
+        System.out.println(String.format("power                                 and cooling to %-5.2f C", tCooledDistiller));
+        System.out.println(String.format("[W]         [ml/min]                  [ml/min]"));
 
         for(int steps = 0 ; steps < 32 ; steps ++) {
             double coolingPower = steps * 100;
@@ -44,7 +44,7 @@ public class CondenserCalcTest {
             CondensationSpeed condensationAndCoolingSpeed = subject.calculateCondensationAndCoolingSpeed(coolingPower, 78.24, tCooledDistiller);
             double speedInMlPerMin2 = condensationAndCoolingSpeed.speedInLPerSec * 1000 * 60;
 
-            String text = String.format("%-11.0f %-17.2f %-6.2f", coolingPower, speedInMlPerMin, speedInMlPerMin2);
+            String text = String.format("%-11.0f %-25.2f %-6.2f", coolingPower, speedInMlPerMin, speedInMlPerMin2);
             System.out.println(text);
         }
     }
