@@ -38,10 +38,10 @@ public class CondenserCalcTest {
         for(int steps = 0 ; steps < 32 ; steps ++) {
             double coolingPower = steps * 100;
 
-            CondensationSpeed condensationSpeed = subject.calculateCondensationSpeed(coolingPower, 78.24);
+            CondensationSpeed condensationSpeed = subject.calculateCondensationSpeed(coolingPower, tHeader);
             double speedInMlPerMin = condensationSpeed.speedInLPerSec * 1000 * 60;
 
-            CondensationSpeed condensationAndCoolingSpeed = subject.calculateCondensationAndCoolingSpeed(coolingPower, 78.24, tCooledDistiller);
+            CondensationSpeed condensationAndCoolingSpeed = subject.calculateCondensationAndCoolingSpeed(coolingPower, tHeader, tCooledDistiller);
             double speedInMlPerMin2 = condensationAndCoolingSpeed.speedInLPerSec * 1000 * 60;
 
             String text = String.format("%-11.0f %-25.2f %-6.2f", coolingPower, speedInMlPerMin, speedInMlPerMin2);
