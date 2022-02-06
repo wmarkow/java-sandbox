@@ -28,20 +28,19 @@ import lb.collision.D2Q9RegularizedBoundary;
 
 /** Computation of the density on southern velocity boundaries */
 public class SouthRhoByVelocity implements RhoComputer {
-	
-	private final int[] freeLinks;
-	public final double[] fNeq;
-	
-	public SouthRhoByVelocity() {
-		freeLinks = new int[] {1,3,4,7,8};
-		fNeq = new double[9];
-	}
 
-	public double computeRho(double[] f, D2Q9RegularizedBoundary collOp) {
-                double[] u0 = collOp.u(f);
-		return 1./(1.-u0[1]) * ( 
-				f[0]+f[3]+f[1] + 2*( f[8]+f[4]+f[7] 
-			) );
-	}
+    private final int[] freeLinks;
+    public final double[] fNeq;
+
+    public SouthRhoByVelocity() {
+	freeLinks = new int[] { 1, 3, 4, 7, 8 };
+	fNeq = new double[9];
+    }
+
+    @Override
+    public double computeRho(double[] f, D2Q9RegularizedBoundary collOp) {
+	double[] u0 = collOp.u(f);
+	return 1. / (1. - u0[1]) * (f[0] + f[3] + f[1] + 2 * (f[8] + f[4] + f[7]));
+    }
 
 }

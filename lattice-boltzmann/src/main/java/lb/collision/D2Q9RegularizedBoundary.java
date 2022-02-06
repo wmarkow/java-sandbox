@@ -25,128 +25,106 @@
 package lb.collision;
 
 import lb.D2Q9;
-import lb.collision.regularized.PiComputer;
-import lb.collision.regularized.UComputer;
-import lb.collision.regularized.RhoComputer;
 import lb.collision.regularized.EastRegularizedBoundary;
-import lb.collision.regularized.NorthRegularizedBoundary;
-import lb.collision.regularized.SouthRegularizedBoundary;
-import lb.collision.regularized.WestRegularizedBoundary;
 import lb.collision.regularized.EastRhoByVelocity;
+import lb.collision.regularized.NorthRegularizedBoundary;
 import lb.collision.regularized.NorthRhoByVelocity;
+import lb.collision.regularized.PiComputer;
+import lb.collision.regularized.RhoComputer;
+import lb.collision.regularized.SouthRegularizedBoundary;
 import lb.collision.regularized.SouthRhoByVelocity;
-import lb.collision.regularized.WestRhoByVelocity;
 import lb.collision.regularized.UByVelocity;
+import lb.collision.regularized.UComputer;
+import lb.collision.regularized.WestRegularizedBoundary;
+import lb.collision.regularized.WestRhoByVelocity;
 
-/** Implementation of second order accurate boundary condition for
- *  straight walls. The implementation is generic, it works for
- *  velocity/density boundaries of any orientation. The code
- *  depending on those parameters is implemented in the PiComputer,
- *  RhoComputer and UComputer classes, the policy classes
- *  responsible for the computation of the momenta of the
- *  particle distribution functions.
+/**
+ * Implementation of second order accurate boundary condition for straight
+ * walls. The implementation is generic, it works for velocity/density
+ * boundaries of any orientation. The code depending on those parameters is
+ * implemented in the PiComputer, RhoComputer and UComputer classes, the policy
+ * classes responsible for the computation of the momenta of the particle
+ * distribution functions.
  */
 public class D2Q9RegularizedBoundary implements CollisionOperator {
-	
-	private final int[][] C;
-	private final double[] T;
-	private final CollisionOperator lbgk;
-        private final PiComputer piComputer;
-        private final RhoComputer rhoComputer;
-        private final UComputer uComputer;
-	
-	private final static int XX = 0;
-	private final static int YY = 1;
-	private final static int XY = 2;
-		
-	private double[] neqPi;
-	
-	public D2Q9RegularizedBoundary(double omega,
-                                       PiComputer piComp,
-                                       UComputer  uComp,
-                                       RhoComputer rhoComp)
-        {
-		C = D2Q9.getInstance().getC();
-		T = D2Q9.getInstance().getT();
-		lbgk = new LBGK(D2Q9.getInstance(), omega);
-		neqPi = new double[3];
-                piComputer = piComp;
-                uComputer  = uComp;
-                rhoComputer = rhoComp;
-	}
 
-	public double rho(double[] f) {
-		return rhoComputer.computeRho(f, this);
-	}
+    private final int[][] C;
+    private final double[] T;
+    private final CollisionOperator lbgk;
+    private final PiComputer piComputer;
+    private final RhoComputer rhoComputer;
+    private final UComputer uComputer;
 
-	public double[] u(double[] f) {
-		return uComputer.computeU(f, this);
-	}
-	
-	public double fEq(int i, double rho, double[] u, double uNorm2) {
-		double cDotU = C[i][0]*u[0]+C[i][1]*u[1];
-		return rho*T[i]*(1 + 3*cDotU + 4.5*cDotU*cDotU - 1.5*uNorm2);
-	}
-	
-	public double fEq(double rho, int i, double[] f) {
-                double[] u   = uComputer.computeU(f, this);
-                double uSqr  = uComputer.computeUSqr(f, this);
-                return fEq(i, rho, u, uSqr);
-	}
+    private final static int XX = 0;
+    private final static int YY = 1;
+    private final static int XY = 2;
 
-	public void update(double[] f) {
-		double rho = rhoComputer.computeRho(f, this);
-		double[] u = uComputer.computeU(f, this);
-		double uSqr = uComputer.computeUSqr(f, this);
-		piComputer.computeNeqPi(rho, f, neqPi, this);
-		for(int i=0; i<9; i++) {
-			f[i] = fEq(i, rho, u, uSqr) + 9./2 * T[i] * (
-					(C[i][0]*C[i][0]-1./3) * neqPi[XX] + 
-					(C[i][1]*C[i][1]-1./3) * neqPi[YY] +
-					C[i][0]*C[i][1] * 2. * neqPi[XY]);
-		}
-		lbgk.update(f);
+    private double[] neqPi;
 
-	}
-	
-	public static D2Q9RegularizedBoundary getNorthVelocityBoundary (
-                double[] u0, double omega)
-        {
-		return new D2Q9RegularizedBoundary (
-                        omega,
-                        new NorthRegularizedBoundary(),
-                        new UByVelocity(u0),
-                        new NorthRhoByVelocity() );
-	}
+    public D2Q9RegularizedBoundary(double omega, PiComputer piComp, UComputer uComp, RhoComputer rhoComp) {
+	C = D2Q9.getInstance().getC();
+	T = D2Q9.getInstance().getT();
+	lbgk = new LBGK(D2Q9.getInstance(), omega);
+	neqPi = new double[3];
+	piComputer = piComp;
+	uComputer = uComp;
+	rhoComputer = rhoComp;
+    }
 
-	public static D2Q9RegularizedBoundary getSouthVelocityBoundary (
-                double[] u0, double omega)
-        {
-		return new D2Q9RegularizedBoundary (
-                        omega,
-                        new SouthRegularizedBoundary(),
-                        new UByVelocity(u0),
-                        new SouthRhoByVelocity() );
-	}
+    @Override
+    public double rho(double[] f) {
+	return rhoComputer.computeRho(f, this);
+    }
 
-	public static D2Q9RegularizedBoundary getEastVelocityBoundary (
-                double[] u0, double omega)
-        {
-		return new D2Q9RegularizedBoundary (
-                        omega,
-                        new EastRegularizedBoundary(),
-                        new UByVelocity(u0),
-                        new EastRhoByVelocity() );
-	}
+    @Override
+    public double[] u(double[] f) {
+	return uComputer.computeU(f, this);
+    }
 
-	public static D2Q9RegularizedBoundary getWestVelocityBoundary (
-                double[] u0, double omega)
-        {
-		return new D2Q9RegularizedBoundary (
-                        omega,
-                        new WestRegularizedBoundary(),
-                        new UByVelocity(u0),
-                        new WestRhoByVelocity() );
+    @Override
+    public double fEq(int i, double rho, double[] u, double uNorm2) {
+	double cDotU = C[i][0] * u[0] + C[i][1] * u[1];
+	return rho * T[i] * (1 + 3 * cDotU + 4.5 * cDotU * cDotU - 1.5 * uNorm2);
+    }
+
+    public double fEq(double rho, int i, double[] f) {
+	double[] u = uComputer.computeU(f, this);
+	double uSqr = uComputer.computeUSqr(f, this);
+	return fEq(i, rho, u, uSqr);
+    }
+
+    @Override
+    public void update(double[] f) {
+	double rho = rhoComputer.computeRho(f, this);
+	double[] u = uComputer.computeU(f, this);
+	double uSqr = uComputer.computeUSqr(f, this);
+	piComputer.computeNeqPi(rho, f, neqPi, this);
+	for (int i = 0; i < 9; i++) {
+	    f[i] = fEq(i, rho, u, uSqr) + 9. / 2 * T[i] * ((C[i][0] * C[i][0] - 1. / 3) * neqPi[XX]
+		    + (C[i][1] * C[i][1] - 1. / 3) * neqPi[YY] + C[i][0] * C[i][1] * 2. * neqPi[XY]);
 	}
+	lbgk.update(f);
+
+    }
+
+    public static D2Q9RegularizedBoundary getNorthVelocityBoundary(double[] u0, double omega) {
+	return new D2Q9RegularizedBoundary(omega, new NorthRegularizedBoundary(), new UByVelocity(u0),
+		new NorthRhoByVelocity());
+    }
+
+    public static D2Q9RegularizedBoundary getSouthVelocityBoundary(double[] u0, double omega) {
+	return new D2Q9RegularizedBoundary(omega, new SouthRegularizedBoundary(), new UByVelocity(u0),
+		new SouthRhoByVelocity());
+    }
+
+    public static D2Q9RegularizedBoundary getEastVelocityBoundary(double[] u0, double omega) {
+	return new D2Q9RegularizedBoundary(omega, new EastRegularizedBoundary(), new UByVelocity(u0),
+		new EastRhoByVelocity());
+    }
+
+    public static D2Q9RegularizedBoundary getWestVelocityBoundary(double[] u0, double omega) {
+	return new D2Q9RegularizedBoundary(omega, new WestRegularizedBoundary(), new UByVelocity(u0),
+		new WestRhoByVelocity());
+    }
 
 }

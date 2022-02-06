@@ -26,23 +26,21 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-
 /** Computation of the density on eastern velocity boundaries */
 public class EastRhoByVelocity implements RhoComputer {
 
-        private final int[] freeLinks;
-	public final double[] fNeq;
-	
-	public EastRhoByVelocity() {
-		freeLinks = new int[] {1,2,4,5,8};
-		fNeq = new double[9];
-	}
+    private final int[] freeLinks;
+    public final double[] fNeq;
 
-	public double computeRho(double[] f, D2Q9RegularizedBoundary collOp) {
-                double[] u0 = collOp.u(f);
-		return 1./(1.+u0[0]) * ( 
-				f[0]+f[2]+f[4] + 2*( f[1]+f[5]+f[8] 
-			) );
-	}
+    public EastRhoByVelocity() {
+	freeLinks = new int[] { 1, 2, 4, 5, 8 };
+	fNeq = new double[9];
+    }
+
+    @Override
+    public double computeRho(double[] f, D2Q9RegularizedBoundary collOp) {
+	double[] u0 = collOp.u(f);
+	return 1. / (1. + u0[0]) * (f[0] + f[2] + f[4] + 2 * (f[1] + f[5] + f[8]));
+    }
 
 }

@@ -26,28 +26,28 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-/** A second order accurate boundary condition for straight boundaries
- *  aligned with the west wall
+/**
+ * A second order accurate boundary condition for straight boundaries aligned
+ * with the west wall
  */
 public class WestRegularizedBoundary implements PiComputer {
-	
-	private final int[] freeLinks;
-	public final double[] fNeq;
-	
-	public WestRegularizedBoundary() {
-		freeLinks = new int[] {2,3,4,6,7};
-		fNeq = new double[9];
-	}
 
-	public void computeNeqPi(double rho, double[] f, double[] neqPi, 
-			D2Q9RegularizedBoundary collOp)
-	{
-		for(int i: freeLinks) {
-			fNeq[i] = f[i]-collOp.fEq(rho,i,f);
-		}
-		neqPi[XX] = 2.*(fNeq[3]+fNeq[6]+fNeq[7]);
-		neqPi[YY] = fNeq[2] + fNeq[4] + 2.*(fNeq[6]+fNeq[7]);
-		neqPi[XY] = 2.*(fNeq[7] - fNeq[6]);
+    private final int[] freeLinks;
+    public final double[] fNeq;
+
+    public WestRegularizedBoundary() {
+	freeLinks = new int[] { 2, 3, 4, 6, 7 };
+	fNeq = new double[9];
+    }
+
+    @Override
+    public void computeNeqPi(double rho, double[] f, double[] neqPi, D2Q9RegularizedBoundary collOp) {
+	for (int i : freeLinks) {
+	    fNeq[i] = f[i] - collOp.fEq(rho, i, f);
 	}
+	neqPi[XX] = 2. * (fNeq[3] + fNeq[6] + fNeq[7]);
+	neqPi[YY] = fNeq[2] + fNeq[4] + 2. * (fNeq[6] + fNeq[7]);
+	neqPi[XY] = 2. * (fNeq[7] - fNeq[6]);
+    }
 
 }

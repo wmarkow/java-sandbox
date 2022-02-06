@@ -26,29 +26,28 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-
-/** A second order accurate boundary condition for straight boundaries
- *  aligned with the east wall
+/**
+ * A second order accurate boundary condition for straight boundaries aligned
+ * with the east wall
  */
 public class EastRegularizedBoundary implements PiComputer {
-	
-	private final int[] freeLinks;
-	public final double[] fNeq;
-	
-	public EastRegularizedBoundary() {
-		freeLinks = new int[] {1,2,4,5,8};
-		fNeq = new double[9];
-	}
 
-	public void computeNeqPi(double rho, double[] f, double[] neqPi, 
-			D2Q9RegularizedBoundary collOp)
-	{
-		for(int i: freeLinks) {
-			fNeq[i] = f[i]-collOp.fEq(rho,i,f);
-		}
-		neqPi[XX] = 2.*(fNeq[1]+fNeq[5]+fNeq[8]);
-		neqPi[YY] = fNeq[2] + fNeq[4] + 2.*(fNeq[5]+fNeq[8]);
-		neqPi[XY] = 2.*(fNeq[5] - fNeq[8]);
+    private final int[] freeLinks;
+    public final double[] fNeq;
+
+    public EastRegularizedBoundary() {
+	freeLinks = new int[] { 1, 2, 4, 5, 8 };
+	fNeq = new double[9];
+    }
+
+    @Override
+    public void computeNeqPi(double rho, double[] f, double[] neqPi, D2Q9RegularizedBoundary collOp) {
+	for (int i : freeLinks) {
+	    fNeq[i] = f[i] - collOp.fEq(rho, i, f);
 	}
+	neqPi[XX] = 2. * (fNeq[1] + fNeq[5] + fNeq[8]);
+	neqPi[YY] = fNeq[2] + fNeq[4] + 2. * (fNeq[5] + fNeq[8]);
+	neqPi[XY] = 2. * (fNeq[5] - fNeq[8]);
+    }
 
 }

@@ -38,7 +38,7 @@ public class LBGK implements CollisionOperator {
 	
 	private double omega;
 	
-	public LBGK(Params p, double omega) {
+    public LBGK(Params p, double omega) {
 		this.omega = omega;
 		C = p.getC();
 		T = p.getT();
@@ -46,6 +46,7 @@ public class LBGK implements CollisionOperator {
 		fPrime = new double[9];
 	}
 
+	@Override
 	public double rho(double[] f) {
 		double sum = 0;
 		for(int i=0; i<9; i++) {
@@ -54,6 +55,7 @@ public class LBGK implements CollisionOperator {
 		return sum;
 	}
 
+	@Override
 	public double[] u(double[] f) {
 		return u(f, rho(f));
 	}
@@ -73,6 +75,7 @@ public class LBGK implements CollisionOperator {
 		u[1] /= rho;
 	}
 		
+	@Override
 	public double fEq(int i, double rho, double[] u, double uNorm2) {
 		double cDotU = u[0]*C[i][0]+u[1]*C[i][1];
 		return rho*T[i]*(1 + 3*cDotU + 4.5*cDotU*cDotU - 1.5*uNorm2);
@@ -83,6 +86,7 @@ public class LBGK implements CollisionOperator {
 		return rho*T[i]*(1 + 3*cDotU + 4.5*cDotU*cDotU - 1.5*uNorm2);
 	}
 
+	@Override
 	public void update(double[] f) {
 		double rho = rho(f);
 		computeU(f,rho);

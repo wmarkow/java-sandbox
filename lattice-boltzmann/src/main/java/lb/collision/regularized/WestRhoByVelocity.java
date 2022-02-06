@@ -26,23 +26,21 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-
 /** Computation of the density on western velocity boundaries */
 public class WestRhoByVelocity implements RhoComputer {
-	
-	private final int[] freeLinks;
-	public final double[] fNeq;
-	
-	public WestRhoByVelocity() {
-		freeLinks = new int[] {2,3,4,6,7};
-		fNeq = new double[9];
-	}
 
-	public double computeRho(double[] f, D2Q9RegularizedBoundary collOp) {
-                double[] u0 = collOp.u(f);
-		return 1./(1.-u0[0]) * ( 
-				f[0]+f[2]+f[4] + 2*( f[3]+f[6]+f[7] 
-			) );
-	}
+    private final int[] freeLinks;
+    public final double[] fNeq;
+
+    public WestRhoByVelocity() {
+	freeLinks = new int[] { 2, 3, 4, 6, 7 };
+	fNeq = new double[9];
+    }
+
+    @Override
+    public double computeRho(double[] f, D2Q9RegularizedBoundary collOp) {
+	double[] u0 = collOp.u(f);
+	return 1. / (1. - u0[0]) * (f[0] + f[2] + f[4] + 2 * (f[3] + f[6] + f[7]));
+    }
 
 }

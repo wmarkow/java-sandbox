@@ -26,48 +26,49 @@ package lb;
 
 import lb.collision.CollisionOperator;
 
-/** Implementation of a D2Q9 lattice site (9 double precision variables) 
+/**
+ * Implementation of a D2Q9 lattice site (9 double precision variables)
  */
 public class Site {
 
-	private Params params;
-	private CollisionOperator collisionOperator;
-	private double[] f;
-	
-	/* Note that the constructor copies initialF */
-	public Site(Params p, CollisionOperator co, double[] initialF) {
-		collisionOperator = co;
-		params = p;
-		f = new double[params.getFSize()];
-		System.arraycopy(initialF, 0, f, 0, params.getFSize());
-	}
-	
-	public double[] getF() {
-		return f;
-	}
-	
-	public double getF(int i) {
-		return f[i];
-	}
-	
-	public void setF(double d, int i) {
-		f[i] = d;	
-	}
-	
-	public void setF(double[] newF) {
-		f = newF;	
-	}
-	
-	public void collide() {
-		collisionOperator.update(f);
-	}
-	
-	public double rho() {
-		return collisionOperator.rho(f);
-	}
-	
-	public double[] u() {
-		return collisionOperator.u(f);
-	}
-	
+    private Params params;
+    private CollisionOperator collisionOperator;
+    private double[] f;
+
+    /* Note that the constructor copies initialF */
+    public Site(Params p, CollisionOperator co, double[] initialF) {
+	collisionOperator = co;
+	params = p;
+	f = new double[params.getFSize()];
+	System.arraycopy(initialF, 0, f, 0, params.getFSize());
+    }
+
+    public double[] getF() {
+	return f;
+    }
+
+    public double getF(int i) {
+	return f[i];
+    }
+
+    public void setF(double d, int i) {
+	f[i] = d;
+    }
+
+    public void setF(double[] newF) {
+	f = newF;
+    }
+
+    public void collide() {
+	collisionOperator.update(f);
+    }
+
+    public double rho() {
+	return collisionOperator.rho(f);
+    }
+
+    public double[] u() {
+	return collisionOperator.u(f);
+    }
+
 }

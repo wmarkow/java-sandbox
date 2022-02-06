@@ -26,15 +26,15 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-/** Interface for policy classes on how to computed the stress tensor.
- *  Indeed, this is done differently, say, on various boundary types.
+/**
+ * Interface for policy classes on how to computed the stress tensor. Indeed,
+ * this is done differently, say, on various boundary types.
  */
 public interface PiComputer {
-	
-	public final static int XX = 0;
-	public final static int YY = 1;
-	public final static int XY = 2;
-	
-	
-	public void computeNeqPi(double rho, double[] f, double[] neqPi, D2Q9RegularizedBoundary collOp);
+
+    public final static int XX = 0;
+    public final static int YY = 1;
+    public final static int XY = 2;
+
+    public void computeNeqPi(double rho, double[] f, double[] neqPi, D2Q9RegularizedBoundary collOp);
 }

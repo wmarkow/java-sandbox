@@ -27,48 +27,53 @@ package lb;
 /** D2Q9 lattice parameters */
 public class D2Q9 implements Params {
 
-	private final int[][] C = {{0,0},
-			{1,0},{0,1},{-1,0},{0,-1},
-			{1,1},{-1,1},{-1,-1},{1,-1}};
-	
-	private final double[] T = {4.0/9.0, 1.0/9.0,1.0/9.0,1.0/9.0,1.0/9.0,
-	                                 1.0/36.0,1.0/36.0,1.0/36.0,1.0/36.0};
-	
-	private final int dim = 2;
-	
-	private final int fSize = 9;
-	
-	private final int[] opposite = { 0,3,4,1,2,7,8,5,6 };
-	
-	static private Params instance = null;
-	
-	private D2Q9() {}
-	
-	public static Params getInstance() {
-		if (instance == null) {
-			instance = new D2Q9();
-		}
-		return instance;
-	}
+    private final int[][] C = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { -1, 1 }, { -1, -1 },
+	    { 1, -1 } };
 
-	public int[][] getC() {
-		return C;
-	}
+    private final double[] T = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0,
+	    1.0 / 36.0, 1.0 / 36.0 };
 
-	public double[] getT() {
-		return T;
-	}
+    private final int dim = 2;
 
-	public int getDim() {
-		return dim;
-	}
-	
-	public int getFSize() {
-		return fSize;
-	}
+    private final int fSize = 9;
 
-	public int[] getOpposite() {
-		return opposite;
+    private final int[] opposite = { 0, 3, 4, 1, 2, 7, 8, 5, 6 };
+
+    static private Params instance = null;
+
+    private D2Q9() {
+    }
+
+    public static Params getInstance() {
+	if (instance == null) {
+	    instance = new D2Q9();
 	}
+	return instance;
+    }
+
+    @Override
+    public int[][] getC() {
+	return C;
+    }
+
+    @Override
+    public double[] getT() {
+	return T;
+    }
+
+    @Override
+    public int getDim() {
+	return dim;
+    }
+
+    @Override
+    public int getFSize() {
+	return fSize;
+    }
+
+    @Override
+    public int[] getOpposite() {
+	return opposite;
+    }
 
 }

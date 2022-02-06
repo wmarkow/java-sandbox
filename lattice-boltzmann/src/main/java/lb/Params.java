@@ -26,15 +26,15 @@ package lb;
 
 /** Lattice dependent parameters. */
 public interface Params {
-	
-	public int[][] getC();
-	
-	public double[] getT();
-	
-	public int getDim();
-	
-	public int getFSize();
-	
-	public int[] getOpposite();
-	
+
+    public int[][] getC();
+
+    public double[] getT();
+
+    public int getDim();
+
+    public int getFSize();
+
+    public int[] getOpposite();
+
 }

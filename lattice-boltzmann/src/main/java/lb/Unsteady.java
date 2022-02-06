@@ -29,97 +29,92 @@ import lb.collision.CollisionOperator;
 import lb.collision.D2Q9RegularizedBoundary;
 import lb.collision.LBGK;
 
-import static lb.tools.FileIO.save;
-
-/** Main class. Implementation of the flow past a cylindrical obstacle
- *  inside a tube. The inlet and outlet implement Dirichlet velocity
- *  boundaries with a precalculated Poiseuille profile.
- *  The flow becomes unsteady at a Reynolds number of around Re=100.
+/**
+ * Main class. Implementation of the flow past a cylindrical obstacle inside a
+ * tube. The inlet and outlet implement Dirichlet velocity boundaries with a
+ * precalculated Poiseuille profile. The flow becomes unsteady at a Reynolds
+ * number of around Re=100.
  */
 public class Unsteady {
-	
-	public static final int XX = 250;
-	public static final int YY = 50;
-	public static final int OBST_R = YY/10 + 1;
-	public static final int OBST_X = XX/5;
-	public static final int OBST_Y = YY/2;
-	
-	public static final double U_MAX = 0.02;
-	public static final double RE = 100;
-	public static final double NU = U_MAX * 2.0 * OBST_R / RE;
-	public static final double OMEGA = 1.0 / ( 3.0 * NU + 0.5 );
-	
-	public static double computePoiseuille(int y) {
-		double realY = y-2;
-		double realYY = YY-2;
-		return 4 * U_MAX / ( realYY*realYY ) * ( realYY*realY - realY*realY );
-	}
-	
-	public static void addObstacle(D2Q9Lattice lattice) {
-		CollisionOperator bounceBack = new BounceBack(D2Q9.getInstance());
-		for (int x=1; x<=XX; x++) {
-			for (int y=1; y<=YY; y++) {
-				if ( ( x-OBST_X )*( x-OBST_X ) + ( y-OBST_Y )*( y-OBST_Y ) <= OBST_R*OBST_R ) {
-					lattice.setCollision(x,y,bounceBack);
-				}
-			}
-		}
-	}
-	
-	public static void initializeVelocity(D2Q9Lattice lattice, LBGK lbgk) {
-		double rho = 1;
-		for (int x=1; x<=XX; x++) {
-			for (int y=1; y<=YY; y++) {
-				double u[] = {computePoiseuille(y), 0};
-				double normU = u[0]*u[0];
-				for (int i=0; i<9; i++) {
-					lattice.setF( x, y, lbgk.fEq( i,rho,u,normU ), i );
-				}
-			}
-		}	
-	}
-	
-	public static void addEastBoundary(D2Q9Lattice lattice) {
-		for (int y=2; y<=YY-1; y++) {
-			double[] u = {computePoiseuille(y),0};
-			lattice.setCollision(1,y,D2Q9RegularizedBoundary.getEastVelocityBoundary(u,OMEGA));
-		}
-	}
-	
-	public static void addWestBoundary(D2Q9Lattice lattice) {
-		for (int y=2; y<=YY-1; y++) {
-			double[] u = {computePoiseuille(y),0};
-			lattice.setCollision(XX-2,y,D2Q9RegularizedBoundary.getWestVelocityBoundary(u,OMEGA));
-		}
-	}
-	
-	public static void main(String[] args){
 
-		LBGK lbgk = new LBGK(D2Q9.getInstance(), OMEGA);
-		
-		D2Q9Lattice lattice = new D2Q9Lattice(XX, YY, lbgk);
-		
-		CollisionOperator northRegul = 
-			D2Q9RegularizedBoundary.getNorthVelocityBoundary(new double[] {0,0}, OMEGA);
-		CollisionOperator southRegul =
-			D2Q9RegularizedBoundary.getSouthVelocityBoundary(new double[] {0,0}, OMEGA);
-	
-		lattice.addRectangularBoundary(1,XX,1,1,southRegul);
-		lattice.addRectangularBoundary(1,XX,YY,YY,northRegul);
-			
-		initializeVelocity(lattice,lbgk);
-		addObstacle(lattice);
-		
+    public static final int XX = 250;
+    public static final int YY = 50;
+    public static final int OBST_R = YY / 10 + 1;
+    public static final int OBST_X = XX / 5;
+    public static final int OBST_Y = YY / 2;
 
-		for(int t=0; t<1000; t++) {
-			lattice.step();
-			//if (t % 51 == 50) {
-		//		save("PeriodicTest",lattice);
-	//			System.out.println(t);
-//			}
+    public static final double U_MAX = 0.02;
+    public static final double RE = 100;
+    public static final double NU = U_MAX * 2.0 * OBST_R / RE;
+    public static final double OMEGA = 1.0 / (3.0 * NU + 0.5);
+
+    public static double computePoiseuille(int y) {
+	double realY = y - 2;
+	double realYY = YY - 2;
+	return 4 * U_MAX / (realYY * realYY) * (realYY * realY - realY * realY);
+    }
+
+    public static void addObstacle(D2Q9Lattice lattice) {
+	CollisionOperator bounceBack = new BounceBack(D2Q9.getInstance());
+	for (int x = 1; x <= XX; x++) {
+	    for (int y = 1; y <= YY; y++) {
+		if ((x - OBST_X) * (x - OBST_X) + (y - OBST_Y) * (y - OBST_Y) <= OBST_R * OBST_R) {
+		    lattice.setCollision(x, y, bounceBack);
 		}
-		
-	
+	    }
 	}
-	
+    }
+
+    public static void initializeVelocity(D2Q9Lattice lattice, LBGK lbgk) {
+	double rho = 1;
+	for (int x = 1; x <= XX; x++) {
+	    for (int y = 1; y <= YY; y++) {
+		double u[] = { computePoiseuille(y), 0 };
+		double normU = u[0] * u[0];
+		for (int i = 0; i < 9; i++) {
+		    lattice.setF(x, y, lbgk.fEq(i, rho, u, normU), i);
+		}
+	    }
+	}
+    }
+
+    public static void addEastBoundary(D2Q9Lattice lattice) {
+	for (int y = 2; y <= YY - 1; y++) {
+	    double[] u = { computePoiseuille(y), 0 };
+	    lattice.setCollision(1, y, D2Q9RegularizedBoundary.getEastVelocityBoundary(u, OMEGA));
+	}
+    }
+
+    public static void addWestBoundary(D2Q9Lattice lattice) {
+	for (int y = 2; y <= YY - 1; y++) {
+	    double[] u = { computePoiseuille(y), 0 };
+	    lattice.setCollision(XX - 2, y, D2Q9RegularizedBoundary.getWestVelocityBoundary(u, OMEGA));
+	}
+    }
+
+    public static void main(String[] args) {
+
+	LBGK lbgk = new LBGK(D2Q9.getInstance(), OMEGA);
+
+	D2Q9Lattice lattice = new D2Q9Lattice(XX, YY, lbgk);
+
+	CollisionOperator northRegul = D2Q9RegularizedBoundary.getNorthVelocityBoundary(new double[] { 0, 0 }, OMEGA);
+	CollisionOperator southRegul = D2Q9RegularizedBoundary.getSouthVelocityBoundary(new double[] { 0, 0 }, OMEGA);
+
+	lattice.addRectangularBoundary(1, XX, 1, 1, southRegul);
+	lattice.addRectangularBoundary(1, XX, YY, YY, northRegul);
+
+	initializeVelocity(lattice, lbgk);
+	addObstacle(lattice);
+
+	for (int t = 0; t < 1000; t++) {
+	    lattice.step();
+	    // if (t % 51 == 50) {
+	    // save("PeriodicTest",lattice);
+	    // System.out.println(t);
+	    // }
+	}
+
+    }
+
 }

@@ -28,27 +28,28 @@ import lb.collision.D2Q9RegularizedBoundary;
 
 /** Implementation of velocity on velocity boundaries */
 public class UByVelocity implements UComputer {
-	
-	private double[] u;
-        private double   uSqr;
-	
-	public UByVelocity(double[] _u) {
-		u = _u;
-                uSqr = u[0]*u[0] + u[1]*u[1];
-	}
-	
-	public void setU(double[] _u) {
-		u = _u;
-                uSqr = u[0]*u[0] + u[1]*u[1];
-	}
 
-	public double[] computeU(double[] f, D2Q9RegularizedBoundary collOp) {
-            return u;
-        }
+    private double[] u;
+    private double uSqr;
 
-	public double computeUSqr(double[] f, D2Q9RegularizedBoundary collOp)
-        {
-            return uSqr;
-        }
+    public UByVelocity(double[] _u) {
+	u = _u;
+	uSqr = u[0] * u[0] + u[1] * u[1];
+    }
+
+    public void setU(double[] _u) {
+	u = _u;
+	uSqr = u[0] * u[0] + u[1] * u[1];
+    }
+
+    @Override
+    public double[] computeU(double[] f, D2Q9RegularizedBoundary collOp) {
+	return u;
+    }
+
+    @Override
+    public double computeUSqr(double[] f, D2Q9RegularizedBoundary collOp) {
+	return uSqr;
+    }
 
 }

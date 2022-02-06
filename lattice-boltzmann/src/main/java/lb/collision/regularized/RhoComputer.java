@@ -26,15 +26,15 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-/** Interface for policy classes on how to computed the density.
- *  Indeed, this is done differently, say, in the bulk and on various
- *  boundaries.
+/**
+ * Interface for policy classes on how to computed the density. Indeed, this is
+ * done differently, say, in the bulk and on various boundaries.
  */
 public interface RhoComputer {
-	
-	public final static int XX = 0;
-	public final static int YY = 1;
-	public final static int XY = 2;
-	
-	public double computeRho(double[] f, D2Q9RegularizedBoundary collOp);
+
+    public final static int XX = 0;
+    public final static int YY = 1;
+    public final static int XY = 2;
+
+    public double computeRho(double[] f, D2Q9RegularizedBoundary collOp);
 }

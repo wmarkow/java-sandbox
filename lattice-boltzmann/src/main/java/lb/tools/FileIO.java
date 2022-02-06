@@ -32,32 +32,32 @@ import lb.D2Q9Lattice;
 
 /** Helper class for data output into a textfile */
 public class FileIO {
-	
-	public static void save(String filePrefix, D2Q9Lattice lattice ) {
-		PrintWriter uFile=null;
-		PrintWriter rhoFile=null;
-		try {
-			uFile = new PrintWriter(new FileWriter(filePrefix+"_u.dat"));
-			rhoFile = new PrintWriter(new FileWriter(filePrefix+"_rho.dat"));
-			double[][] uMatrix = lattice.normU();
-			double[][] rhoMatrix = lattice.rho();
-			int XX = lattice.getXX();
-			int YY = lattice.getYY();
-			for(int x=0; x<XX; x++) {
-				for (int y=0; y<YY; y++) {
-					uFile.print(uMatrix[x][y] +" ");
-					rhoFile.print(rhoMatrix[x][y] +" ");
-				}	
-				uFile.println();
-				rhoFile.println();
-				
-			} 	
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			uFile.close();
-			rhoFile.close();
+
+    public static void save(String filePrefix, D2Q9Lattice lattice) {
+	PrintWriter uFile = null;
+	PrintWriter rhoFile = null;
+	try {
+	    uFile = new PrintWriter(new FileWriter(filePrefix + "_u.dat"));
+	    rhoFile = new PrintWriter(new FileWriter(filePrefix + "_rho.dat"));
+	    double[][] uMatrix = lattice.normU();
+	    double[][] rhoMatrix = lattice.rho();
+	    int XX = lattice.getXX();
+	    int YY = lattice.getYY();
+	    for (int x = 0; x < XX; x++) {
+		for (int y = 0; y < YY; y++) {
+		    uFile.print(uMatrix[x][y] + " ");
+		    rhoFile.print(rhoMatrix[x][y] + " ");
 		}
+		uFile.println();
+		rhoFile.println();
+
+	    }
+	} catch (IOException e) {
+	    e.printStackTrace();
+	} finally {
+	    uFile.close();
+	    rhoFile.close();
 	}
+    }
 
 }

@@ -26,16 +26,17 @@ package lb.collision.regularized;
 
 import lb.collision.D2Q9RegularizedBoundary;
 
-/** Interface for policy classes on how to computed the velocity.
- *  Indeed, this is done differently, say, in the bulk and on various
- *  boundaries.
+/**
+ * Interface for policy classes on how to computed the velocity. Indeed, this is
+ * done differently, say, in the bulk and on various boundaries.
  */
 public interface UComputer {
-	
-	public final static int XX = 0;
-	public final static int YY = 1;
-	public final static int XY = 2;
-	
-	public double[] computeU(double[] f, D2Q9RegularizedBoundary collOp);
-	public double   computeUSqr(double[] f, D2Q9RegularizedBoundary collOp);
+
+    public final static int XX = 0;
+    public final static int YY = 1;
+    public final static int XY = 2;
+
+    public double[] computeU(double[] f, D2Q9RegularizedBoundary collOp);
+
+    public double computeUSqr(double[] f, D2Q9RegularizedBoundary collOp);
 }

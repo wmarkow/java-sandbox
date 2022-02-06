@@ -28,37 +28,41 @@ import lb.Params;
 
 /** Full-way bounce-back condition for no-slip walls */
 public class BounceBack implements CollisionOperator {
-	
-	private final double RHO = 1.0;
-	private final double U[];
-	private final int[] OPPOSITE;
-	private final int F_SIZE;
-	double[] fPrime;
-	
-	public BounceBack(Params p) {
-		U = new double[p.getDim()];
-		OPPOSITE = p.getOpposite();
-		F_SIZE = p.getFSize();
-		fPrime = new double[F_SIZE];
-	}
 
-	public double rho(double[] f) {
-		return RHO;
-	}
+    private final double RHO = 1.0;
+    private final double U[];
+    private final int[] OPPOSITE;
+    private final int F_SIZE;
+    double[] fPrime;
 
-	public double[] u(double[] f) {
-		return U;
-	}
+    public BounceBack(Params p) {
+	U = new double[p.getDim()];
+	OPPOSITE = p.getOpposite();
+	F_SIZE = p.getFSize();
+	fPrime = new double[F_SIZE];
+    }
 
-	public void update(double[] f) {
-		for(int i=0; i<F_SIZE; i++) {
-			fPrime[i] = f[OPPOSITE[i]];
-		}
-		System.arraycopy(fPrime, 0, f, 0, F_SIZE);
-	}
+    @Override
+    public double rho(double[] f) {
+	return RHO;
+    }
 
-	public double fEq(int i, double rho, double[] u, double uNorm2) {
-		throw new RuntimeException("This method does not exist");
+    @Override
+    public double[] u(double[] f) {
+	return U;
+    }
+
+    @Override
+    public void update(double[] f) {
+	for (int i = 0; i < F_SIZE; i++) {
+	    fPrime[i] = f[OPPOSITE[i]];
 	}
+	System.arraycopy(fPrime, 0, f, 0, F_SIZE);
+    }
+
+    @Override
+    public double fEq(int i, double rho, double[] u, double uNorm2) {
+	throw new RuntimeException("This method does not exist");
+    }
 
 }

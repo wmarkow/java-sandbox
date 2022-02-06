@@ -24,19 +24,20 @@
 
 package lb.collision;
 
-/** On each lattice site, the dynamics is specified via a CollisionOperator
- *  object. It specifies how to compute the macroscopic variables (rho,u)
- *  and the equilibrium distribution function, and implements the collision
- *  step in the update() function.
+/**
+ * On each lattice site, the dynamics is specified via a CollisionOperator
+ * object. It specifies how to compute the macroscopic variables (rho,u) and the
+ * equilibrium distribution function, and implements the collision step in the
+ * update() function.
  */
 public interface CollisionOperator {
-	
-	public double rho(double[] f);
-	
-	public double[] u(double[] f);
-		
-	public double fEq(int i, double rho, double[] u, double uNorm2);
-	
-	public void update(double[] f);
+
+    public double rho(double[] f);
+
+    public double[] u(double[] f);
+
+    public double fEq(int i, double rho, double[] u, double uNorm2);
+
+    public void update(double[] f);
 
 }
