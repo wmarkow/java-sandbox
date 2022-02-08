@@ -39,8 +39,6 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
     private final static int MIN_TIME_SPAN_SECONDS = 60;
     private final static int MAX_TIME_SPAN_SECONDS = 3600;
 
-    private HomeViewModel homeViewModel;
-
     @BindView(R.id.distillerDataTextView)
     DistillerDataTextView distillerDataTextView;
 
@@ -64,8 +62,7 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         ButterKnife.bind(this, root);
