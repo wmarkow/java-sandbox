@@ -1,4 +1,4 @@
-package com.github.wmarkow.distiller.ui.home;
+package com.github.wmarkow.distiller.ui.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
