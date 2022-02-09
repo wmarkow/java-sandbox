@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.HomeFragment">
+
+    <com.github.wmarkow.distiller.ui.DistillerDataTextView
+        android:id="@+id/distillerDataTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+    </com.github.wmarkow.distiller.ui.DistillerDataTextView>
+
+    <com.github.wmarkow.distiller.ui.DistillerDataChartView
+        android:id="@+id/distillerDataChartView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/distillerDataTextView"
+        android:layout_alignParentBottom="false"
+        android:layout_above="@+id/bottomLayout">
+    </com.github.wmarkow.distiller.ui.DistillerDataChartView>
+
+    <RelativeLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentBottom="true">
+        <SeekBar
+            android:id="@+id/timeSpanSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+        <Switch
+            android:id="@+id/extendedModelSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ext"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/timeSpanSeekBar"/>
+        <EditText
+            android:id="@+id/minExtendedTempEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="4"
+            android:inputType="numberDecimal"
+            android:layout_below="@+id/timeSpanSeekBar"
+            android:layout_toRightOf="@+id/extendedModelSwitch"/>
+
+        <Button
+            android:id="@+id/chooseDateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose date"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/timeSpanSeekBar"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

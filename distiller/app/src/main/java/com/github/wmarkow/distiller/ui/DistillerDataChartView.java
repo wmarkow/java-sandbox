@@ -23,6 +23,7 @@ import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -51,6 +52,11 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
     private int xRangeVisibleSpanSeconds = 120;
     private boolean dataAvailable = false;
     private boolean followLatestEntry = true;
+    /***
+     * the chart library has issues when X value is to big (like milliseconds since epoch).
+     * The variable below is used as a local startup epoch to offset the long values of epoch seconds.
+     */
+    private Long startupMidnightSecondsUtc = null;
 
     public DistillerDataChartView(Context context) {
         super(context);
@@ -76,12 +82,17 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         // The chart doesn't look good then.
         // It works ok when a number of seconds since last midnight is used.
         // TODO: improve this because the graph may not work nice when operating at midnight
-        long midnightSecondsUtc = (long)(ZonedDateTime.now(ZoneId.of("UTC")).withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli() / 1000.0);
-        float todaySecondsLocal = midnightSecondsUtc;
+        if(startupMidnightSecondsUtc == null) {
+            long firstDataMillis = distillerData.get(0).utcTimestampMillis;
+            Instant instant = Instant.ofEpochMilli(firstDataMillis);
+
+            startupMidnightSecondsUtc = (long)(ZonedDateTime.ofInstant(instant, ZoneId.of("UTC")).withHour(0).withMinute(0).withSecond(0).toInstant().toEpochMilli() / 1000.0);
+        }
+        float todaySecondsLocal = startupMidnightSecondsUtc;
 
         for(DistillerDataEntity distillerDataEntity : distillerData) {
 
-            float secondsSinceMidnightUtc = (long)(distillerDataEntity.utcTimestampMillis / 1000.0) - midnightSecondsUtc;
+            float secondsSinceMidnightUtc = (long)(distillerDataEntity.utcTimestampMillis / 1000.0) - startupMidnightSecondsUtc;
             if(secondsSinceMidnightUtc < 0) {
                 continue;
             }

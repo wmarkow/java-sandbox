@@ -125,12 +125,6 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
         distillerDataChartView.setXRangeVisibleSpanSeconds(xRangeVisibleSpanSeconds);
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        Log.i(TAG, String.format("New time span is %s", progress));
-        distillerDataChartView.setXRangeVisibleSpanSeconds(progress);
-    }
-
     @OnClick(R.id.followLatestEntrySwitch)
     public void onFollowLatestEntrySwitchClicked() {
         distillerDataChartView.setFollowLatestEntry(followLatestEntrySwitch.isChecked());
@@ -151,6 +145,12 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
             distillerDataTextView.disableExtendedModel();
             minExtendedTempEditText.setEnabled(false);
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Log.i(TAG, String.format("New time span is %s", progress));
+        distillerDataChartView.setXRangeVisibleSpanSeconds(progress);
     }
 
     @Override

@@ -12,14 +12,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/nav_data_browser"
+        android:name="com.github.wmarkow.distiller.ui.fragment.ArchiveDataBrowserFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_archive_data_browser" />
+
+    <fragment
         android:id="@+id/nav_gallery"
         android:name="com.github.wmarkow.distiller.ui.fragment.SpecificHeatMeasureFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_specific_heat_measure" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.github.wmarkow.distiller.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
 </navigation>
