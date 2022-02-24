@@ -64,4 +64,17 @@ public class EthanolSolutionCalcTest {
             assertEquals(otherDensity, density, 0.013);
         }
     }
+
+    @Test
+    public void testCalculateVolumeConcentration() throws OutOfRangeException {
+        double headerVaporTemp = 90.0;
+
+        LVEWEquilibriumCalc calc = new LVEWEquilibriumCalc();
+        LVEWEquilibrium equilibrium = calc.calculateEquilibrium(headerVaporTemp);
+
+        EthanolSolutionCalc esc = new EthanolSolutionCalc();
+        double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolVaporMoleFraction, headerVaporTemp);
+
+        assertEquals(67.2, volConcentration, 0.1);
+    }
 }
