@@ -49,6 +49,7 @@ public class ArchiveDataBrowserFragment extends Fragment implements DistillerDat
     private final static int MAX_TIME_SPAN_SECONDS = 3600;
 
     private Integer year = null;
+    // month: from 1 to 12
     private Integer month = null;
     private Integer dayOfMonth = null;
 
@@ -127,9 +128,10 @@ public class ArchiveDataBrowserFragment extends Fragment implements DistillerDat
         Log.i(TAG, "Button clicked");
 
         if(year == null) {
+            // month in Calendar is from 0 to 11
             Calendar mCalendar = Calendar.getInstance();
             year = mCalendar.get(Calendar.YEAR);
-            month = mCalendar.get(Calendar.MONTH);
+            month = mCalendar.get(Calendar.MONTH) + 1;
             dayOfMonth = mCalendar.get(Calendar.DAY_OF_MONTH);
         }
 
@@ -177,8 +179,8 @@ public class ArchiveDataBrowserFragment extends Fragment implements DistillerDat
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Log.i(TAG, "Date chosen");
 
-        this.year = year;
         // month in DatePicker is from 0 to 11
+        this.year = year;
         this.month = month + 1;
         this.dayOfMonth = dayOfMonth;
 
