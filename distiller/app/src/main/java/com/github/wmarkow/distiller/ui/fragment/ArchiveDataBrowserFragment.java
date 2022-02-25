@@ -23,6 +23,7 @@ import com.github.wmarkow.distiller.di.modules.FragmentPresentersModule;
 import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
+import com.github.wmarkow.distiller.ui.DistillerDataChartViewListener;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.MVPViewIf;
@@ -30,6 +31,7 @@ import com.github.wmarkow.distiller.ui.presenter.ArchiveDataBrowserPresenter;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,8 @@ public class ArchiveDataBrowserFragment extends Fragment implements DistillerDat
     private Integer year = null;
     private Integer month = null;
     private Integer dayOfMonth = null;
+
+    private DistillerDataChartViewListener distillerDataChartViewListener = null;
 
     @BindView(R.id.distillerDataTextView)
     DistillerDataTextView distillerDataTextView;
@@ -95,6 +99,18 @@ public class ArchiveDataBrowserFragment extends Fragment implements DistillerDat
         timeSpanSeekBar.setOnSeekBarChangeListener(this);
         distillerDataChartView.setFollowLatestEntry(true);
         this.archiveDataBrowserPresenter.resume();
+
+        distillerDataChartViewListener = new DistillerDataChartViewListener() {
+
+            @Override
+            public void onValueSelected(DistillerDataEntity distillerDataEntity) {
+                List<DistillerDataEntity> list = new ArrayList<>();
+                list.add(distillerDataEntity);
+
+                distillerDataTextView.showNewDistillerData(list);
+            }
+        };
+        distillerDataChartView.setOnChartValueSelectedListener(distillerDataChartViewListener);
     }
 
     @Override
@@ -102,6 +118,8 @@ public class ArchiveDataBrowserFragment extends Fragment implements DistillerDat
         super.onPause();
         timeSpanSeekBar.setOnSeekBarChangeListener(null);
         this.archiveDataBrowserPresenter.pause();
+        distillerDataChartView.setOnChartValueSelectedListener(null);
+        distillerDataChartViewListener = null;
     }
 
     @OnClick(R.id.chooseDateButton)

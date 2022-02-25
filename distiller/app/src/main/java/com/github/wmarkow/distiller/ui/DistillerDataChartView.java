@@ -14,7 +14,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.wmarkow.distiller.R;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
@@ -101,22 +103,22 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
 
             if(distillerDataEntity.coldWaterTemp != null) {
                 ILineDataSet coldWaterTempDataSet = data.getDataSetByLabel(COLD_WATER_TEMP_DATA_SET_LABEL, false);
-                coldWaterTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.coldWaterTemp.floatValue()));
+                coldWaterTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.coldWaterTemp.floatValue(), distillerDataEntity));
             }
             if(distillerDataEntity.hotWaterTemp != null) {
                 ILineDataSet hotWaterTempDataSet = data.getDataSetByLabel(HOT_WATER_TEMP_DATA_SET_LABEL, false);
-                hotWaterTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.hotWaterTemp.floatValue()));
+                hotWaterTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.hotWaterTemp.floatValue(), distillerDataEntity));
             }
             if(distillerDataEntity.boilerTemp != null) {
                 ILineDataSet boilerTempDataSet = data.getDataSetByLabel(BOILER_TEMP_DATA_SET_LABEL, false);
                 if (boilerTempDataSet != null) {
-                    boilerTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.boilerTemp.floatValue()));
+                    boilerTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.boilerTemp.floatValue(), distillerDataEntity));
                 }
             }
             if(distillerDataEntity.headerTemp != null) {
                 ILineDataSet headerTempDataSet = data.getDataSetByLabel(HEADER_TEMP_DATA_SET_LABEL, false);
                 if (headerTempDataSet != null) {
-                    headerTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.headerTemp.floatValue()));
+                    headerTempDataSet.addEntry(new Entry(todaySecondsLocal, distillerDataEntity.headerTemp.floatValue(), distillerDataEntity));
                 }
             }
 
@@ -124,9 +126,9 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
             try {
                 float waterFlowInLPerH = calculateWaterFlow(distillerDataEntity.waterRpm);
 
-                waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, waterFlowInLPerH));
+                waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, waterFlowInLPerH, distillerDataEntity));
             } catch (OutOfRangeException e) {
-                waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, -1.0f));
+                waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, -1.0f, distillerDataEntity));
             }
         }
 
@@ -173,6 +175,16 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
 
     public void setFollowLatestEntry(boolean followLatestEntry) {
         this.followLatestEntry = followLatestEntry;
+    }
+
+    public void setOnChartValueSelectedListener(DistillerDataChartViewListener listener) {
+        if(listener == null) {
+            chart.setOnChartValueSelectedListener(null);
+
+            return;
+        }
+
+        chart.setOnChartValueSelectedListener(new DistillerDataChartViewListenerDecorator(listener));
     }
 
     private void inflate(Context context) {
@@ -327,5 +339,24 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         double waterFlowInLPerH = waterFlowInM3PerS * 1000 * 3600;
 
         return (float)waterFlowInLPerH;
+    }
+
+    private class DistillerDataChartViewListenerDecorator implements OnChartValueSelectedListener {
+
+        private DistillerDataChartViewListener decorated;
+
+        DistillerDataChartViewListenerDecorator(DistillerDataChartViewListener decorated) {
+            this.decorated = decorated;
+        }
+
+        @Override
+        public void onValueSelected(Entry e, Highlight h) {
+            decorated.onValueSelected((DistillerDataEntity)e.getData());
+        }
+
+        @Override
+        public void onNothingSelected() {
+            // do nothing
+        }
     }
 }

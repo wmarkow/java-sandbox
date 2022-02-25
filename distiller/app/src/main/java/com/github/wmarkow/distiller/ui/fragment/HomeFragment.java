@@ -22,10 +22,12 @@ import com.github.wmarkow.distiller.di.modules.FragmentPresentersModule;
 import com.github.wmarkow.distiller.di.modules.UseCasesModule;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
 import com.github.wmarkow.distiller.ui.DistillerDataChartView;
+import com.github.wmarkow.distiller.ui.DistillerDataChartViewListener;
 import com.github.wmarkow.distiller.ui.DistillerDataTextView;
 import com.github.wmarkow.distiller.ui.DistillerDataViewIf;
 import com.github.wmarkow.distiller.ui.presenter.DistillerDataPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,6 +40,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
     private final static String TAG = "HomeFragment";
     private final static int MIN_TIME_SPAN_SECONDS = 60;
     private final static int MAX_TIME_SPAN_SECONDS = 3600;
+
+    private DistillerDataChartViewListener distillerDataChartViewListener = null;
 
     @BindView(R.id.distillerDataTextView)
     DistillerDataTextView distillerDataTextView;
@@ -98,6 +102,18 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
         followLatestEntrySwitch.setChecked(true);
         distillerDataChartView.setFollowLatestEntry(true);
         this.distillerDataPresenter.resume();
+
+        distillerDataChartViewListener = new DistillerDataChartViewListener() {
+
+            @Override
+            public void onValueSelected(DistillerDataEntity distillerDataEntity) {
+                List<DistillerDataEntity> list = new ArrayList<>();
+                list.add(distillerDataEntity);
+
+                distillerDataTextView.showNewDistillerData(list);
+            }
+        };
+        distillerDataChartView.setOnChartValueSelectedListener(distillerDataChartViewListener);
     }
 
     @Override
@@ -105,6 +121,8 @@ public class HomeFragment extends Fragment implements DistillerDataViewIf, SeekB
         super.onPause();
         timeSpanSeekBar.setOnSeekBarChangeListener(null);
         this.distillerDataPresenter.pause();
+        distillerDataChartView.setOnChartValueSelectedListener(null);
+        distillerDataChartViewListener = null;
     }
 
     @Override
