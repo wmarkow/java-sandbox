@@ -143,8 +143,7 @@ public class DistillerDataTextView extends RelativeLayout implements DistillerDa
                 LVEWEquilibriumCalc ec = createLVEWEquilibriumCalc();
                 LVEWEquilibrium equilibrium = ec.calculateEquilibrium(latestData.headerTemp);
                 EthanolSolutionCalc esc = new EthanolSolutionCalc();
-                // FIXME: it should be ethanolVaporMoleFraction below
-                double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolLiquidMoleFraction, latestData.headerTemp);
+                double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolVaporMoleFraction, latestData.headerTemp);
                 condensateStrengthTextView.setText(String.format("%.2f", volConcentration));
             }
         } catch (OutOfRangeException e) {
