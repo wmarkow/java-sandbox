@@ -68,7 +68,7 @@ public class PodstawowyUopCalc {
 	// podstawą zaliczki jest dochód
 	MonetaryAmount zaliczka = calcDochod();
 	// uwzględniamy stawkę podatku
-	zaliczka = zaliczka.multiply(0.17);
+	zaliczka = zaliczka.multiply(getStawkaPodatku());
 	// odejmujemy wysokość miesięcznej ulgi na podatek
 	zaliczka = zaliczka.subtract(calcMiesiecznaKwotaZmniejszajacaPodatek());
 	// odliczenie sporej części składki zdrowotnej
@@ -94,5 +94,9 @@ public class PodstawowyUopCalc {
 	netto = netto.subtract(calcZaliczkaPodatek());
 
 	return netto;
+    }
+
+    public double getStawkaPodatku() {
+	return 0.17;
     }
 }
