@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -19,6 +20,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.wmarkow.distiller.R;
+import com.github.wmarkow.distiller.domain.calc.EthanolSolutionCalc;
+import com.github.wmarkow.distiller.domain.calc.LVEWEquilibrium;
+import com.github.wmarkow.distiller.domain.calc.LVEWEquilibriumCalc;
 import com.github.wmarkow.distiller.domain.calc.OutOfRangeException;
 import com.github.wmarkow.distiller.domain.calc.SeaWaterFlowCalc;
 import com.github.wmarkow.distiller.domain.model.DistillerDataEntity;
@@ -44,6 +48,7 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
     private final static String BOILER_TEMP_DATA_SET_LABEL = "Boiler";
     private final static String HEADER_TEMP_DATA_SET_LABEL = "Header";
     private final static String WATER_FLOW_DATA_SET_LABEL = "Water flow";
+    private final static String ALCOHOL_STRENGTH_DATA_SET_LABEL = "%vol";
 
     @BindView(R.id.chart)
     LineChart chart;
@@ -129,6 +134,23 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
                 waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, waterFlowInLPerH, distillerDataEntity));
             } catch (OutOfRangeException e) {
                 waterFlowDataSet.addEntry(new Entry(todaySecondsLocal, -1.0f, distillerDataEntity));
+            }
+
+            ILineDataSet alcoholStrengthDataSet = data.getDataSetByLabel(ALCOHOL_STRENGTH_DATA_SET_LABEL, false);
+            try {
+                // calculate condensate strength
+                if(distillerDataEntity.headerTemp != null)
+                {
+                    // TODO: add extended model min temp support
+                    LVEWEquilibriumCalc ec = new LVEWEquilibriumCalc();
+                    LVEWEquilibrium equilibrium = ec.calculateEquilibrium(distillerDataEntity.headerTemp);
+                    EthanolSolutionCalc esc = new EthanolSolutionCalc();
+                    double volConcentration = esc.calculateVolumeConcentration(equilibrium.ethanolVaporMoleFraction, distillerDataEntity.headerTemp);
+
+                    alcoholStrengthDataSet.addEntry(new Entry(todaySecondsLocal, (float) volConcentration, distillerDataEntity));
+                }
+            } catch (OutOfRangeException e) {
+                // silently fail
             }
         }
 
@@ -279,6 +301,9 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
 
         ILineDataSet waterFlowDataSet = createWaterFlowDataSet();
         data.addDataSet(waterFlowDataSet);
+
+        ILineDataSet alcoholStrengthDataSet = createAlcoholStrengthDataSet();
+        data.addDataSet(alcoholStrengthDataSet);
     }
 
     private LineDataSet createDefaultDataSet(String label) {
@@ -328,6 +353,14 @@ public class DistillerDataChartView extends RelativeLayout implements DistillerD
         LineDataSet set = createDefaultDataSet(WATER_FLOW_DATA_SET_LABEL);
         set.setColor(Color.rgb(0,0,0));
         set.setAxisDependency(YAxis.AxisDependency.RIGHT);
+
+        return set;
+    }
+
+    private LineDataSet createAlcoholStrengthDataSet() {
+        LineDataSet set = createDefaultDataSet(ALCOHOL_STRENGTH_DATA_SET_LABEL);
+        set.setColor(Color.rgb(0,0,0));
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         return set;
     }
