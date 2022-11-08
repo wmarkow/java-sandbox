@@ -5,27 +5,27 @@ import vtech.sim.iot.mesh.Transmitter;
 
 public class PingTrafficGenerator extends PoissonGenerator {
 
-  private PacketFactory packetFactory = new PacketFactory();
+    private PacketFactory packetFactory = new PacketFactory();
 
-  private int srcIpAddress;
-  private int[] destinationIPs;
+    private int srcIpAddress;
+    private int[] destinationIPs;
 
-  public PingTrafficGenerator(Transmitter transmitter, double averageRequestsPerSecond) {
-    super(transmitter, averageRequestsPerSecond);
-  }
+    public PingTrafficGenerator(Transmitter transmitter, double averageRequestsPerSecond) {
+	super(transmitter, averageRequestsPerSecond);
+    }
 
-  public void setDestinationIpAddressPool(int[] destinationIPs) {
-    this.destinationIPs = destinationIPs;
-  }
+    public void setDestinationIpAddressPool(int[] destinationIPs) {
+	this.destinationIPs = destinationIPs;
+    }
 
-  public void setSrcAddress(int srcIpAddress) {
-    this.srcIpAddress = srcIpAddress;
-  }
+    public void setSrcAddress(int srcIpAddress) {
+	this.srcIpAddress = srcIpAddress;
+    }
 
-  @Override
-  protected NetworkPacket getNextPacketToSend() {
-    int index = getRandomGenerator().getInt(0, destinationIPs.length - 1);
+    @Override
+    protected NetworkPacket getNextPacketToSend() {
+	int index = getRandomGenerator().getInt(0, destinationIPs.length - 1);
 
-    return packetFactory.createPingPacket(srcIpAddress, destinationIPs[index]);
-  }
+	return packetFactory.createPingPacket(srcIpAddress, destinationIPs[index]);
+    }
 }

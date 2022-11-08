@@ -1,7 +1,7 @@
 package vtech.sim.iot.mesh;
 
 public interface MediumListener {
-  public void transmissionInMediumStarted();
+    public void transmissionInMediumStarted();
 
-  public void transmissionInMediumFinished(Packet packet);
+    public void transmissionInMediumFinished(Packet packet);
 }

@@ -7,22 +7,22 @@ import vtech.sim.iot.mesh.PoissonGenerator;
 import vtech.sim.iot.mesh.Transmitter;
 
 public class HalfDuplexDevice extends Device {
-  private PoissonGenerator generator;
-  private HalfDuplexTransceiver transmitter;
+    private PoissonGenerator generator;
+    private HalfDuplexTransceiver transmitter;
 
-  public HalfDuplexDevice(int requestsPerSecond, Medium medium) {
-    transmitter = new HalfDuplexTransceiver(medium);
-    generator = new PoissonGenerator(transmitter, requestsPerSecond);
-  }
+    public HalfDuplexDevice(int requestsPerSecond, Medium medium) {
+	transmitter = new HalfDuplexTransceiver(medium);
+	generator = new PoissonGenerator(transmitter, requestsPerSecond);
+    }
 
-  public void attachToSimulation(EventScheduler scheduler) {
-    generator.attachToSimulation(scheduler);
-    transmitter.attachToSimulation(scheduler);
-  }
-  
-  @Override
-  public Transmitter getTransmitter()
-  {
-      return transmitter;
-  }
+    @Override
+    public void attachToSimulation(EventScheduler scheduler) {
+	generator.attachToSimulation(scheduler);
+	transmitter.attachToSimulation(scheduler);
+    }
+
+    @Override
+    public Transmitter getTransmitter() {
+	return transmitter;
+    }
 }

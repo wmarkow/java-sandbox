@@ -7,22 +7,22 @@ import vtech.sim.iot.mesh.PoissonGenerator;
 import vtech.sim.iot.mesh.Transmitter;
 
 public class AlohaDevice extends Device {
-  private PoissonGenerator generator;
-  private AlohaTransmitter transmitter;
+    private PoissonGenerator generator;
+    private AlohaTransmitter transmitter;
 
-  public AlohaDevice(int requestsPerSecond, Medium medium) {
-    transmitter = new AlohaTransmitter(medium);
-    generator = new PoissonGenerator(transmitter, requestsPerSecond);
-  }
+    public AlohaDevice(int requestsPerSecond, Medium medium) {
+	transmitter = new AlohaTransmitter(medium);
+	generator = new PoissonGenerator(transmitter, requestsPerSecond);
+    }
 
-  public void attachToSimulation(EventScheduler scheduler) {
-    generator.attachToSimulation(scheduler);
-    transmitter.attachToSimulation(scheduler);
-  }
-  
-  @Override
-  public Transmitter getTransmitter()
-  {
-      return transmitter;
-  }
+    @Override
+    public void attachToSimulation(EventScheduler scheduler) {
+	generator.attachToSimulation(scheduler);
+	transmitter.attachToSimulation(scheduler);
+    }
+
+    @Override
+    public Transmitter getTransmitter() {
+	return transmitter;
+    }
 }

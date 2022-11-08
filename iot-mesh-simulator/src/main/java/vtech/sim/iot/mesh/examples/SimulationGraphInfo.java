@@ -2,19 +2,19 @@ package vtech.sim.iot.mesh.examples;
 
 public class SimulationGraphInfo {
 
-  private String title;
-  private String[] seriesNames;
+    private String title;
+    private String[] seriesNames;
 
-  public SimulationGraphInfo(String title, String[] seriesNames) {
-    this.title = title;
-    this.seriesNames = seriesNames;
-  }
+    public SimulationGraphInfo(String title, String[] seriesNames) {
+	this.title = title;
+	this.seriesNames = seriesNames;
+    }
 
-  public String getTitle() {
-    return title;
-  }
+    public String getTitle() {
+	return title;
+    }
 
-  public String[] getSeriesNames() {
-    return seriesNames;
-  }
+    public String[] getSeriesNames() {
+	return seriesNames;
+    }
 }

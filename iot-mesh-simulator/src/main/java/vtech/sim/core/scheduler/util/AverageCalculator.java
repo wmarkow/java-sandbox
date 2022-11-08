@@ -1,7 +1,6 @@
 package vtech.sim.core.scheduler.util;
 
-public class AverageCalculator
-{
+public class AverageCalculator {
     private double sumOfValues = 0;
     private double countOfValues = 0;
 
@@ -9,14 +8,12 @@ public class AverageCalculator
 
     }
 
-    public synchronized void addValue(double value)
-    {
-        sumOfValues += value;
-        countOfValues++;
+    public synchronized void addValue(double value) {
+	sumOfValues += value;
+	countOfValues++;
     }
 
-    public double getAverage()
-    {
-        return sumOfValues / countOfValues;
+    public double getAverage() {
+	return sumOfValues / countOfValues;
     }
 }

@@ -9,32 +9,31 @@ import vtech.sim.iot.mesh.halfduplex.HalfDuplexComplexTransceiver;
 
 public class FloodingNetworkLayer extends Process implements ReceiverListener, Transmitter {
 
-  private HalfDuplexComplexTransceiver transceiver;
+    private HalfDuplexComplexTransceiver transceiver;
 
-  public FloodingNetworkLayer(HalfDuplexComplexTransceiver transceiver) {
-    this.transceiver = transceiver;
-  }
+    public FloodingNetworkLayer(HalfDuplexComplexTransceiver transceiver) {
+	this.transceiver = transceiver;
+    }
 
-  @Override
-  public void execute(Event event) {
+    @Override
+    public void execute(Event event) {
 
-  }
+    }
 
-  @Override
-  public void packetReceived() {
-    // trigger packet routing
-  }
+    @Override
+    public void packetReceived() {
+	// trigger packet routing
+    }
 
-  @Override
-  public void addPacketToSend(Packet packet) {
-    // FIXME: do not send packet directly to the triansmitter. Pass it through
-    // the network layer.
-    transceiver.addPacketToSend(packet);
-  }
+    @Override
+    public void addPacketToSend(Packet packet) {
+	// FIXME: do not send packet directly to the triansmitter. Pass it through
+	// the network layer.
+	transceiver.addPacketToSend(packet);
+    }
 
-  @Override
-  public int getCountOfPacketsWaitingToSend()
-  {
-      return transceiver.getCountOfPacketsWaitingToSend();
-  }
+    @Override
+    public int getCountOfPacketsWaitingToSend() {
+	return transceiver.getCountOfPacketsWaitingToSend();
+    }
 }
