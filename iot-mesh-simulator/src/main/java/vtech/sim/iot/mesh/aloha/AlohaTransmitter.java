@@ -15,7 +15,7 @@ public class AlohaTransmitter extends Process implements Transmitter {
     private final static int STATE_IDLE = 0;
     private final static int STATE_TRANSMITTING = 1;
 
-    private final static int EVENT_NEW_PACKET_TO_SEND = 0;
+    private final static int EVENT_TRY_TO_SEND_PACKET = 0;
     private final static int EVENT_PACKET_SENT = 1;
 
     private Medium medium;
@@ -36,7 +36,10 @@ public class AlohaTransmitter extends Process implements Transmitter {
 		return;
 	    }
 
-	    if (event.getEventType() == EVENT_NEW_PACKET_TO_SEND) {
+	    if (event.getEventType() == EVENT_TRY_TO_SEND_PACKET) {
+		if (packets.size() == 0) {
+		    return;
+		}
 		Packet packet = packets.remove(0);
 		Transmission transmission = medium.sendPacket(packet);
 
@@ -48,22 +51,14 @@ public class AlohaTransmitter extends Process implements Transmitter {
 
 	    throw new IllegalStateException();
 	case STATE_TRANSMITTING:
-	    if (event.getEventType() == EVENT_NEW_PACKET_TO_SEND) {
+	    if (event.getEventType() == EVENT_TRY_TO_SEND_PACKET) {
 		return;
 	    }
 
 	    if (event.getEventType() == EVENT_PACKET_SENT) {
 
-		if (packets.size() == 0) {
-		    state = STATE_IDLE;
-		    return;
-		}
-
-		Packet packet = packets.remove(0);
-		Transmission transmission = medium.sendPacket(packet);
-
-		state = STATE_TRANSMITTING;
-		scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_SENT);
+		state = STATE_IDLE;
+		scheduleNextExecutionToNow(EVENT_TRY_TO_SEND_PACKET);
 		return;
 	    }
 
@@ -74,7 +69,7 @@ public class AlohaTransmitter extends Process implements Transmitter {
     @Override
     public void addPacketToSend(Packet packet) {
 	packets.add(packet);
-	scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
+	scheduleNextExecutionToNow(EVENT_TRY_TO_SEND_PACKET);
     }
 
     @Override
