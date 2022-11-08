@@ -10,9 +10,9 @@ import vtech.sim.iot.mesh.examples.aloha.AlohaPure16Simulation;
 
 public class Comparison extends AbstractGraphExample {
     final static String WINDOW_TITLE = "Simulation";
-    final static String ALOHA_0_TITLE = "Pure Aloha. 16 stations, 10 packets per second, 32B per packet, 250bps. Transmitter sends data at once.";
-    final static String ALOHA_1_TITLE = "Half-duplex. 16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex transmitter.";
-    final static String ALOHA_2_TITLE = "Half-duplex improved, 16 packets per second, 32B per packet, 250bps. Half-duplex transmitter waits additional random time.";
+    final static String ALOHA_0_TITLE = "Pure Aloha. 16 stations, 10 packets per second, 32B per packet, 250kbps. Transmitter sends data at once.";
+    final static String ALOHA_1_TITLE = "Half-duplex. 16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transmitter.";
+    final static String ALOHA_2_TITLE = "Half-duplex improved, 16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transmitter waits additional random time.";
 
     private AlohaPure16Simulation aloha0Sim = new AlohaPure16Simulation();
     private HalfDuplex16Simulation aloha1Sim = new HalfDuplex16Simulation();

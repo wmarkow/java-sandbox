@@ -9,14 +9,14 @@ import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
 public class AlohaPurePoissonGenerator extends AbstractGraphExample {
     final static String WINDOW_TITLE = "Aloha Simulation with Poisson traffic generator";
-    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
-    final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250bps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
+    final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250kbps. Packets generated with Poisson distribution. Transmitter sends data at once.";
 
     private AlohaPure1Simulation aloha0Sim = new AlohaPure1Simulation();
     private AlohaPure2Simulation aloha1Sim = new AlohaPure2Simulation();
