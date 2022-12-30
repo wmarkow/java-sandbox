@@ -54,13 +54,13 @@ public class Gameplay {
 			Animal redDiceAnimal = redDice.roll();
 			Animal blueDiceAnimal = blueDice.roll();
 			
+            // display players dice rolls
+            System.out.println( String.format( "[%s][%s]", blueDiceAnimal, redDiceAnimal ) );
+
 			roundResult |= player.doRound(mainHerd, blueDiceAnimal, redDiceAnimal);
 			
-			// display players herd status
-			player.getHerd().printHerdCounts();
-			
 			if(player.isGameWon()) {
-				playerWon = true;
+                playerWon = true;
 			}
 				
 		}
@@ -85,4 +85,14 @@ public class Gameplay {
 		
 		return false;
 	}
+
+    public boolean isPlayerWon()
+    {
+        return playerWon;
+    }
+
+    public int getRoundCount()
+    {
+        return this.roundCount;
+    }
 }

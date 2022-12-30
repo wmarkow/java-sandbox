@@ -40,7 +40,8 @@ public class Herd {
 		return count;
 	}
 
-	public void printHerdCounts() {
+    public String getHerdCounts()
+    {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("[Small dog %02d]", getCount(Animal.SMALL_DOG)));
 		sb.append(String.format("[Big dog %02d]", getCount(Animal.BIG_DOG)));
@@ -50,6 +51,6 @@ public class Herd {
 		sb.append(String.format("[Cow %02d]", getCount(Animal.COW)));
 		sb.append(String.format("[Horse %02d]", getCount(Animal.HORSE)));
 
-		System.out.println(sb.toString());
+        return sb.toString();
 	}
 }
