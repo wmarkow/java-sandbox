@@ -22,10 +22,6 @@ public class GrowOnlyRabbitsStrategy extends Strategy {
 			if(Animal.FOX.equals(blueDiceAnimal) || Animal.FOX.equals(redDiceAnimal)) {
 				int rabbitCount = playerHerd.getCount(Animal.RABBIT);
 				
-				if(rabbitCount == 0) {
-					return false;
-				}
-				
 				shepherd.punch(playerHerd, mainHerd, Animal.RABBIT, rabbitCount);
 				shepherd.punch(mainHerd, playerHerd, Animal.RABBIT, 1);
 				
@@ -33,6 +29,17 @@ public class GrowOnlyRabbitsStrategy extends Strategy {
 			}
 		}
 		
+        if( Animal.WOLF.equals( blueDiceAnimal ) || Animal.WOLF.equals( redDiceAnimal ) )
+        {
+            return false;
+        }
+
+        if( !Animal.RABBIT.equals( blueDiceAnimal ) && !Animal.RABBIT.equals( redDiceAnimal ) )
+        {
+            // no rabbits
+            return false;
+        }
+
 		int rabbitCount = playerHerd.getCount(Animal.RABBIT);
 		
 		if(Animal.RABBIT.equals(blueDiceAnimal))
