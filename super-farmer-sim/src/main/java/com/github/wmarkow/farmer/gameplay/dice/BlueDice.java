@@ -1,12 +1,8 @@
 package com.github.wmarkow.farmer.gameplay.dice;
 
-import java.util.Random;
-
 import com.github.wmarkow.farmer.domain.Animal;
 
 public class BlueDice extends Dice {
-
-	private Random random = new Random(System.currentTimeMillis());
 
 	@Override
 	public Animal roll() {
