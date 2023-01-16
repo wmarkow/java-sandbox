@@ -1,17 +1,10 @@
-//******************************************************************
-//                                                                 
-//  VacuumTubeCalculatorApp.java                                               
-//  Copyright 2023 PSI AG. All rights reserved.              
-//  PSI PROPRIETARY/CONFIDENTIAL. Use is subject to license terms
-//                                                                 
-// ******************************************************************
-
 package com.github.wmarkow.tubes.calc.gui;
 
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+import com.github.wmarkow.tubes.calc.domain.ECL84PentodeModel;
 import com.github.wmarkow.tubes.calc.gui.widgets.TubeOutputCharacteristicChart;
 
 public class VacuumTubeCalculatorApp {
@@ -31,6 +24,7 @@ public class VacuumTubeCalculatorApp {
 	frame.setMinimumSize(new Dimension(1024, 768));
 
 	TubeOutputCharacteristicChart chart = new TubeOutputCharacteristicChart();
+	chart.setTubeModel(new ECL84PentodeModel());
 	frame.getContentPane().add(chart);
 
 	frame.pack();
