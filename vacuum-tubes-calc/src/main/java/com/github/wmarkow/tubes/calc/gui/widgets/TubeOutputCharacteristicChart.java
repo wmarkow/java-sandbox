@@ -1,18 +1,17 @@
 package com.github.wmarkow.tubes.calc.gui.widgets;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JPanel;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -23,15 +22,20 @@ public class TubeOutputCharacteristicChart extends JPanel {
 
     private static final long serialVersionUID = -984753627161473014L;
 
-    private XYSeriesCollection seriesCollection;
+    private final static int MAX_POWER_DISSIPATION_DATASET_INDEX = 0;
+    private final static int OUTPUT_CHARACTERISTICS_DATASET_INDEX = 1;
+
+    private XYSeriesCollection outputCharacteristicsDataset;
+    private XYSeriesCollection maxPowerDissipationDataset;
+
     private JFreeChart chart;
     private TextTitle chartTitle;
 
     private TubeModelIf tubeModel;
 
     public TubeOutputCharacteristicChart() {
-	seriesCollection = new XYSeriesCollection();
-	chart = createChart(seriesCollection);
+	
+	chart = createChart();
 	ChartPanel chartPanel = new ChartPanel(chart);
 	chartPanel.setMouseWheelEnabled(true);
 
@@ -43,11 +47,15 @@ public class TubeOutputCharacteristicChart extends JPanel {
 	this.tubeModel = model;
 
 	// recalculate the graphs
-	seriesCollection.removeAllSeries();
+	outputCharacteristicsDataset.removeAllSeries();
+	maxPowerDissipationDataset.removeAllSeries();
+
+	maxPowerDissipationDataset.addSeries(createMaxPowerDissipation(model));
+
 	XYSeriesCollection outputCharacteristicsSeriesCollection = createOutputCharacteristicsSeries(tubeModel);
 	for (int index = 0; index < outputCharacteristicsSeriesCollection.getSeriesCount(); index++) {
 	    XYSeries series = outputCharacteristicsSeriesCollection.getSeries(index);
-	    seriesCollection.addSeries(series);
+	    outputCharacteristicsDataset.addSeries(series);
 	}
 
 	chartTitle.setText(String.format("%s output characteristics", model.getName()));
@@ -70,6 +78,29 @@ public class TubeOutputCharacteristicChart extends JPanel {
 	return result;
     }
 
+    private XYSeries createMaxPowerDissipation(TubeModelIf model) {
+	XYSeries series = new XYSeries("Max power", true, false);
+
+	double va = 0;
+	double dva = 3.0;
+
+	TubeCalc tubeCalc = new TubeCalc(model);
+
+	double maxAnodeCurrent = tubeCalc.calculateMaxAnodeCurrent();
+	double maxAnodeCurrentOnGraph = 1.2 * maxAnodeCurrent;
+
+	while (va <= model.getMaxV_A()) {
+	    double anodeCurrent = tubeCalc.calculateMaxPowerDissipationAnodeCurrent(va);
+	    if (anodeCurrent <= maxAnodeCurrentOnGraph) {
+		series.add(va, anodeCurrent);
+	    }
+
+	    va += dva;
+	}
+
+	return series;
+    }
+
     private XYSeries createOutputCharacteristicSeries(double vg1, TubeModelIf model) {
 
 	XYSeries series = new XYSeries(String.valueOf(vg1), true, false);
@@ -89,19 +120,41 @@ public class TubeOutputCharacteristicChart extends JPanel {
 	return series;
     }
 
-    private JFreeChart createChart(XYDataset dataset) {
-	JFreeChart chart = ChartFactory.createXYLineChart(null, "Anode voltage [V]", "Anode current [A]", dataset,
-		PlotOrientation.VERTICAL, true, true, false);
-	chartTitle = new TextTitle("Output characteristics", new Font("SansSerif", Font.BOLD, 14));
-	chart.addSubtitle(chartTitle);
-	XYPlot plot = (XYPlot) chart.getPlot();
-	plot.setDomainPannable(true);
-	plot.setRangePannable(true);
-	NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+    private JFreeChart createChart() {
+
+	NumberAxis domainAxis = new NumberAxis("Anode voltage [V]");
+	domainAxis.setAutoRangeIncludesZero(false);
 	domainAxis.setUpperMargin(0.12);
 	domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-	NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+
+	NumberAxis rangeAxis = new NumberAxis("Anode current [A]");
 	rangeAxis.setAutoRangeIncludesZero(false);
+
+	XYPlot plot = new XYPlot();
+	plot.setDomainAxis(domainAxis);
+	plot.setRangeAxis(rangeAxis);
+	plot.setDomainPannable(true);
+	plot.setRangePannable(true);
+
+	maxPowerDissipationDataset = new XYSeriesCollection();
+	XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
+	renderer.setAutoPopulateSeriesPaint(false);
+	renderer.setDefaultPaint(Color.red);
+	plot.setDataset(MAX_POWER_DISSIPATION_DATASET_INDEX, maxPowerDissipationDataset);
+	plot.setRenderer(MAX_POWER_DISSIPATION_DATASET_INDEX, renderer);
+
+	outputCharacteristicsDataset = new XYSeriesCollection();
+	XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true, false);
+	renderer2.setAutoPopulateSeriesPaint(false);
+	renderer2.setDefaultPaint(Color.blue);
+	plot.setDataset(OUTPUT_CHARACTERISTICS_DATASET_INDEX, outputCharacteristicsDataset);
+	plot.setRenderer(OUTPUT_CHARACTERISTICS_DATASET_INDEX, renderer2);
+
+	JFreeChart chart = new JFreeChart(null, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+	
+	chartTitle = new TextTitle("Output characteristics", new Font("SansSerif", Font.BOLD, 14));
+	chart.addSubtitle(chartTitle);
+
 	return chart;
     }
 

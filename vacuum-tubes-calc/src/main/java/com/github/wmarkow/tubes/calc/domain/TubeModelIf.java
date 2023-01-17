@@ -32,5 +32,7 @@ public interface TubeModelIf {
 
     double getVCT();
 
+    double getMaxAnodePowerDissipation();
+
     TubeType getTubeType();
 }

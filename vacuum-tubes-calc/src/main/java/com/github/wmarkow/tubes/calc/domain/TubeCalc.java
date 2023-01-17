@@ -21,8 +21,8 @@ public class TubeCalc {
     }
 
     /***
-     * Calculates anode current for specific tube model and provided grid and anode
-     * voltages.
+     * Calculates anode current for provided grid and anode voltages. Max
+     * dissipation power is not taken into account.
      * 
      * @param vg1
      *            voltage on the primary grid [V]
@@ -47,6 +47,46 @@ public class TubeCalc {
 	}
 
 	return current;
+    }
+
+    /***
+     * 
+     * Calculates max possible anode current that will not exceed the tube's max
+     * dissipation power parameter.
+     * 
+     * @param va
+     *            anode voltage [V]
+     * @return anode current that will not exceed the tubes max dissipation power
+     *         parameter
+     */
+    public double calculateMaxPowerDissipationAnodeCurrent(double va) {
+	return tubeModel.getMaxAnodePowerDissipation() / va;
+    }
+
+    /***
+     * Calculates max theoretical anode current that can flow through the tube. It
+     * is calculated for grid voltage of 0V and doesn't take tube's dissipation
+     * power into account.
+     * 
+     * @return
+     */
+    public double calculateMaxAnodeCurrent() {
+	double maxCurrent = 0.0;
+
+	double va = 0;
+	double dva = 3.0;
+	final double vg1 = 0.0;
+
+	while (va <= tubeModel.getMaxV_A()) {
+	    double anodeCurrent = calculateAnodeCurrent(vg1, va);
+	    if (anodeCurrent > maxCurrent) {
+		maxCurrent = anodeCurrent;
+	    }
+
+	    va += dva;
+	}
+
+	return maxCurrent;
     }
 
     private double calculateAnodeCurrentForPentode(double vg1, double va) {

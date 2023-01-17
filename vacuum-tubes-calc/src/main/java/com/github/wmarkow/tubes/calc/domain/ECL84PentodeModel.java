@@ -18,6 +18,7 @@ public class ECL84PentodeModel implements TubeModelIf {
     private double M1 = 0.0020785299999999999;
     private double Q = 1.41632e-5;
     private double VCT = 0.0;
+    private double maxAnodePowerDissipation = 4.0;
     private TubeType tubeType = TubeType.PENTODE;
 
     @Override
@@ -93,6 +94,11 @@ public class ECL84PentodeModel implements TubeModelIf {
     @Override
     public double getVCT() {
 	return VCT;
+    }
+
+    @Override
+    public double getMaxAnodePowerDissipation() {
+	return maxAnodePowerDissipation;
     }
 
     @Override
