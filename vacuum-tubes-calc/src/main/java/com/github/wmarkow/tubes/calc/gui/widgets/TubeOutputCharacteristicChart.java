@@ -22,8 +22,8 @@ public class TubeOutputCharacteristicChart extends JPanel {
 
     private static final long serialVersionUID = -984753627161473014L;
 
-    private final static int MAX_POWER_DISSIPATION_DATASET_INDEX = 0;
-    private final static int OUTPUT_CHARACTERISTICS_DATASET_INDEX = 1;
+    protected final static int OUTPUT_CHARACTERISTICS_DATASET_INDEX = 0;
+    protected final static int MAX_POWER_DISSIPATION_DATASET_INDEX = 1;
 
     private XYSeriesCollection outputCharacteristicsDataset;
     private XYSeriesCollection maxPowerDissipationDataset;
@@ -34,7 +34,7 @@ public class TubeOutputCharacteristicChart extends JPanel {
     private TubeModelIf tubeModel;
 
     public TubeOutputCharacteristicChart() {
-	
+
 	chart = createChart();
 	ChartPanel chartPanel = new ChartPanel(chart);
 	chartPanel.setMouseWheelEnabled(true);
@@ -50,15 +50,21 @@ public class TubeOutputCharacteristicChart extends JPanel {
 	outputCharacteristicsDataset.removeAllSeries();
 	maxPowerDissipationDataset.removeAllSeries();
 
-	maxPowerDissipationDataset.addSeries(createMaxPowerDissipation(model));
-
+	// recalculate output characteristics
 	XYSeriesCollection outputCharacteristicsSeriesCollection = createOutputCharacteristicsSeries(tubeModel);
 	for (int index = 0; index < outputCharacteristicsSeriesCollection.getSeriesCount(); index++) {
 	    XYSeries series = outputCharacteristicsSeriesCollection.getSeries(index);
 	    outputCharacteristicsDataset.addSeries(series);
 	}
 
+	// recalculate max power curve
+	maxPowerDissipationDataset.addSeries(createMaxPowerDissipation(model));
+
 	chartTitle.setText(String.format("%s output characteristics", model.getName()));
+    }
+
+    public TubeModelIf getTubeModel() {
+	return tubeModel;
     }
 
     private XYSeriesCollection createOutputCharacteristicsSeries(TubeModelIf model) {
@@ -120,7 +126,7 @@ public class TubeOutputCharacteristicChart extends JPanel {
 	return series;
     }
 
-    private JFreeChart createChart() {
+    protected JFreeChart createChart() {
 
 	NumberAxis domainAxis = new NumberAxis("Anode voltage [V]");
 	domainAxis.setAutoRangeIncludesZero(false);
@@ -137,21 +143,21 @@ public class TubeOutputCharacteristicChart extends JPanel {
 	plot.setRangePannable(true);
 
 	maxPowerDissipationDataset = new XYSeriesCollection();
-	XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
-	renderer.setAutoPopulateSeriesPaint(false);
-	renderer.setDefaultPaint(Color.red);
+	XYLineAndShapeRenderer outputCharacteristicsRenderer = new XYLineAndShapeRenderer(true, false);
+	outputCharacteristicsRenderer.setAutoPopulateSeriesPaint(false);
+	outputCharacteristicsRenderer.setDefaultPaint(Color.red);
 	plot.setDataset(MAX_POWER_DISSIPATION_DATASET_INDEX, maxPowerDissipationDataset);
-	plot.setRenderer(MAX_POWER_DISSIPATION_DATASET_INDEX, renderer);
+	plot.setRenderer(MAX_POWER_DISSIPATION_DATASET_INDEX, outputCharacteristicsRenderer);
 
 	outputCharacteristicsDataset = new XYSeriesCollection();
-	XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true, false);
-	renderer2.setAutoPopulateSeriesPaint(false);
-	renderer2.setDefaultPaint(Color.blue);
+	XYLineAndShapeRenderer maxPowerRenderer = new XYLineAndShapeRenderer(true, false);
+	maxPowerRenderer.setAutoPopulateSeriesPaint(false);
+	maxPowerRenderer.setDefaultPaint(Color.blue);
 	plot.setDataset(OUTPUT_CHARACTERISTICS_DATASET_INDEX, outputCharacteristicsDataset);
-	plot.setRenderer(OUTPUT_CHARACTERISTICS_DATASET_INDEX, renderer2);
+	plot.setRenderer(OUTPUT_CHARACTERISTICS_DATASET_INDEX, maxPowerRenderer);
 
 	JFreeChart chart = new JFreeChart(null, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-	
+
 	chartTitle = new TextTitle("Output characteristics", new Font("SansSerif", Font.BOLD, 14));
 	chart.addSubtitle(chartTitle);
 

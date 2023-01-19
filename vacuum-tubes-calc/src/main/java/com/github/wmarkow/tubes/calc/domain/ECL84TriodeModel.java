@@ -1,16 +1,16 @@
 package com.github.wmarkow.tubes.calc.domain;
 
-public class ECL84PentodeModel implements TubeModelIf {
+public class ECL84TriodeModel implements TubeModelIf {
 
-    private String name = "ECL84Pentode";
-    private double minV_G1 = -10;
+    private String name = "ECL84Triode";
+    private double minV_G1 = -6.0;
     private double maxV_G1 = 0.0;
-    private double maxV_A = 250.0;
-    private double V_G2 = 200.0;
+    private double maxV_A = 500;
+    private double V_G2 = 0.0;
 
-    private double KG1 = 573.51300000000003;
-    private double KP = 184.98400000000001;
-    private double KVB = 13.8314;
+    private double KG1 = 505.14600000000002;
+    private double KP = 334.12;
+    private double KVB = 5015.1599999999999;
     /***
      * Ultra-linear TAP
      * 
@@ -29,15 +29,15 @@ public class ECL84PentodeModel implements TubeModelIf {
      *      pentodes tubes)</li>
      *      </ul>
      */
-    private double UL_TAP = 0.0;// 0.42999999999999999;
-    private double EX = 1.4974700000000001;
-    private double M = 5.7959400000000001e-6;
-    private double MU = 39.479799999999997;
-    private double M1 = 0.0020785299999999999;
-    private double Q = 1.41632e-5;
-    private double VCT = 0.0;
-    private double maxAnodePowerDissipation = 4.0;
-    private TubeType tubeType = TubeType.PENTODE;
+    private double UL_TAP = 1.0;// 0.42999999999999999;
+    private double EX = 1.6418699999999999;
+    private double M = 0.0;
+    private double MU = 90.771299999999997;
+    private double M1 = 3.4028200000000001e+38;
+    private double Q = 0.0;
+    private double VCT = 0.020509099999999999;
+    private double maxAnodePowerDissipation = 1.0;
+    private TubeType tubeType = TubeType.TRIODE;
 
     @Override
     public String getName() {

@@ -74,7 +74,7 @@ public class TubeCalc {
 	double maxCurrent = 0.0;
 
 	double va = 0;
-	double dva = 3.0;
+	double dva = 1.0;
 	final double vg1 = 0.0;
 
 	while (va <= tubeModel.getMaxV_A()) {

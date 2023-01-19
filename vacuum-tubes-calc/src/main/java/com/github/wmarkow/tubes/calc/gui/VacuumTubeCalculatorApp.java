@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import com.github.wmarkow.tubes.calc.domain.ECL84PentodeModel;
-import com.github.wmarkow.tubes.calc.gui.widgets.TubeOutputCharacteristicChart;
+import com.github.wmarkow.tubes.calc.gui.widgets.TubeLoadlineCalculatorWidget;
 
 public class VacuumTubeCalculatorApp {
 
@@ -23,9 +23,10 @@ public class VacuumTubeCalculatorApp {
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setMinimumSize(new Dimension(1024, 768));
 
-	TubeOutputCharacteristicChart chart = new TubeOutputCharacteristicChart();
-	chart.setTubeModel(new ECL84PentodeModel());
-	frame.getContentPane().add(chart);
+	TubeLoadlineCalculatorWidget loadlineWidget = new TubeLoadlineCalculatorWidget();
+	loadlineWidget.setTubeModel(new ECL84PentodeModel());
+	// loadlineWidget.setTubeModel(new ECL84TriodeModel());
+	frame.getContentPane().add(loadlineWidget);
 
 	frame.pack();
 	frame.setVisible(true);
