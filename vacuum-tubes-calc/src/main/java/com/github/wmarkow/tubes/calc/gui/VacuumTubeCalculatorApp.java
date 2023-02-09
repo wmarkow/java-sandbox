@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
-import com.github.wmarkow.tubes.calc.domain.ECL84PentodeModel;
+import com.github.wmarkow.tubes.calc.domain.EL84Model;
 import com.github.wmarkow.tubes.calc.gui.widgets.TubeLoadlineCalculatorWidget;
 
 public class VacuumTubeCalculatorApp {
@@ -24,7 +24,8 @@ public class VacuumTubeCalculatorApp {
 	frame.setMinimumSize(new Dimension(1024, 768));
 
 	TubeLoadlineCalculatorWidget loadlineWidget = new TubeLoadlineCalculatorWidget();
-	loadlineWidget.setTubeModel(new ECL84PentodeModel());
+	loadlineWidget.setTubeModel(new EL84Model());
+	// loadlineWidget.setTubeModel(new ECL84PentodeModel());
 	// loadlineWidget.setTubeModel(new ECL84TriodeModel());
 	frame.getContentPane().add(loadlineWidget);
 
