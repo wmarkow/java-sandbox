@@ -12,13 +12,24 @@ import org.javamoney.moneta.function.ScaleRoundedOperator;
 public class B2BRyczaltNowyLadPoprawionyCalc {
 
     protected MonetaryAmount brutto;
+    protected B2BZusType zusType;
+    protected boolean dobrowolneSkladkiChorobowe = true;
 
     protected MonetaryAmountFactory monetaryAmountFactory = Monetary.getDefaultAmountFactory().setCurrency("PLN");
 
     protected ScaleRoundedOperator roundUpToFullPLN = ScaleRoundedOperator.of(0, RoundingMode.HALF_UP);
 
-    public B2BRyczaltNowyLadPoprawionyCalc(MonetaryAmount brutto) {
+    public B2BRyczaltNowyLadPoprawionyCalc(MonetaryAmount brutto, B2BZusType zusType) {
 	this.brutto = brutto;
+	this.zusType = zusType;
+    }
+
+    public boolean isDobrowolneSkladkiChorobowe() {
+	return dobrowolneSkladkiChorobowe;
+    }
+
+    public void setDobrowolneSkladkiChorobowe(boolean aDobrowolneSkladkiChorobowe) {
+	dobrowolneSkladkiChorobowe = aDobrowolneSkladkiChorobowe;
     }
 
     public MonetaryAmount calcEmerytalne() {
@@ -43,7 +54,16 @@ public class B2BRyczaltNowyLadPoprawionyCalc {
      * @return
      */
     public MonetaryAmount getPodstawaWymiaruSkladekSpolecznych() {
-	return monetaryAmountFactory.setNumber(4161).create();
+	switch (zusType) {
+	case ULGA_NA_START:
+	    return monetaryAmountFactory.setNumber(0).create();
+	case MALY_ZUS:
+	    return monetaryAmountFactory.setNumber(1063.50).create();
+	case PELNY_ZUS:
+	    return monetaryAmountFactory.setNumber(4161).create();
+	}
+
+	throw new IllegalArgumentException(String.format("Unknown zus type of %s", zusType.toString()));
     }
 
     public MonetaryAmount calcSpoleczne() {
@@ -99,7 +119,16 @@ public class B2BRyczaltNowyLadPoprawionyCalc {
     }
 
     public MonetaryAmount calcFunduszPracyISolidarnosciowy() {
-	return getPodstawaWymiaruSkladekSpolecznych().multiply(0.0245);
+	switch (zusType) {
+	case ULGA_NA_START:
+	    return monetaryAmountFactory.setNumber(0).create();
+	case MALY_ZUS:
+	    return monetaryAmountFactory.setNumber(0).create();
+	case PELNY_ZUS:
+	    return getPodstawaWymiaruSkladekSpolecznych().multiply(0.0245);
+	}
+
+	throw new IllegalArgumentException(String.format("Unknown zus type of %s", zusType.toString()));
     }
 
     public MonetaryAmount calcNetto() {

@@ -1,6 +1,7 @@
 package com.github.wmarkow.salary.calc.neworder.reworked;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmountFactory;
@@ -8,13 +9,16 @@ import javax.money.MonetaryAmountFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-public class B2BRyczaltNowyLadPoprawionyCalcTest {
+public class B2BRyczaltNowyLadPoprawionyCalcForPelnyZusTest {
     private B2BRyczaltNowyLadPoprawionyCalc subject;
     private MonetaryAmountFactory monetaryAmountFactory = Monetary.getDefaultAmountFactory().setCurrency("PLN");
 
     @Before
     public void init() {
-	subject = new B2BRyczaltNowyLadPoprawionyCalc(monetaryAmountFactory.setNumber(10000).create());
+	subject = new B2BRyczaltNowyLadPoprawionyCalc(monetaryAmountFactory.setNumber(10000).create(),
+		B2BZusType.PELNY_ZUS);
+
+	assertTrue(subject.isDobrowolneSkladkiChorobowe());
     }
 
     @Test
@@ -77,5 +81,3 @@ public class B2BRyczaltNowyLadPoprawionyCalcTest {
 	assertEquals("PLN 6950.59", subject.calcNetto().toString());
     }
 }
-
-
