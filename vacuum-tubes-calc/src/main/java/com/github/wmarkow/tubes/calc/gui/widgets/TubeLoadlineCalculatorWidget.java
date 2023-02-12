@@ -63,7 +63,7 @@ public class TubeLoadlineCalculatorWidget extends JPanel {
 
 	biasResistorSlider = new JSlider();
 	biasResistorSlider.setMinimum(0);
-	biasResistorSlider.setMaximum(1000);
+	biasResistorSlider.setMaximum(500);
 	biasResistorSlider.setMajorTickSpacing(50);
 	biasResistorSlider.setMinorTickSpacing(10);
 	biasResistorSlider.setPaintTicks(true);
@@ -95,6 +95,6 @@ public class TubeLoadlineCalculatorWidget extends JPanel {
 
 	loadSlider.setValue(50000);
 
-	biasResistorSlider.setValue(500);
+	biasResistorSlider.setValue(250);
     }
 }
