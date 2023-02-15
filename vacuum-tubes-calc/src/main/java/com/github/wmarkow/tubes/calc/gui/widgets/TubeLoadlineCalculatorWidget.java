@@ -12,6 +12,9 @@ public class TubeLoadlineCalculatorWidget extends JPanel {
 
     private static final long serialVersionUID = -4338135663541844076L;
 
+    private final static int DEFAULT_MAX_LOAD_RESISTOR_VALUE = 30000;
+    private final static int DEFAULT_MAX_BIAS_RESISTOR_VALUE = 500;
+
     private TubeLoadlineChart chart;
     private JSlider loadSlider;
     private JSlider powerSupplySlider;
@@ -25,9 +28,9 @@ public class TubeLoadlineCalculatorWidget extends JPanel {
 	chart = new TubeLoadlineChart();
 	loadSlider = new JSlider();
 	loadSlider.setMinimum(0);
-	loadSlider.setMaximum(100000);
-	loadSlider.setMajorTickSpacing(5000);
-	loadSlider.setMinorTickSpacing(1000);
+	loadSlider.setMaximum(DEFAULT_MAX_LOAD_RESISTOR_VALUE);
+	loadSlider.setMajorTickSpacing(2000);
+	loadSlider.setMinorTickSpacing(250);
 	loadSlider.setPaintTicks(true);
 	loadSlider.setPaintLabels(true);
 	loadSlider.addChangeListener(new ChangeListener() {
@@ -63,7 +66,7 @@ public class TubeLoadlineCalculatorWidget extends JPanel {
 
 	biasResistorSlider = new JSlider();
 	biasResistorSlider.setMinimum(0);
-	biasResistorSlider.setMaximum(500);
+	biasResistorSlider.setMaximum(DEFAULT_MAX_BIAS_RESISTOR_VALUE);
 	biasResistorSlider.setMajorTickSpacing(50);
 	biasResistorSlider.setMinorTickSpacing(10);
 	biasResistorSlider.setPaintTicks(true);
@@ -93,8 +96,8 @@ public class TubeLoadlineCalculatorWidget extends JPanel {
 	powerSupplySlider.setMaximum(maxVoltage);
 	powerSupplySlider.setValue(maxVoltage / 2);
 
-	loadSlider.setValue(50000);
+	loadSlider.setValue(DEFAULT_MAX_LOAD_RESISTOR_VALUE / 2);
 
-	biasResistorSlider.setValue(250);
+	biasResistorSlider.setValue(DEFAULT_MAX_BIAS_RESISTOR_VALUE / 2);
     }
 }
