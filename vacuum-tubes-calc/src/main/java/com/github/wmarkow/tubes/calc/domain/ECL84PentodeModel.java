@@ -1,6 +1,6 @@
 package com.github.wmarkow.tubes.calc.domain;
 
-public class ECL84PentodeModel implements TubeModelIf {
+public class ECL84PentodeModel extends AbstractTubeModel {
 
     private String name = "ECL84Pentode";
     private double minV_G1 = -10;

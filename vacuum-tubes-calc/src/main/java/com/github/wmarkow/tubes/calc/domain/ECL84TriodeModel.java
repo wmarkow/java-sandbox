@@ -1,6 +1,6 @@
 package com.github.wmarkow.tubes.calc.domain;
 
-public class ECL84TriodeModel implements TubeModelIf {
+public class ECL84TriodeModel extends AbstractTubeModel {
 
     private String name = "ECL84Triode";
     private double minV_G1 = -6.0;

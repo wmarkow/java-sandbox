@@ -1,6 +1,6 @@
 package com.github.wmarkow.tubes.calc.domain;
 
-public class EL84Model implements TubeModelIf {
+public class EL84Model extends AbstractTubeModel {
 
     private String name = "EL84";
     private double minV_G1 = -20;
