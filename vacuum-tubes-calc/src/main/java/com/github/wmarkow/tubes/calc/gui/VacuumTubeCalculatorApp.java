@@ -41,8 +41,7 @@ public class VacuumTubeCalculatorApp {
 
 	    @Override
 	    public void actionPerformed(ActionEvent aE) {
-		JComboBox<AbstractTubeModel> cb = (JComboBox<AbstractTubeModel>) aE.getSource();
-		AbstractTubeModel atm = (AbstractTubeModel) cb.getSelectedItem();
+		AbstractTubeModel atm = (AbstractTubeModel) comboBox.getSelectedItem();
 
 		loadlineWidget.setTubeModel(atm);
 	    }
