@@ -2,8 +2,8 @@ package com.github.wmarkow.tubes.calc.domain;
 
 /***
  * 
- * Vacuum tube calculator. Most of the code taken from the homepage of Giuseppe
- * Amato.
+ * Vacuum tube characteristics calculator. Most of the code taken from the
+ * homepage of Giuseppe Amato.
  * 
  * @see https://www.vtadiy.com/loadline-calculators/loadline-calculator/
  *
@@ -21,24 +21,25 @@ public class TubeCalc {
     }
 
     /***
-     * Calculates anode current for provided grid and anode voltages. Max
-     * dissipation power is not taken into account.
+     * Calculates anode current for provided grid voltage and voltage between
+     * cathode and anode. Max dissipation power is not taken into account. It is
+     * useful to draw tube's output characteristics.
      * 
      * @param vg1
      *            voltage on the primary grid [V]
-     * @param va
-     *            voltage on the anode [V]
+     * @param vca
+     *            voltage between cathode and anode [V]
      * @return anode current [A]
      */
-    public double calculateAnodeCurrent(double vg1, double va) {
+    public double calculateAnodeCurrent(double vg1, double vca) {
 	double current;
 
 	switch (tubeModel.getTubeType()) {
 	case PENTODE:
-	    current = calculateAnodeCurrentForPentode(vg1, va);
+	    current = calculateAnodeCurrentForPentode(vg1, vca);
 	    break;
 	case TRIODE:
-	    current = calculateAnodeCurrentForTriode(vg1, va);
+	    current = calculateAnodeCurrentForTriode(vg1, vca);
 	    break;
 	default:
 	    throw new IllegalArgumentException(
@@ -52,15 +53,15 @@ public class TubeCalc {
     /***
      * 
      * Calculates max possible anode current that will not exceed the tube's max
-     * dissipation power parameter.
+     * dissipation power parameter. It is useful to draw tubes power curve.
      * 
-     * @param va
-     *            anode voltage [V]
+     * @param vca
+     *            voltage between cathode and anode [V]
      * @return anode current that will not exceed the tubes max dissipation power
      *         parameter
      */
-    public double calculateMaxPowerDissipationAnodeCurrent(double va) {
-	return tubeModel.getMaxAnodePowerDissipation() / va;
+    public double calculateMaxPowerDissipationAnodeCurrent(double vca) {
+	return tubeModel.getMaxAnodePowerDissipation() / vca;
     }
 
     /***
@@ -73,24 +74,24 @@ public class TubeCalc {
     public double calculateMaxAnodeCurrent() {
 	double maxCurrent = 0.0;
 
-	double va = 0;
-	double dva = 1.0;
+	double vca = 0;
+	double dv = 1.0;
 	final double vg1 = 0.0;
 
-	while (va <= tubeModel.getMaxV_A()) {
-	    double anodeCurrent = calculateAnodeCurrent(vg1, va);
+	while (vca <= tubeModel.getMaxV_A()) {
+	    double anodeCurrent = calculateAnodeCurrent(vg1, vca);
 	    if (anodeCurrent > maxCurrent) {
 		maxCurrent = anodeCurrent;
 	    }
 
-	    va += dva;
+	    vca += dv;
 	}
 
 	return maxCurrent;
     }
 
-    private double calculateAnodeCurrentForPentode(double vg1, double va) {
-	double vg2 = tubeModel.getV_G2() * (1 - tubeModel.getUL_TAP()) + va * tubeModel.getUL_TAP();
+    private double calculateAnodeCurrentForPentode(double vg1, double vca) {
+	double vg2 = tubeModel.getV_G2() * (1 - tubeModel.getUL_TAP()) + vca * tubeModel.getUL_TAP();
 
 	double e = vg2 / tubeModel.getKP()
 		* Math.log(1 + Math.exp((1 / tubeModel.getMU() + vg1 / vg2) * tubeModel.getKP()));
@@ -104,11 +105,10 @@ public class TubeCalc {
 	// (Math.pow(Math.abs(E),EX))) / KG1 * Math.atan(V_A / KVB);
 
 	// new formula 2 for non converging pentodes and beam tetrodes - linear
-	return Math.min(va * tubeModel.getM1(),
-		va * Math.max(0, tubeModel.getM() + tubeModel.getQ() * vg1)
+	return Math.min(vca * tubeModel.getM1(), vca * Math.max(0, tubeModel.getM() + tubeModel.getQ() * vg1)
 			+ ((Math.pow(Math.abs(e), tubeModel.getEX()))
 				+ Math.signum(e) * (Math.pow(Math.abs(e), tubeModel.getEX()))) / tubeModel.getKG1()
-				* Math.atan(va / tubeModel.getKVB()));
+			* Math.atan(vca / tubeModel.getKVB()));
 
 	// new formula 2 for non converging pentodes and beam tetrodes - power law inv
 	// proportional to screen
@@ -122,16 +122,16 @@ public class TubeCalc {
 	// + Math.sign(E) * (Math.pow(Math.abs(E),EX))) / KG1 * Math.atan(V_A / KVB));
     }
 
-    private double calculateAnodeCurrentForTriode(double vg1, double va) {
-	double e = va / tubeModel.getKP() * Math.log(1 + Math.exp(tubeModel.getKP()
-		* (1 / tubeModel.getMU() + (vg1 + tubeModel.getVCT()) / Math.sqrt(tubeModel.getKVB() + va * va))));
+    private double calculateAnodeCurrentForTriode(double vg1, double vca) {
+	double e = vca / tubeModel.getKP() * Math.log(1 + Math.exp(tubeModel.getKP()
+		* (1 / tubeModel.getMU() + (vg1 + tubeModel.getVCT()) / Math.sqrt(tubeModel.getKVB() + vca * vca))));
 
 	// without power law for high grid values
 	// return ((Math.pow(Math.abs(E),EX)) + Math.sign(E) *
 	// (Math.pow(Math.abs(E),EX))) / KG1;
 
 	// with power law for high grid values
-	return Math.min(Math.pow(va, 1.5) * 0.13 * tubeModel.getM1(), ((Math.pow(Math.abs(e), tubeModel.getEX()))
+	return Math.min(Math.pow(vca, 1.5) * 0.13 * tubeModel.getM1(), ((Math.pow(Math.abs(e), tubeModel.getEX()))
 		+ Math.signum(e) * (Math.pow(Math.abs(e), tubeModel.getEX()))) / tubeModel.getKG1());
     }
 }
