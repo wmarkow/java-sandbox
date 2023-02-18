@@ -70,7 +70,7 @@ public class TubeOutputCharacteristicChart extends JPanel {
     protected double getMaxCurrentVisibleOnGraph(TubeModelIf model) {
 	TubeCalc tubeCalc = new TubeCalc(model);
 
-	double maxAnodeCurrent = tubeCalc.calculateMaxAnodeCurrent();
+	double maxAnodeCurrent = tubeCalc.calculateMaxAnodeCurrentWithMaxDissipation();
 	double maxAnodeCurrentOnGraph = 1.2 * maxAnodeCurrent;
 
 	return maxAnodeCurrentOnGraph;
@@ -124,9 +124,14 @@ public class TubeOutputCharacteristicChart extends JPanel {
 
 	TubeCalc tubeCalc = new TubeCalc(model);
 
+	double maxAnodeCurrentOnGraph = getMaxCurrentVisibleOnGraph(model);
+
 	while (va <= model.getMaxV_A()) {
 	    double anodeCurrent = tubeCalc.calculateAnodeCurrent(vg1, va);
-	    series.add(va, anodeCurrent);
+
+	    if (anodeCurrent <= maxAnodeCurrentOnGraph) {
+		series.add(va, anodeCurrent);
+	    }
 
 	    va += dva;
 	}
