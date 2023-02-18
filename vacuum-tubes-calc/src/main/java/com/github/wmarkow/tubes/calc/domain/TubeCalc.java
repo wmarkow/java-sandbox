@@ -90,6 +90,40 @@ public class TubeCalc {
 	return maxCurrent;
     }
 
+    /***
+     * Calculates max anode current that can flow through the tube where max tubes
+     * dissipation power is taken into account. The current is taken from the
+     * intersection point of two curves:
+     * <ul>
+     * <li>output anode characteristic for 0V applied on the primary grid</li>
+     * <li>max power dissipation characteristic</li>
+     * </ul>
+     * 
+     * @return
+     */
+    public double calculateMaxAnodeCurrentWithMaxDissipation() {
+
+	double vg = 0;
+	double minDiff = Double.MAX_VALUE;
+	double current = -1.0;
+	double vca = 0;
+	double dv = 1.0;
+
+	while (vca <= tubeModel.getMaxV_A()) {
+	    double anodeCurrent = calculateAnodeCurrent(vg, vca);
+	    double powerDissipationAnodeCurrent = calculateMaxPowerDissipationAnodeCurrent(vca);
+	    double diff = Math.abs(anodeCurrent - powerDissipationAnodeCurrent);
+	    if (diff < minDiff) {
+		minDiff = diff;
+		current = powerDissipationAnodeCurrent;
+	    }
+
+	    vca += dv;
+	}
+
+	return current;
+    }
+
     private double calculateAnodeCurrentForPentode(double vg1, double vca) {
 	double vg2 = tubeModel.getV_G2() * (1 - tubeModel.getUL_TAP()) + vca * tubeModel.getUL_TAP();
 
