@@ -60,21 +60,24 @@ public class LoadlineCalc {
 	TubeCalc tubeCalc = new TubeCalc(tubeModel);
 
 	double va = 0.0;
-	double dva = 1.0;
+	double dva = 0.5;
+	double minVoltageDiff = Double.MAX_VALUE;
+	BiasPoint result = null;
 
 	while (va <= tubeModel.getMaxV_A()) {
-
 	    double ia = tubeCalc.calculateAnodeCurrent(vg, va);
 
 	    double voltageDiff = Math.abs(ia * biasResistance + va + ia * loadResistance - vcc);
-	    if (voltageDiff < dva) {
-		return new BiasPoint(va, ia);
+
+	    if (voltageDiff < minVoltageDiff) {
+		minVoltageDiff = voltageDiff;
+		result = new BiasPoint(va, ia);
 	    }
 
 	    va += dva;
 	}
 
-	return null;
+	return result;
     }
 
 }

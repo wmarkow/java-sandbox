@@ -100,6 +100,8 @@ public class TubeLoadlineChart extends TubeOutputCharacteristicChart {
 	if (biasPoint != null) {
 	    series.add(biasPoint.getVa(), biasPoint.getIa());
 	    series.add(biasPoint.getVa() + 0.001, biasPoint.getIa());
+	} else {
+	    System.out.println("null bias point");
 	}
 
 	return series;
