@@ -21,7 +21,7 @@ public class SeaWaterFlowCalc {
      //       throw new InvalidArgumentException(String.format("Provided %s as RPM value is to big. Maximal valid value is 4500.", rpm));
      //   }
 
-        double flowLitresPerHour = 0.0115 * rpm + 1.6001;
+        double flowLitresPerHour = 0.0091 * rpm + 6.2143;
 
         return flowLitresPerHour * 0.001 / 3600;
     }
