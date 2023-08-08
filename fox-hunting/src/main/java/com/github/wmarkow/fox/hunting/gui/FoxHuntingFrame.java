@@ -101,7 +101,7 @@ public class FoxHuntingFrame extends JFrame
         timeAxis.setLowerMargin( 0.02 );
         timeAxis.setUpperMargin( 0.02 );
         timeAxis.setAutoRange( true );
-        timeAxis.setFixedAutoRange( 10000.0 );
+        timeAxis.setFixedAutoRange( 5000.0 );
         NumberAxis valueAxis = new NumberAxis( "RSSI" );
         valueAxis.setAutoRangeIncludesZero( false );
         valueAxis.setRange( 0.0, 600.0 );
