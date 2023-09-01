@@ -30,6 +30,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 import com.github.wmarkow.fox.hunting.domain.AverageValueCalculator;
+import com.github.wmarkow.fox.hunting.domain.EventsCalculator;
 import com.github.wmarkow.fox.hunting.domain.ThreeSigmaAverageValueCalculator;
 import com.github.wmarkow.fox.hunting.serial.FoxHuntingSerialPort;
 import com.github.wmarkow.fox.hunting.serial.FoxHuntingSerialPortListener;
@@ -41,9 +42,11 @@ public class FoxHuntingFrame extends JFrame
     private TimeSeries signalSeries;
     private TimeSeries signalAvgSeries;
     private TimeSeries signalAvg3SigmaSeries;
+    private TimeSeries avgRcvCountSeries;
 
     private AverageValueCalculator avgCalc = new AverageValueCalculator();
     private AverageValueCalculator avg3SigmaCalc = new ThreeSigmaAverageValueCalculator();
+    private EventsCalculator avgReceiveCalc = new EventsCalculator();
 
     public FoxHuntingFrame()
     {
@@ -79,15 +82,21 @@ public class FoxHuntingFrame extends JFrame
 
                         int avg3SigmaRssi = avg3SigmaCalc.calculate( rssi );
                         signalAvg3SigmaSeries.add( new Millisecond(), avg3SigmaRssi );
+
+                        avgReceiveCalc.event();
+                        avgRcvCountSeries.add( new Millisecond(), avgReceiveCalc.calculate() );
                     }
                 } );
             }
         } );
 
+        avgReceiveCalc.reset();
+
         noSignalSeries = new TimeSeries( "No signal series" );
         signalSeries = new TimeSeries( "Signal series" );
         signalAvgSeries = new TimeSeries( "Signal average series" );
         signalAvg3SigmaSeries = new TimeSeries( "Signal average 3s series" );
+        avgRcvCountSeries = new TimeSeries( "Average receive fps" );
         ChartPanel chartPanel = new ChartPanel( createChart() );
         chartPanel.setPreferredSize( new java.awt.Dimension( 500, 270 ) );
 
@@ -143,6 +152,16 @@ public class FoxHuntingFrame extends JFrame
             .setDefaultStroke( new BasicStroke( 5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
         plot.setDataset( 3, signalAvg3sigmaDataset );
         plot.setRenderer( 3, signalAvg3sigmaRenderer );
+
+        TimeSeriesCollection signalAvgRcvCountDataset = new TimeSeriesCollection( avgRcvCountSeries );
+        XYLineAndShapeRenderer signalAvgRcvCountRenderer = new XYLineAndShapeRenderer( true, false );
+        signalAvgRcvCountRenderer.setAutoPopulateSeriesPaint( false );
+        signalAvgRcvCountRenderer.setAutoPopulateSeriesStroke( false );
+        signalAvgRcvCountRenderer.setDefaultPaint( Color.gray );
+        signalAvgRcvCountRenderer
+            .setDefaultStroke( new BasicStroke( 5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
+        plot.setDataset( 4, signalAvgRcvCountDataset );
+        plot.setRenderer( 4, signalAvgRcvCountRenderer );
 
         JFreeChart chart = new JFreeChart( "Title", JFreeChart.DEFAULT_TITLE_FONT, plot, true );
 
