@@ -48,7 +48,8 @@ public class FoxHuntingSerialPort
             @Override
             public int getListeningEvents()
             {
-                return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
+                return SerialPort.LISTENING_EVENT_DATA_RECEIVED
+                    | SerialPort.LISTENING_EVENT_PORT_DISCONNECTED;
             }
 
             @Override
@@ -101,13 +102,19 @@ public class FoxHuntingSerialPort
                             }
                         }
                     };
+                }
 
+                if( aEvent.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED )
+                {
+                    listener.onSerialPortDisconnected();
                 }
             }
         } );
         if( serialPort.openPort() )
         {
             System.out.println( "Port opened success." );
+
+            return true;
         }
         else
         {
@@ -115,6 +122,6 @@ public class FoxHuntingSerialPort
         }
         System.out.println();
 
-        return true;
+        return false;
     }
 }

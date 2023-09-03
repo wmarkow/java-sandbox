@@ -48,6 +48,8 @@ public class FoxHuntingFrame extends JFrame
     private AverageValueCalculator avg3SigmaCalc = new ThreeSigmaAverageValueCalculator();
     private EventsCalculator avgReceiveCalc = new EventsCalculator();
 
+    private DataLoggerPanel dataLoggerpanel;
+
     public FoxHuntingFrame()
     {
         super( "Fox hunting GUI" );
@@ -62,7 +64,6 @@ public class FoxHuntingFrame extends JFrame
             @Override
             public void actionPerformed( ActionEvent aE )
             {
-                serialPort.discoverAndConnect();
                 serialPort.setListener( new FoxHuntingSerialPortListener()
                 {
 
@@ -75,6 +76,8 @@ public class FoxHuntingFrame extends JFrame
                     @Override
                     public void onRssiPreambleSignalMeassure( int rssi )
                     {
+                        Millisecond millis = new Millisecond();
+
                         signalSeries.add( new Millisecond(), rssi );
 
                         int avgRssi = avgCalc.calculate( rssi );
@@ -85,8 +88,22 @@ public class FoxHuntingFrame extends JFrame
 
                         avgReceiveCalc.event();
                         avgRcvCountSeries.add( new Millisecond(), avgReceiveCalc.calculate() );
+
+                        dataLoggerpanel.onRssiPreambleSignalMeassure( millis.getFirstMillisecond(), rssi );
+                    }
+
+                    @Override
+                    public void onSerialPortDisconnected()
+                    {
+                        dataLoggerpanel.setEnabled( false );
+                        dataLoggerpanel.stopRecording();
                     }
                 } );
+
+                if( serialPort.discoverAndConnect() )
+                {
+                    dataLoggerpanel.setEnabled( true );
+                }
             }
         } );
 
@@ -100,8 +117,12 @@ public class FoxHuntingFrame extends JFrame
         ChartPanel chartPanel = new ChartPanel( createChart() );
         chartPanel.setPreferredSize( new java.awt.Dimension( 500, 270 ) );
 
+        dataLoggerpanel = new DataLoggerPanel();
+        dataLoggerpanel.setEnabled( false );
+
         getContentPane().add( connectButton, BorderLayout.NORTH );
         getContentPane().add( chartPanel, BorderLayout.CENTER );
+        getContentPane().add( dataLoggerpanel, BorderLayout.SOUTH );
     }
 
     private JFreeChart createChart()
