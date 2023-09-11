@@ -30,7 +30,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 import com.github.wmarkow.fox.hunting.domain.AverageValueCalculator;
-import com.github.wmarkow.fox.hunting.domain.EventsCalculator;
+import com.github.wmarkow.fox.hunting.domain.FpsCalculator;
 import com.github.wmarkow.fox.hunting.domain.ThreeSigmaAverageValueCalculator;
 import com.github.wmarkow.fox.hunting.serial.FoxHuntingSerialPort;
 import com.github.wmarkow.fox.hunting.serial.FoxHuntingSerialPortListener;
@@ -46,7 +46,7 @@ public class FoxHuntingFrame extends JFrame
 
     private AverageValueCalculator avgCalc = new AverageValueCalculator();
     private AverageValueCalculator avg3SigmaCalc = new ThreeSigmaAverageValueCalculator();
-    private EventsCalculator avgReceiveCalc = new EventsCalculator();
+    private FpsCalculator fpsCalc = new FpsCalculator();
 
     private DataLoggerPanel dataLoggerpanel;
 
@@ -86,8 +86,8 @@ public class FoxHuntingFrame extends JFrame
                         int avg3SigmaRssi = avg3SigmaCalc.calculate( rssi );
                         signalAvg3SigmaSeries.add( new Millisecond(), avg3SigmaRssi );
 
-                        avgReceiveCalc.event();
-                        avgRcvCountSeries.add( new Millisecond(), avgReceiveCalc.calculate() );
+                        fpsCalc.frameReceived();
+                        avgRcvCountSeries.add( new Millisecond(), fpsCalc.getCurrentFps() );
 
                         dataLoggerpanel.onRssiPreambleSignalMeassure( millis.getFirstMillisecond(), rssi );
                     }
@@ -106,8 +106,6 @@ public class FoxHuntingFrame extends JFrame
                 }
             }
         } );
-
-        avgReceiveCalc.reset();
 
         noSignalSeries = new TimeSeries( "No signal series" );
         signalSeries = new TimeSeries( "Signal series" );
