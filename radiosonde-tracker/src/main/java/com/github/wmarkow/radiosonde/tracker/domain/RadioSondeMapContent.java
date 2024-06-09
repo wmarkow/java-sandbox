@@ -43,6 +43,7 @@ public class RadioSondeMapContent extends MapContent
     private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
     private DataSet dataSet = null;
+    private FeatureLayer sondeLayer = null;
     private FeatureLayer predictionLayer = null;
 
     public RadioSondeMapContent() throws SchemaException
@@ -56,22 +57,25 @@ public class RadioSondeMapContent extends MapContent
         TileService service = new OSMCachedService( "OSM", baseURL, getTileCacheDirectory() );
 
         addLayer( new TileLayer( service ) );
-        addLayer( prepareSondeMapLayer() );
-        recalculatePrediction(100);
+        recalculateSondeData( 0 );
+        recalculatePrediction( 100 );
     }
 
-    private FeatureLayer prepareSondeMapLayer() throws SchemaException
+    public void recalculateSondeData( int olderThanMinutes )
     {
         DataSet dataSet = getDataSet();
+        dataSet.setReturnDataPointsOlderThanFromLatest( olderThanMinutes * 60 );
 
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        for( int q = 0; q < dataSet.getDataPoints().size(); q += 10 )
+        
+        ArrayList<DataPoint> dataPoints = dataSet.getDataPoints();
+        for( int q = 0; q < dataPoints.size(); q += 10 )
         {
-            DataPoint dp = dataSet.getDataPoints().get( q );
+            DataPoint dp = dataPoints.get( q );
 
             /* Longitude (= x coord) first ! */
             Point point = geometryFactory.createPoint( new Coordinate( dp.longitude, dp.latitude ) );
@@ -81,10 +85,18 @@ public class RadioSondeMapContent extends MapContent
             featureList.add( feature );
         }
 
-        ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
-        FeatureLayer layer = new FeatureLayer( lfc, createPointStyle() );
+        // remove old sonde layer
+        if( sondeLayer != null )
+        {
+            removeLayer( sondeLayer );
+        }
 
-        return layer;
+        // create new sonde layer
+        ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
+        sondeLayer = new FeatureLayer( lfc, createPointStyle() );
+
+        // add sonde layer
+        addLayer( sondeLayer );
     }
 
     public void recalculatePrediction( int notOlderThanMinutes )
@@ -98,7 +110,8 @@ public class RadioSondeMapContent extends MapContent
 
         GeodeticCalculator calc = new GeodeticCalculator( DefaultGeographicCRS.WGS84 );
 
-        ArrayList< DataPoint > dataPoints = dataSet.getDataPointsYoungerThan( notOlderThanMinutes * 60 );
+        ArrayList< DataPoint > dataPoints =
+            dataSet.getDataPointsYoungerThanFromLatest( notOlderThanMinutes * 60 );
 
         for( DataPoint dp : dataPoints )
         {
@@ -239,13 +252,13 @@ public class RadioSondeMapContent extends MapContent
 
         return new DataSet( dataPoints );
     }
-    
+
     private File getTileCacheDirectory()
     {
         String userHome = System.getProperty( "user.home" );
-        File cacheDirectory = new File(userHome + "/.radiosonde-tracker/");
+        File cacheDirectory = new File( userHome + "/.radiosonde-tracker/" );
         cacheDirectory.mkdirs();
-        
+
         return cacheDirectory;
     }
 }

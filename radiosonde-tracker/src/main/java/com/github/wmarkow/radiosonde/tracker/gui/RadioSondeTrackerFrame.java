@@ -61,19 +61,45 @@ public class RadioSondeTrackerFrame extends JMapFrame
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 0.9;
+        gbc.weightx = 0.8;
         gbc.weighty = 1.0;
         newPanel.add( originalMapPanel, gbc );
 
+        JSlider sondeAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 0 );
+        JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 100 );
+        
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.1;
         gbc.weighty = 1.0;
-        JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 100 );
+        sondeAgeSlider.setMajorTickSpacing( 10 );
+        sondeAgeSlider.setMinorTickSpacing( 5 );
+        sondeAgeSlider.setSnapToTicks( true );
+        sondeAgeSlider.setPaintTicks( true );
+        sondeAgeSlider.setPaintLabels( true );
+        sondeAgeSlider.addChangeListener( new ChangeListener()
+        {
+
+            @Override
+            public void stateChanged( ChangeEvent e )
+            {
+                int sondeAge = sondeAgeSlider.getValue();
+                radioSondeMapContent.recalculateSondeData( sondeAge );
+                radioSondeMapContent.recalculatePrediction( predictionAgeSlider.getValue() );
+            }
+        } );
+        newPanel.add( sondeAgeSlider, gbc );
+        
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.weightx = 0.1;
+        gbc.weighty = 1.0;
+       
         predictionAgeSlider.setMajorTickSpacing( 10 );
         predictionAgeSlider.setMinorTickSpacing( 5 );
-        predictionAgeSlider.setSnapToTicks( true );
+        predictionAgeSlider.setSnapToTicks( false );
         predictionAgeSlider.setPaintTicks( true );
         predictionAgeSlider.setPaintLabels( true );
         predictionAgeSlider.addChangeListener( new ChangeListener()
@@ -87,6 +113,8 @@ public class RadioSondeTrackerFrame extends JMapFrame
             }
         } );
         newPanel.add( predictionAgeSlider, gbc );
+        
+        
 
         this.getContentPane().add( newPanel );
     }

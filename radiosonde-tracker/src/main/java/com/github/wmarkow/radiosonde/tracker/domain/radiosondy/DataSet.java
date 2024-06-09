@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.junit.experimental.theories.DataPoints;
+
 public class DataSet
 {
     private ArrayList< DataPoint > dataPoints;
+    private int returnDataPointsOlderThanFromLatest = 0;
 
     public DataSet( ArrayList< DataPoint > dataPoints )
     {
@@ -14,13 +17,37 @@ public class DataSet
 
         Collections.sort( this.dataPoints, new DataSetByDateTimeComparator() );
     }
+    
+    public void setReturnDataPointsOlderThanFromLatest(int timeInSeconds)
+    {
+        this.returnDataPointsOlderThanFromLatest = timeInSeconds;
+    }
 
     public ArrayList< DataPoint > getDataPoints()
     {
-        return dataPoints;
+        ArrayList<DataPoint> result = new ArrayList<>();
+        
+        DataPoint youngestDataPoint = getYoungestDataPoint0();
+        if(youngestDataPoint == null)
+        {
+            return result;
+        }
+        
+        long youngestEpochSeconds = youngestDataPoint.utcDateTime.toEpochSecond();
+        long newYoungestEpochSeconds = youngestEpochSeconds - returnDataPointsOlderThanFromLatest;
+        for(DataPoint dp : dataPoints)
+        {
+            long currentEpochSeconds = dp.utcDateTime.toEpochSecond();
+            if(currentEpochSeconds < newYoungestEpochSeconds)
+            {
+                result.add( dp );
+            }
+        }
+        
+        return result;
     }
 
-    public ArrayList< DataPoint > getDataPointsYoungerThan( int timeInSeconds )
+    public ArrayList< DataPoint > getDataPointsYoungerThanFromLatest( int timeInSeconds )
     {
         ArrayList<DataPoint> result = new ArrayList<>();
         
@@ -55,6 +82,18 @@ public class DataSet
         int lastIndex = getDataPoints().size() - 1;
 
         return getDataPoints().get( lastIndex );
+    }
+    
+    private DataPoint getYoungestDataPoint0()
+    {
+        if(dataPoints.size() == 0)
+        {
+            return null;
+        }
+        
+        int lastIndex = dataPoints.size() - 1;
+
+        return dataPoints.get( lastIndex );
     }
 
     private class DataSetByDateTimeComparator implements Comparator< DataPoint >
