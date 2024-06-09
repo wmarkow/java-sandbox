@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker;
+package com.github.wmarkow.geotools.quickstart;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -14,14 +14,14 @@ import org.geotools.styling.Style;
 import org.geotools.swing.JMapFrame;
 import org.geotools.swing.data.JFileDataStoreChooser;
 
-public class SondeTrackerApp
+/**
+ * GeoTools Quickstart demo application. Opens a shapefile and displays its contents on the screen in a map
+ * frame
+ */
+public class Quickstart
 {
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger( SondeTrackerApp.class );
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger( Quickstart.class );
 
-    /**
-     * GeoTools Quickstart demo application. Prompts the user for a shapefile and displays its contents on the
-     * screen in a map frame
-     */
     public static void main( String[] args ) throws Exception
     {
         // display a data store file chooser dialog for shapefiles
@@ -30,8 +30,8 @@ public class SondeTrackerApp
         LOGGER
             .info( "java.util.logging.config.file=" + System.getProperty( "java.util.logging.config.file" ) );
 
-        File file = new File("src/main/resources/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp");
-        
+        File file = new File( "src/main/resources/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp" );
+
         FileDataStore store = FileDataStoreFinder.getDataStore( file );
         SimpleFeatureSource featureSource = store.getFeatureSource();
 
