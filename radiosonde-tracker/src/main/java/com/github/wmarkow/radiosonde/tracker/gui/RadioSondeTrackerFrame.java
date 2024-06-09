@@ -13,14 +13,20 @@ import javax.swing.event.ChangeListener;
 import org.geotools.map.MapContent;
 import org.geotools.swing.JMapFrame;
 
+import com.github.wmarkow.radiosonde.tracker.domain.RadioSondeMapContent;
+
 public class RadioSondeTrackerFrame extends JMapFrame
 {
-    public RadioSondeTrackerFrame( MapContent content )
+    private RadioSondeMapContent radioSondeMapContent;
+    
+    public RadioSondeTrackerFrame( RadioSondeMapContent content )
     {
         super( content );
+        
+        this.radioSondeMapContent = content;
     }
 
-    public static void showMap( final MapContent content )
+    public static void showMap( final RadioSondeMapContent content )
     {
         if( SwingUtilities.isEventDispatchThread() )
         {
@@ -30,7 +36,6 @@ public class RadioSondeTrackerFrame extends JMapFrame
         {
             SwingUtilities.invokeLater( new Runnable()
             {
-
                 @Override
                 public void run()
                 {
@@ -68,6 +73,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
         JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 100 );
         predictionAgeSlider.setMajorTickSpacing( 10 );
         predictionAgeSlider.setMinorTickSpacing( 5 );
+        predictionAgeSlider.setSnapToTicks( true );
         predictionAgeSlider.setPaintTicks( true );
         predictionAgeSlider.setPaintLabels( true );
         predictionAgeSlider.addChangeListener( new ChangeListener()
@@ -76,8 +82,8 @@ public class RadioSondeTrackerFrame extends JMapFrame
             @Override
             public void stateChanged( ChangeEvent e )
             {
-                // TODO Auto-generated method stub
-
+                int predictionAge = predictionAgeSlider.getValue();
+                radioSondeMapContent.recalculatePrediction( predictionAge );
             }
         } );
         newPanel.add( predictionAgeSlider, gbc );
@@ -85,7 +91,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
         this.getContentPane().add( newPanel );
     }
 
-    private static void doShowMap( MapContent content )
+    private static void doShowMap( RadioSondeMapContent content )
     {
         final RadioSondeTrackerFrame frame = new RadioSondeTrackerFrame( content );
         frame.enableStatusBar( true );

@@ -42,6 +42,7 @@ public class RadioSondeMapContent extends MapContent
     private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
     private DataSet dataSet = null;
+    private FeatureLayer predictionLayer = null;
 
     public RadioSondeMapContent() throws SchemaException
     {
@@ -55,7 +56,7 @@ public class RadioSondeMapContent extends MapContent
 
         addLayer( new TileLayer( service ) );
         addLayer( prepareSondeMapLayer() );
-        addLayer( prepareSondePredictionMapLayer() );
+        recalculatePrediction(100);
     }
 
     private FeatureLayer prepareSondeMapLayer() throws SchemaException
@@ -85,7 +86,7 @@ public class RadioSondeMapContent extends MapContent
         return layer;
     }
 
-    private FeatureLayer prepareSondePredictionMapLayer() throws SchemaException
+    public void recalculatePrediction( int notOlderThanMinutes )
     {
         DataSet dataSet = getDataSet();
 
@@ -96,15 +97,11 @@ public class RadioSondeMapContent extends MapContent
 
         GeodeticCalculator calc = new GeodeticCalculator( DefaultGeographicCRS.WGS84 );
 
-        for( int q = 0; q < dataSet.getDataPoints().size(); q++ )
-        {
-            DataPoint dp = dataSet.getDataPoints().get( q );
+        ArrayList< DataPoint > dataPoints = dataSet.getDataPointsYoungerThan( notOlderThanMinutes * 60 );
 
+        for( DataPoint dp : dataPoints )
+        {
             if( dp.climbing_m_s >= 0 )
-            {
-                continue;
-            }
-            if( dp.altitude_m > 1500 )
             {
                 continue;
             }
@@ -126,10 +123,18 @@ public class RadioSondeMapContent extends MapContent
             featureList.add( feature );
         }
 
-        ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
-        FeatureLayer layer = new FeatureLayer( lfc, createPredictionPointStyle() );
+        // remove old prediction layer
+        if( predictionLayer != null )
+        {
+            removeLayer( predictionLayer );
+        }
 
-        return layer;
+        // create new predicition layer
+        ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
+        predictionLayer = new FeatureLayer( lfc, createPredictionPointStyle() );
+
+        // add predicition layer
+        addLayer( predictionLayer );
     }
 
     private SimpleFeatureType createFeatureType()
