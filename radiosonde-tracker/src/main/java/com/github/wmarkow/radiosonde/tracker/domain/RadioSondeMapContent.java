@@ -2,6 +2,7 @@ package com.github.wmarkow.radiosonde.tracker.domain;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class RadioSondeMapContent extends MapContent
     public void prepareLayers() throws SchemaException
     {
         String baseURL = "https://tile.openstreetmap.org/";
-        TileService service = new OSMService( "OSM", baseURL );
+        TileService service = new OSMCachedService( "OSM", baseURL, getTileCacheDirectory() );
 
         addLayer( new TileLayer( service ) );
         addLayer( prepareSondeMapLayer() );
@@ -237,5 +238,14 @@ public class RadioSondeMapContent extends MapContent
         // csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
 
         return new DataSet( dataPoints );
+    }
+    
+    private File getTileCacheDirectory()
+    {
+        String userHome = System.getProperty( "user.home" );
+        File cacheDirectory = new File(userHome + "/.radiosonde-tracker/");
+        cacheDirectory.mkdirs();
+        
+        return cacheDirectory;
     }
 }
