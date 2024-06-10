@@ -35,6 +35,7 @@ import org.opengis.filter.FilterFactory;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
+import com.github.wmarkow.radiosonde.tracker.domain.LandingPointPredictor;
 import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.CsvReader;
 
 public class RadioSondeMapContent extends MapContent
@@ -108,7 +109,7 @@ public class RadioSondeMapContent extends MapContent
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        GeodeticCalculator calc = new GeodeticCalculator( DefaultGeographicCRS.WGS84 );
+        LandingPointPredictor calc = new LandingPointPredictor();
 
         ArrayList< DataPoint > dataPoints =
             dataSet.getDataPointsYoungerThanFromLatest( notOlderThanMinutes * 60 );
@@ -121,13 +122,7 @@ public class RadioSondeMapContent extends MapContent
             }
 
             // Sonde is falling down. Let's predict its landing point.
-            double time_h = dp.altitude_m / Math.abs( dp.climbing_m_s ) / 3600.0;
-            double distance_km = dp.speed_km_h * time_h;
-            double distance_m = distance_km * 1000;
-
-            calc.setStartingGeographicPoint( dp.longitude, dp.latitude );
-            calc.setDirection( dp.course, distance_m );
-            Point2D dstPoint = calc.getDestinationGeographicPoint();
+            Point2D dstPoint = calc.predict( dp );
 
             /* Longitude (= x coord) first ! */
             Point point = geometryFactory.createPoint( new Coordinate( dstPoint.getX(), dstPoint.getY() ) );
