@@ -87,6 +87,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
                 int sondeAge = sondeAgeSlider.getValue();
                 radioSondeMapContent.recalculateSondeData( sondeAge );
                 radioSondeMapContent.recalculatePrediction( predictionAgeSlider.getValue() );
+                radioSondeMapContent.recalculateAdvancedPrediction( predictionAgeSlider.getValue() );
             }
         } );
         newPanel.add( sondeAgeSlider, gbc );
@@ -110,6 +111,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
             {
                 int predictionAge = predictionAgeSlider.getValue();
                 radioSondeMapContent.recalculatePrediction( predictionAge );
+                radioSondeMapContent.recalculateAdvancedPrediction( predictionAge );
             }
         } );
         newPanel.add( predictionAgeSlider, gbc );

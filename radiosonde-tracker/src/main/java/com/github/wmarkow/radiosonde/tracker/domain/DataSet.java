@@ -84,6 +84,34 @@ public class DataSet
         return getDataPoints().get( lastIndex );
     }
     
+    /***
+     * Iterates over the data point and returns first data point by altitude match with specified accuracy.
+     * It is silently assumed that a data point from the climbing part of the flight is found.
+     * @param altitude
+     * @return a valid data point or null (if not found)
+     */
+    public DataPoint getFirstDataPointByAltitude(double altitude, double accuracy)
+    {
+        if(dataPoints.size() == 0)
+        {
+            return null;
+        }
+        if(altitude < dataPoints.get( 0 ).altitude_m)
+        {
+            return dataPoints.get( 0 );
+        }
+        
+        for(DataPoint dp : dataPoints)
+        {
+            if(Math.abs( dp.altitude_m - altitude) < accuracy)
+            {
+                return dp;
+            }
+        }
+        
+        return null;
+    }
+    
     private DataPoint getYoungestDataPoint0()
     {
         if(dataPoints.size() == 0)
