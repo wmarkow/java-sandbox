@@ -13,7 +13,7 @@ import javax.swing.event.ChangeListener;
 import org.geotools.map.MapContent;
 import org.geotools.swing.JMapFrame;
 
-import com.github.wmarkow.radiosonde.tracker.domain.RadioSondeMapContent;
+import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
 
 public class RadioSondeTrackerFrame extends JMapFrame
 {

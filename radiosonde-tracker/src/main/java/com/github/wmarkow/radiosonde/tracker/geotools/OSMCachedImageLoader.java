@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.domain;
+package com.github.wmarkow.radiosonde.tracker.geotools;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
