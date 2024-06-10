@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.domain.radiosondy;
+package com.github.wmarkow.radiosonde.tracker.domain;
 
 import java.time.ZonedDateTime;
 

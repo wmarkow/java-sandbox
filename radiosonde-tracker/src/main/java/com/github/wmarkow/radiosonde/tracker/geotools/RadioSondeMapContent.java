@@ -33,9 +33,9 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory;
 
+import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
+import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.CsvReader;
-import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.DataPoint;
-import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.DataSet;
 
 public class RadioSondeMapContent extends MapContent
 {

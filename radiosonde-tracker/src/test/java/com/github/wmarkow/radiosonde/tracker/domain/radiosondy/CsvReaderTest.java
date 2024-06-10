@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
+
 public class CsvReaderTest
 {
     private CsvReader subject;
