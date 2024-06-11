@@ -139,7 +139,7 @@ public class DataSet
             }
             if( o1EpochSecond > o2EpochSecond )
             {
-                return -1;
+                return 1;
             }
 
             return 0;
