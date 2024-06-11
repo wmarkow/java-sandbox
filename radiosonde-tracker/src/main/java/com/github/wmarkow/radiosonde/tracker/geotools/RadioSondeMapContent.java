@@ -44,7 +44,8 @@ public class RadioSondeMapContent extends MapContent
     private StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
     private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
-    private DataSet dataSet = null;
+    private DataSet fullDataSet = null;
+    private DataSet sondeDataSet = null;
     private FeatureLayer sondeLayer = null;
     private FeatureLayer predictionLayer = null;
     private FeatureLayer advancedPredictionLayer = null;
@@ -67,15 +68,14 @@ public class RadioSondeMapContent extends MapContent
 
     public void recalculateSondeData( int olderThanMinutes )
     {
-        DataSet dataSet = getDataSet();
-        dataSet.setReturnDataPointsOlderThanFromLatest( olderThanMinutes * 60 );
-
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        ArrayList< DataPoint > dataPoints = dataSet.getDataPoints();
+        ArrayList< DataPoint > dataPoints =
+            getFullDataSet().getEntriesOlderThanTheYoungestButWithMinAge( olderThanMinutes * 60 );
+        sondeDataSet = new DataSet( dataPoints );
         for( int q = 0; q < dataPoints.size(); q += 10 )
         {
             DataPoint dp = dataPoints.get( q );
@@ -104,19 +104,15 @@ public class RadioSondeMapContent extends MapContent
 
     public void recalculatePrediction( int notOlderThanMinutes )
     {
-        DataSet dataSet = getDataSet();
-
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        // LandingPointPredictor calc = new LandingPointPredictor();
-        LandingPointPredictor calc = new LandingPointPredictor( );
+        LandingPointPredictor calc = new LandingPointPredictor();
 
         ArrayList< DataPoint > dataPoints =
-            dataSet.getDataPointsYoungerThanFromLatest( notOlderThanMinutes * 60 );
-
+            getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanMinutes * 60 );
         for( DataPoint dp : dataPoints )
         {
             if( dp.climbing_m_s >= 0 )
@@ -151,19 +147,16 @@ public class RadioSondeMapContent extends MapContent
 
     public void recalculateAdvancedPrediction( int notOlderThanMinutes )
     {
-        DataSet dataSet = getDataSet();
-
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
         // LandingPointPredictor calc = new LandingPointPredictor();
-        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( dataSet );
+        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( getFullDataSet() );
 
         ArrayList< DataPoint > dataPoints =
-            dataSet.getDataPointsYoungerThanFromLatest( notOlderThanMinutes * 60 );
-
+            getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanMinutes * 60 );
         for( DataPoint dp : dataPoints )
         {
             if( dp.climbing_m_s >= 0 )
@@ -195,7 +188,7 @@ public class RadioSondeMapContent extends MapContent
         // add advanced predicition layer
         addLayer( advancedPredictionLayer );
     }
-    
+
     private SimpleFeatureType createFeatureType()
     {
 
@@ -276,7 +269,7 @@ public class RadioSondeMapContent extends MapContent
 
         return style;
     }
-    
+
     private Style createAdvancedPredictionPointStyle()
     {
         Graphic gr = styleFactory.createDefaultGraphic();
@@ -308,45 +301,52 @@ public class RadioSondeMapContent extends MapContent
         return style;
     }
 
-    private DataSet getDataSet()
+    private DataSet getFullDataSet()
     {
-        if( dataSet == null )
+        if( fullDataSet == null )
         {
-            dataSet = readDataSet();
+            fullDataSet = readDataSet();
         }
 
-        return dataSet;
+        return fullDataSet;
+    }
+
+    private DataSet getSondeDataSet()
+    {
+        if( sondeDataSet == null )
+        {
+            sondeDataSet = new DataSet( getFullDataSet().getDataPoints() );
+        }
+
+        return sondeDataSet;
     }
 
     private DataSet readDataSet()
     {
         CsvReader csvReader = new CsvReader();
-//         ArrayList< DataPoint > dataPoints =
-//         csvReader.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
-//         ArrayList< DataPoint > dataPoints =
-//         csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
+         ArrayList< DataPoint > dataPoints =
+         csvReader.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
         // ArrayList< DataPoint > dataPoints =
         // csvReader.readDataPoints( "src/main/resources/sondes/V3731074/V3731074.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/V3731069/V3731069.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2410903/V2410903.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5240965/V5240965.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5241124/V5241124.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1940765/V1940765.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2411341/V2411341.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350521/V2350521.csv" );
 //        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/V3731069/V3731069.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//          csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2410903/V2410903.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5240965/V5240965.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5241124/V5241124.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1940765/V1940765.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2411341/V2411341.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350521/V2350521.csv" );
-        ArrayList< DataPoint > dataPoints =
-            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010198/V1010198.csv" );
-        
-        
-        
-        
+//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010198/V1010198.csv" );
+
         return new DataSet( dataPoints );
     }
 
