@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<name>Flight Path</name>
+<description>Flight Data for start time 2024-04-16T07:31:37Z, at site: 52.4985,16.5556, standard flight profile</description>
+<Style id="yellowPoly">
+<LineStyle>
+<color>7f00ffff</color>
+<width>4</width>
+</LineStyle>
+<PolyStyle>
+<color>7f00ff00</color>
+</PolyStyle>
+</Style>
+<Placemark>
+<name>Flight path</name>
+<description>Ascent rate: 2.6 m/s, descent rate: 2.6 m/s with burst at 178.0 m</description>
+<styleUrl>#yellowPoly</styleUrl>
+<LineString>
+<extrude>1</extrude>
+<tesselate>1</tesselate>
+<altitudeMode>absolute</altitudeMode>
+<coordinates>
+16.55560,52.49850,177.0
+16.55569,52.49852,178.2
+16.55569,52.49852,178.2
+16.56085,52.50003,86.6
+
+</coordinates>
+</LineString></Placemark>
+
+<Placemark>
+<name>Balloon Launch</name>
+<description>Balloon launch at 52.49850,16.55560 at 2024-04-16T07:31:37Z.</description>
+<Point><altitudeMode>absolute</altitudeMode><coordinates>16.55560,52.49850,177.0</coordinates></Point>
+</Placemark>
+
+<Placemark>
+<name>Balloon Burst</name>
+<description>Balloon burst at 52.49852,16.55569 at 2024-04-16T07:31:37.46875Z.</description>
+<Point><altitudeMode>absolute</altitudeMode><coordinates>16.55569,52.49852,178.2</coordinates></Point>
+</Placemark>
+
+<Placemark>
+<name>Balloon Landing</name>
+<description>Balloon landing at 52.50003,16.56085 at 2024-04-16T07:32:12.625Z.</description>
+<Point><altitudeMode>absolute</altitudeMode><coordinates>16.56085,52.50003,86.6</coordinates></Point>
+</Placemark>
+
+</Document></kml>

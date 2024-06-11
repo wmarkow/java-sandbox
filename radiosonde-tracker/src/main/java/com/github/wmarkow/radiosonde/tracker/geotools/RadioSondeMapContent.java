@@ -323,13 +323,30 @@ public class RadioSondeMapContent extends MapContent
         CsvReader csvReader = new CsvReader();
 //         ArrayList< DataPoint > dataPoints =
 //         csvReader.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
-         ArrayList< DataPoint > dataPoints =
-         csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
+//         ArrayList< DataPoint > dataPoints =
+//         csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
         // ArrayList< DataPoint > dataPoints =
         // csvReader.readDataPoints( "src/main/resources/sondes/V3731074/V3731074.csv" );
 //        ArrayList< DataPoint > dataPoints =
 //            csvReader.readDataPoints( "src/main/resources/sondes/V3731069/V3731069.csv" );
-
+//        ArrayList< DataPoint > dataPoints =
+//          csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2410903/V2410903.csv" );
+//        ArrayList< DataPoint > dataPoints =
+//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5240965/V5240965.csv" );
+//        ArrayList< DataPoint > dataPoints =
+//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5241124/V5241124.csv" );
+//        ArrayList< DataPoint > dataPoints =
+//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1940765/V1940765.csv" );
+//        ArrayList< DataPoint > dataPoints =
+//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2411341/V2411341.csv" );
+//        ArrayList< DataPoint > dataPoints =
+//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350521/V2350521.csv" );
+        ArrayList< DataPoint > dataPoints =
+            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010198/V1010198.csv" );
+        
+        
+        
+        
         return new DataSet( dataPoints );
     }
 
