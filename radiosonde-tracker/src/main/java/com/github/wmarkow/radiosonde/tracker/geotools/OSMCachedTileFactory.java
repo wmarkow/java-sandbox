@@ -6,7 +6,6 @@ import org.geotools.tile.Tile;
 import org.geotools.tile.TileService;
 import org.geotools.tile.impl.ZoomLevel;
 import org.geotools.tile.impl.osm.OSMTileFactory;
-import org.geotools.tile.util.CachedImageLoader;
 
 public class OSMCachedTileFactory extends OSMTileFactory
 {
@@ -14,7 +13,7 @@ public class OSMCachedTileFactory extends OSMTileFactory
 
     public OSMCachedTileFactory( File tileCacheDirectory )
     {
-        cachedImageLoader = new OSMCachedImageLoader(tileCacheDirectory);
+        cachedImageLoader = new OSMCachedImageLoader( tileCacheDirectory );
     }
 
     @Override
@@ -23,7 +22,7 @@ public class OSMCachedTileFactory extends OSMTileFactory
         Tile result = super.findTileAtCoordinate( lon, lat, zoomLevel, service );
         cachedImageLoader.setTileService( service );
         result.setImageLoader( cachedImageLoader );
-        
+
         return result;
     }
 

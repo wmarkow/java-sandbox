@@ -8,8 +8,6 @@ import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.util.logging.Logging;
 
-import com.github.wmarkow.radiosonde.tracker.geotools.OSMCachedImageLoader;
-
 public class AdvancedLandingPointPredictor
 {
     private static final Logger LOGGER = Logging.getLogger( AdvancedLandingPointPredictor.class );

@@ -12,7 +12,7 @@ public class OSMCachedService extends OSMService
     public OSMCachedService( String name, String baseUrl, File tileCacheDirectory )
     {
         super( name, baseUrl );
-        tileFactory = new OSMCachedTileFactory(tileCacheDirectory);
+        tileFactory = new OSMCachedTileFactory( tileCacheDirectory );
     }
 
     @Override

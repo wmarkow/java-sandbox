@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.geotools.map.MapContent;
 import org.geotools.swing.JMapFrame;
 
 import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
@@ -18,11 +17,11 @@ import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
 public class RadioSondeTrackerFrame extends JMapFrame
 {
     private RadioSondeMapContent radioSondeMapContent;
-    
+
     public RadioSondeTrackerFrame( RadioSondeMapContent content )
     {
         super( content );
-        
+
         this.radioSondeMapContent = content;
     }
 
@@ -67,7 +66,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
 
         JSlider sondeAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 0 );
         JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 100 );
-        
+
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.VERTICAL;
@@ -91,13 +90,13 @@ public class RadioSondeTrackerFrame extends JMapFrame
             }
         } );
         newPanel.add( sondeAgeSlider, gbc );
-        
+
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.1;
         gbc.weighty = 1.0;
-       
+
         predictionAgeSlider.setMajorTickSpacing( 10 );
         predictionAgeSlider.setMinorTickSpacing( 5 );
         predictionAgeSlider.setSnapToTicks( false );
@@ -115,8 +114,6 @@ public class RadioSondeTrackerFrame extends JMapFrame
             }
         } );
         newPanel.add( predictionAgeSlider, gbc );
-        
-        
 
         this.getContentPane().add( newPanel );
     }

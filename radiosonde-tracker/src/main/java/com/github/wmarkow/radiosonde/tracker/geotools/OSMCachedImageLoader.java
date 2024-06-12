@@ -25,8 +25,8 @@ public class OSMCachedImageLoader implements ImageLoader
     {
         this.cacheDirectory = cacheDirectory;
     }
-    
-    public void setTileService(TileService tileService)
+
+    public void setTileService( TileService tileService )
     {
         this.tileService = tileService;
     }
@@ -55,8 +55,8 @@ public class OSMCachedImageLoader implements ImageLoader
             }
 
             // load the image with the help of tile service
-            img =  tileService.loadImageTileImage( tile );
-            
+            img = tileService.loadImageTileImage( tile );
+
             ImageIO.write( img, "png", imgFile );
             if( LOGGER.isLoggable( Level.FINE ) )
             {
