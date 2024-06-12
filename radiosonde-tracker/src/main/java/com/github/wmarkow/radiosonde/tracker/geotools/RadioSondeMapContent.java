@@ -41,14 +41,12 @@ import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.CsvReader;
 
 public class RadioSondeMapContent extends MapContent
 {
-    private StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
-    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
-
     private DataSet fullDataSet = null;
     private DataSet sondeDataSet = null;
     private FeatureLayer sondeLayer = null;
     private FeatureLayer predictionLayer = null;
     private FeatureLayer advancedPredictionLayer = null;
+    private PointStyleFactory pointStyleFactory = new PointStyleFactory();
 
     public RadioSondeMapContent() throws SchemaException
     {
@@ -96,7 +94,7 @@ public class RadioSondeMapContent extends MapContent
 
         // create new sonde layer
         ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
-        sondeLayer = new FeatureLayer( lfc, createPointStyle() );
+        sondeLayer = new FeatureLayer( lfc, pointStyleFactory.create( 10, Color.BLUE, Color.CYAN ) );
 
         // add sonde layer
         addLayer( sondeLayer );
@@ -139,7 +137,7 @@ public class RadioSondeMapContent extends MapContent
 
         // create new predicition layer
         ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
-        predictionLayer = new FeatureLayer( lfc, createPredictionPointStyle() );
+        predictionLayer = new FeatureLayer( lfc, pointStyleFactory.create( 10, Color.RED, Color.RED ) );
 
         // add predicition layer
         addLayer( predictionLayer );
@@ -183,7 +181,8 @@ public class RadioSondeMapContent extends MapContent
 
         // create new advanced predicition layer
         ListFeatureCollection lfc = new ListFeatureCollection( TYPE, featureList );
-        advancedPredictionLayer = new FeatureLayer( lfc, createAdvancedPredictionPointStyle() );
+        advancedPredictionLayer =
+            new FeatureLayer( lfc, pointStyleFactory.create( 10, Color.YELLOW, Color.YELLOW ) );
 
         // add advanced predicition layer
         addLayer( advancedPredictionLayer );
@@ -203,102 +202,6 @@ public class RadioSondeMapContent extends MapContent
         final SimpleFeatureType LOCATION = builder.buildFeatureType();
 
         return LOCATION;
-    }
-
-    /**
-     * Create a Style to draw point features as circles with blue outlines and cyan fill
-     */
-    private Style createPointStyle()
-    {
-        Graphic gr = styleFactory.createDefaultGraphic();
-
-        Mark mark = styleFactory.getCircleMark();
-
-        mark.setStroke(
-            styleFactory.createStroke( filterFactory.literal( Color.BLUE ), filterFactory.literal( 2 ) ) );
-
-        mark.setFill( styleFactory.createFill( filterFactory.literal( Color.CYAN ) ) );
-
-        gr.graphicalSymbols().clear();
-        gr.graphicalSymbols().add( mark );
-        gr.setSize( filterFactory.literal( 10 ) );
-
-        /*
-         * Setting the geometryPropertyName arg to null signals that we want to draw the default geomettry of
-         * features
-         */
-        PointSymbolizer sym = styleFactory.createPointSymbolizer( gr, null );
-
-        Rule rule = styleFactory.createRule();
-        rule.symbolizers().add( sym );
-        FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle( new Rule[]
-        { rule } );
-        Style style = styleFactory.createStyle();
-        style.featureTypeStyles().add( fts );
-
-        return style;
-    }
-
-    private Style createPredictionPointStyle()
-    {
-        Graphic gr = styleFactory.createDefaultGraphic();
-
-        Mark mark = styleFactory.getCircleMark();
-
-        mark.setStroke(
-            styleFactory.createStroke( filterFactory.literal( Color.RED ), filterFactory.literal( 2 ) ) );
-
-        mark.setFill( styleFactory.createFill( filterFactory.literal( Color.RED ) ) );
-
-        gr.graphicalSymbols().clear();
-        gr.graphicalSymbols().add( mark );
-        gr.setSize( filterFactory.literal( 10 ) );
-
-        /*
-         * Setting the geometryPropertyName arg to null signals that we want to draw the default geomettry of
-         * features
-         */
-        PointSymbolizer sym = styleFactory.createPointSymbolizer( gr, null );
-
-        Rule rule = styleFactory.createRule();
-        rule.symbolizers().add( sym );
-        FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle( new Rule[]
-        { rule } );
-        Style style = styleFactory.createStyle();
-        style.featureTypeStyles().add( fts );
-
-        return style;
-    }
-
-    private Style createAdvancedPredictionPointStyle()
-    {
-        Graphic gr = styleFactory.createDefaultGraphic();
-
-        Mark mark = styleFactory.getCircleMark();
-
-        mark.setStroke(
-            styleFactory.createStroke( filterFactory.literal( Color.YELLOW ), filterFactory.literal( 2 ) ) );
-
-        mark.setFill( styleFactory.createFill( filterFactory.literal( Color.YELLOW ) ) );
-
-        gr.graphicalSymbols().clear();
-        gr.graphicalSymbols().add( mark );
-        gr.setSize( filterFactory.literal( 10 ) );
-
-        /*
-         * Setting the geometryPropertyName arg to null signals that we want to draw the default geomettry of
-         * features
-         */
-        PointSymbolizer sym = styleFactory.createPointSymbolizer( gr, null );
-
-        Rule rule = styleFactory.createRule();
-        rule.symbolizers().add( sym );
-        FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle( new Rule[]
-        { rule } );
-        Style style = styleFactory.createStyle();
-        style.featureTypeStyles().add( fts );
-
-        return style;
     }
 
     private DataSet getFullDataSet()
@@ -324,8 +227,8 @@ public class RadioSondeMapContent extends MapContent
     private DataSet readDataSet()
     {
         CsvReader csvReader = new CsvReader();
-//         ArrayList< DataPoint > dataPoints =
-//         csvReader.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
         // ArrayList< DataPoint > dataPoints =
         // csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
         // ArrayList< DataPoint > dataPoints =
@@ -344,21 +247,19 @@ public class RadioSondeMapContent extends MapContent
         // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2411341/V2411341.csv" );
         // ArrayList< DataPoint > dataPoints =
         // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350521/V2350521.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010198/V1010198.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//          csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1020968/V1020968.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350507/V2350507.csv" );
-//      ArrayList< DataPoint > dataPoints =
-//      csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1021069/V1021069.csv" );
-//      ArrayList< DataPoint > dataPoints =
-//          csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010246/V1010246.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010198/V1010198.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1020968/V1020968.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350507/V2350507.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1021069/V1021069.csv" );
+        // ArrayList< DataPoint > dataPoints =
+        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010246/V1010246.csv" );
         ArrayList< DataPoint > dataPoints =
             csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010268/V1010268.csv" );
-      
-      
-        
+
         return new DataSet( dataPoints );
     }
 
