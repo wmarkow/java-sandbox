@@ -32,6 +32,27 @@ public class DataSet
         return getDataPoints().get( lastIndex );
     }
 
+    public DataPoint getHighestDataPoint()
+    {
+        DataPoint highestDataPoint = null;
+        
+        for( DataPoint dp : getDataPoints() )
+        {
+            if(highestDataPoint == null)
+            {
+                highestDataPoint = dp;
+                continue;
+            }
+            
+            if(dp.altitude_m > highestDataPoint.altitude_m)
+            {
+                highestDataPoint = dp;
+            }
+        }
+        
+        return highestDataPoint;
+    }
+    
     public ArrayList< DataPoint > getEntriesOlderThanTheYoungestButWithMaxAge( int maxAgeInSeconds )
     {
         ArrayList< DataPoint > result = new ArrayList<>();

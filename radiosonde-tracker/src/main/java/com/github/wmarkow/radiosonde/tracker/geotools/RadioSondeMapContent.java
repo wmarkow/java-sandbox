@@ -23,6 +23,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.github.wmarkow.radiosonde.tracker.domain.AdvancedLandingPointPredictor;
+import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.LandingPointPredictor;
@@ -140,7 +141,8 @@ public class RadioSondeMapContent extends MapContent
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
         // LandingPointPredictor calc = new LandingPointPredictor();
-        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( getFullDataSet() );
+        ClimbingDataSet climbingDataSet = ClimbingDataSet.valueOf( getFullDataSet() );
+        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( climbingDataSet );
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanMinutes * 60 );

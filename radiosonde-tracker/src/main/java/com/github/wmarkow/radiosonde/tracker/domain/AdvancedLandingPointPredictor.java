@@ -13,9 +13,9 @@ public class AdvancedLandingPointPredictor
     private static final Logger LOGGER = Logging.getLogger( AdvancedLandingPointPredictor.class );
 
     private GeodeticCalculator calc = new GeodeticCalculator( DefaultGeographicCRS.WGS84 );
-    private DataSet dataSet = null;
+    private ClimbingDataSet dataSet = null;
 
-    public AdvancedLandingPointPredictor( DataSet dataSet )
+    public AdvancedLandingPointPredictor( ClimbingDataSet dataSet )
     {
         this.dataSet = dataSet;
     }
