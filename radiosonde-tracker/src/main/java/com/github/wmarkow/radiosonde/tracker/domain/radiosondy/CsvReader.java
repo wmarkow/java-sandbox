@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 
 /***
- * Reads the archive data of sonde track.
+ * Reads the archive data of sonde track provided by radiosondy.info as CSV file.
  * 
  * @author wmarkowski
  */
