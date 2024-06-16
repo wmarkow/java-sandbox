@@ -27,7 +27,6 @@ import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.LandingPointPredictor;
-import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.CsvReader;
 
 public class RadioSondeMapContent extends MapContent
 {
@@ -56,6 +55,11 @@ public class RadioSondeMapContent extends MapContent
 
     public void recalculateSondeData( int olderThanMinutes )
     {
+        if( getFullDataSet() == null )
+        {
+            return;
+        }
+
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
@@ -92,6 +96,11 @@ public class RadioSondeMapContent extends MapContent
 
     public void recalculatePrediction( int notOlderThanMinutes )
     {
+        if( getSondeDataSet() == null )
+        {
+            return;
+        }
+
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
@@ -135,6 +144,11 @@ public class RadioSondeMapContent extends MapContent
 
     public void recalculateAdvancedPrediction( int notOlderThanMinutes )
     {
+        if( getSondeDataSet() == null )
+        {
+            return;
+        }
+
         final SimpleFeatureType TYPE = createFeatureType();
 
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
@@ -179,6 +193,15 @@ public class RadioSondeMapContent extends MapContent
         addLayer( advancedPredictionLayer );
     }
 
+    public void setFullDataSet( DataSet dataSet )
+    {
+        this.fullDataSet = dataSet;
+
+        recalculateSondeData( 0 );
+        recalculatePrediction( 100 );
+        recalculateAdvancedPrediction( 100 );
+    }
+
     private SimpleFeatureType createFeatureType()
     {
 
@@ -197,67 +220,17 @@ public class RadioSondeMapContent extends MapContent
 
     private DataSet getFullDataSet()
     {
-        if( fullDataSet == null )
-        {
-            fullDataSet = readDataSet();
-        }
-
         return fullDataSet;
     }
 
     private DataSet getSondeDataSet()
     {
-        if( sondeDataSet == null )
+        if( sondeDataSet == null && fullDataSet != null )
         {
             sondeDataSet = new DataSet( getFullDataSet().getDataPoints() );
         }
 
         return sondeDataSet;
-    }
-
-    private DataSet readDataSet()
-    {
-        CsvReader csvReader = new CsvReader();
-//         ArrayList< DataPoint > dataPoints =
-//         csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V3742166_Baborowo/V3742166.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/V3731074/V3731074.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/V3731069/V3731069.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2410903/V2410903.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5240965/V5240965.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V5241124/V5241124.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1940765/V1940765.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2411341/V2411341.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350521/V2350521.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010198/V1010198.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1020968/V1020968.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V2350507/V2350507.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1021069/V1021069.csv" );
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010246/V1010246.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010268/V1010268.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/V3640890/V3640890.csv" );
-//        ArrayList< DataPoint > dataPoints =
-//            csvReader.readDataPoints( "src/main/resources/sondes/W1847253/W1847253.csv" );
-       ArrayList< DataPoint > dataPoints =
-       csvReader.readDataPoints( "src/main/resources/sondes/Gostyn/MEB101243/MEB101243.csv" );
-
-        return new DataSet( dataPoints );
     }
 
     private File getTileCacheDirectory()
