@@ -218,8 +218,8 @@ public class RadioSondeMapContent extends MapContent
     private DataSet readDataSet()
     {
         CsvReader csvReader = new CsvReader();
-        // ArrayList< DataPoint > dataPoints =
-        // csvReader.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
+         ArrayList< DataPoint > dataPoints =
+         csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V3742166_Baborowo/V3742166.csv" );
         // ArrayList< DataPoint > dataPoints =
         // csvReader.readDataPoints( "src/main/resources/sondes/V3742167/V3742167.csv" );
         // ArrayList< DataPoint > dataPoints =
@@ -252,8 +252,8 @@ public class RadioSondeMapContent extends MapContent
 //            csvReader.readDataPoints( "src/main/resources/sondes/Poznan/V1010268/V1010268.csv" );
 //        ArrayList< DataPoint > dataPoints =
 //            csvReader.readDataPoints( "src/main/resources/sondes/V3640890/V3640890.csv" );
-        ArrayList< DataPoint > dataPoints =
-            csvReader.readDataPoints( "src/main/resources/sondes/W1847253/W1847253.csv" );
+//        ArrayList< DataPoint > dataPoints =
+//            csvReader.readDataPoints( "src/main/resources/sondes/W1847253/W1847253.csv" );
 
         return new DataSet( dataPoints );
     }
