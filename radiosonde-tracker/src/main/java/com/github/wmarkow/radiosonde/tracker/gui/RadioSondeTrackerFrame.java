@@ -1,9 +1,8 @@
 package com.github.wmarkow.radiosonde.tracker.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,10 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.geotools.swing.JMapFrame;
@@ -114,70 +110,13 @@ public class RadioSondeTrackerFrame extends JMapFrame
         Component originalMapPanel = getContentPane().getComponent( 0 );
         getContentPane().remove( 0 );
 
-        JPanel newPanel = new JPanel();
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        newPanel.setLayout( gridBagLayout );
+        JPanel newPanel = new JPanel(new BorderLayout());
+        newPanel.add( originalMapPanel, BorderLayout.CENTER );
+        RadioSondePredictorConsolePanel consolePanel = new RadioSondePredictorConsolePanel();
+        consolePanel.setMapContent( radioSondeMapContent );
+        newPanel.add( consolePanel, BorderLayout.EAST );
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 0.8;
-        gbc.weighty = 1.0;
-        newPanel.add( originalMapPanel, gbc );
-
-        JSlider sondeAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 0 );
-        JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 100 );
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.weightx = 0.1;
-        gbc.weighty = 1.0;
-        sondeAgeSlider.setMajorTickSpacing( 10 );
-        sondeAgeSlider.setMinorTickSpacing( 5 );
-        sondeAgeSlider.setSnapToTicks( true );
-        sondeAgeSlider.setPaintTicks( true );
-        sondeAgeSlider.setPaintLabels( true );
-        sondeAgeSlider.addChangeListener( new ChangeListener()
-        {
-
-            @Override
-            public void stateChanged( ChangeEvent e )
-            {
-                int sondeAge = sondeAgeSlider.getValue();
-                radioSondeMapContent.recalculateSondeData( sondeAge );
-                radioSondeMapContent.recalculatePrediction( predictionAgeSlider.getValue() );
-                radioSondeMapContent.recalculateAdvancedPrediction( predictionAgeSlider.getValue() );
-            }
-        } );
-        newPanel.add( sondeAgeSlider, gbc );
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.weightx = 0.1;
-        gbc.weighty = 1.0;
-
-        predictionAgeSlider.setMajorTickSpacing( 10 );
-        predictionAgeSlider.setMinorTickSpacing( 5 );
-        predictionAgeSlider.setSnapToTicks( false );
-        predictionAgeSlider.setPaintTicks( true );
-        predictionAgeSlider.setPaintLabels( true );
-        predictionAgeSlider.addChangeListener( new ChangeListener()
-        {
-
-            @Override
-            public void stateChanged( ChangeEvent e )
-            {
-                int predictionAge = predictionAgeSlider.getValue();
-                radioSondeMapContent.recalculatePrediction( predictionAge );
-                radioSondeMapContent.recalculateAdvancedPrediction( predictionAge );
-            }
-        } );
-        newPanel.add( predictionAgeSlider, gbc );
-
-        this.getContentPane().add( newPanel );
+        getContentPane().add( newPanel );
     }
 
     private static void doShowMap( RadioSondeMapContent content )
