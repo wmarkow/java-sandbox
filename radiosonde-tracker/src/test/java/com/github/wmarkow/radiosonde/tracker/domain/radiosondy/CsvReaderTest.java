@@ -24,14 +24,14 @@ public class CsvReaderTest
     @Test
     public void testForNoExceptions()
     {
-        subject.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
+        subject.readDataPoints( "src/main/resources/sondes/Poznan/V3742166_Baborowo/V3742166.csv" );
     }
 
     @Test
     public void testForCount()
     {
         ArrayList< DataPoint > dataPoints =
-            subject.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
+            subject.readDataPoints( "src/main/resources/sondes/Poznan/V3742166_Baborowo/V3742166.csv" );
 
         assertEquals( 9459, dataPoints.size() );
     }
@@ -40,7 +40,7 @@ public class CsvReaderTest
     public void testForCorrectData()
     {
         ArrayList< DataPoint > dataPoints =
-            subject.readDataPoints( "src/main/resources/sondes/V3742166/V3742166.csv" );
+            subject.readDataPoints( "src/main/resources/sondes/Poznan/V3742166_Baborowo/V3742166.csv" );
 
         assertEquals( ZoneId.of( "UTC" ), dataPoints.get( 0 ).utcDateTime.getZone());
         assertEquals( 2024, dataPoints.get( 0 ).utcDateTime.getYear());
