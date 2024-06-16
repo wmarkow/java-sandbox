@@ -11,6 +11,11 @@ import java.util.ArrayList;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 
+/***
+ * Reads the archive data of sonde track.
+ * 
+ * @author wmarkowski
+ */
 public class CsvReader
 {
 

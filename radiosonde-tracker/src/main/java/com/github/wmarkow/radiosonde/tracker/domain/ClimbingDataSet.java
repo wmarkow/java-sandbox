@@ -9,6 +9,11 @@ import java.util.Map;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+/***
+ * Represents the data points of climbing part of the radiosonde track.
+ * 
+ * @author wmarkowski
+ */
 public class ClimbingDataSet extends DataSet
 {
     private PolynomialSplineFunction windSpeedFunction_km_h = null;
@@ -125,6 +130,13 @@ public class ClimbingDataSet extends DataSet
         return windCourseFunction.value( courseKnots[ n ] );
     }
 
+    /***
+     * Searches through the provided data set and creates a new data set which represents only climbing part
+     * of the radiosonde track.
+     * 
+     * @param dataSet
+     * @return
+     */
     public final static ClimbingDataSet valueOf( DataSet dataSet )
     {
         DataPoint highestDataPoint = dataSet.getHighestDataPoint();

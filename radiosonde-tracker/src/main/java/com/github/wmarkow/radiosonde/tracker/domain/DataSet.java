@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/***
+ * Represents a set of {@linkplain DataPoint} as a track of radiosonde.
+ * 
+ * @author wmarkowski
+ */
 public class DataSet
 {
     protected ArrayList< DataPoint > dataPoints;
@@ -15,6 +20,11 @@ public class DataSet
         Collections.sort( this.dataPoints, new DataSetByDateTimeComparator() );
     }
 
+    /***
+     * Gets the ordered ascending by time list of data points.
+     * 
+     * @return
+     */
     public ArrayList< DataPoint > getDataPoints()
     {
         return dataPoints;
@@ -35,24 +45,24 @@ public class DataSet
     public DataPoint getHighestDataPoint()
     {
         DataPoint highestDataPoint = null;
-        
+
         for( DataPoint dp : getDataPoints() )
         {
-            if(highestDataPoint == null)
+            if( highestDataPoint == null )
             {
                 highestDataPoint = dp;
                 continue;
             }
-            
-            if(dp.altitude_m > highestDataPoint.altitude_m)
+
+            if( dp.altitude_m > highestDataPoint.altitude_m )
             {
                 highestDataPoint = dp;
             }
         }
-        
+
         return highestDataPoint;
     }
-    
+
     public ArrayList< DataPoint > getEntriesOlderThanTheYoungestButWithMaxAge( int maxAgeInSeconds )
     {
         ArrayList< DataPoint > result = new ArrayList<>();
