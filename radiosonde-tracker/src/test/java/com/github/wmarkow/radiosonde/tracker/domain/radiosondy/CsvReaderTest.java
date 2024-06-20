@@ -49,6 +49,7 @@ public class CsvReaderTest
         assertEquals( 19, dataPoints.get( 0 ).utcDateTime.getHour());
         assertEquals( 59, dataPoints.get( 0 ).utcDateTime.getMinute());
         assertEquals( 56, dataPoints.get( 0 ).utcDateTime.getSecond());
+        assertEquals( "UTC", dataPoints.get( 0 ).utcDateTime.getZone().getId() );
         
         assertEquals( 52.5792, dataPoints.get( 0 ).latitude, 0.00001);
         assertEquals( 16.6496, dataPoints.get( 0 ).longitude, 0.00001);
