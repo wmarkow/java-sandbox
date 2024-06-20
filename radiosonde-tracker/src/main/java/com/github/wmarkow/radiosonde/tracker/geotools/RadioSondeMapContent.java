@@ -3,6 +3,7 @@ package com.github.wmarkow.radiosonde.tracker.geotools;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import com.github.wmarkow.radiosonde.tracker.domain.AdvancedLandingPointPredicto
 import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
+import com.github.wmarkow.radiosonde.tracker.domain.LandingPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.LandingPointPredictor;
 
 public class RadioSondeMapContent extends MapContent
@@ -36,6 +38,8 @@ public class RadioSondeMapContent extends MapContent
     private FeatureLayer predictionLayer = null;
     private FeatureLayer advancedPredictionLayer = null;
     private PointStyleFactory pointStyleFactory = new PointStyleFactory();
+    private ZonedDateTime avgLandingTimeRedPrediction;
+    private ZonedDateTime avgLandingTimeYellowPrediction;
 
     public RadioSondeMapContent() throws SchemaException
     {
@@ -51,6 +55,21 @@ public class RadioSondeMapContent extends MapContent
         recalculateSondeData( 0 );
         recalculatePrediction( 100 );
         recalculateAdvancedPrediction( 100 );
+    }
+
+    public ZonedDateTime getAvgLandingTimeRedPrediction()
+    {
+        return avgLandingTimeRedPrediction;
+    }
+
+    public ZonedDateTime getAvgLandingTimeYellowPrediction()
+    {
+        return avgLandingTimeYellowPrediction;
+    }
+
+    public DataPoint getSondeLatestDataPoint()
+    {
+        return getSondeDataSet().getYoungestDataPoint();
     }
 
     public void recalculateSondeData( int olderThanMinutes )
@@ -110,6 +129,7 @@ public class RadioSondeMapContent extends MapContent
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );
+        avgLandingTimeRedPrediction = null;
         for( DataPoint dp : dataPoints )
         {
             if( dp.climbing_m_s >= 0 )
@@ -118,14 +138,21 @@ public class RadioSondeMapContent extends MapContent
             }
 
             // Sonde is falling down. Let's predict its landing point.
-            Point2D dstPoint = calc.predict( dp );
+            LandingPoint landingPoint = calc.predict( dp );
 
             /* Longitude (= x coord) first ! */
-            Point point = geometryFactory.createPoint( new Coordinate( dstPoint.getX(), dstPoint.getY() ) );
+            Point point = geometryFactory.createPoint(
+                new Coordinate( landingPoint.getLocation().getX(), landingPoint.getLocation().getY() ) );
             SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder( TYPE );
             featureBuilder.add( point );
             SimpleFeature feature = featureBuilder.buildFeature( null );
             featureList.add( feature );
+
+            // TODO: maybe calculate the average landing time?
+            if( avgLandingTimeRedPrediction == null )
+            {
+                avgLandingTimeRedPrediction = landingPoint.getUtcDateTime();
+            }
         }
 
         // remove old prediction layer
@@ -160,6 +187,7 @@ public class RadioSondeMapContent extends MapContent
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );
+        avgLandingTimeYellowPrediction = null;
         for( DataPoint dp : dataPoints )
         {
             if( dp.climbing_m_s >= 0 )
@@ -168,14 +196,21 @@ public class RadioSondeMapContent extends MapContent
             }
 
             // Sonde is falling down. Let's predict its landing point.
-            Point2D dstPoint = calc.predict( dp );
+            LandingPoint landingPoint = calc.predict( dp );
 
             /* Longitude (= x coord) first ! */
-            Point point = geometryFactory.createPoint( new Coordinate( dstPoint.getX(), dstPoint.getY() ) );
+            Point point = geometryFactory.createPoint(
+                new Coordinate( landingPoint.getLocation().getX(), landingPoint.getLocation().getY() ) );
             SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder( TYPE );
             featureBuilder.add( point );
             SimpleFeature feature = featureBuilder.buildFeature( null );
             featureList.add( feature );
+
+            // TODO: maybe calculate the average landing time?
+            if( avgLandingTimeYellowPrediction == null )
+            {
+                avgLandingTimeYellowPrediction = landingPoint.getUtcDateTime();
+            }
         }
 
         // remove old prediction layer

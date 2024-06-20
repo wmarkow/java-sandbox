@@ -1,6 +1,7 @@
 package com.github.wmarkow.radiosonde.tracker.domain;
 
 import java.awt.geom.Point2D;
+import java.time.ZonedDateTime;
 import java.util.logging.Logger;
 
 import org.geotools.geometry.DirectPosition2D;
@@ -59,9 +60,9 @@ public class AdvancedLandingPointPredictor
      * {@linkplain LandingPointPredictor}, even when the sonde is at middle altitude (5-10km)
      * 
      * @param dataPoint
-     * @return
+     * @return landing point prediction
      */
-    public Point2D predict( DataPoint dataPoint )
+    public LandingPoint predict( DataPoint dataPoint )
     {
         if( dataPoint == null )
         {
@@ -80,6 +81,7 @@ public class AdvancedLandingPointPredictor
         double altitude_m = dataPoint.altitude_m;
         final double climb_m_s = dataPoint.climbing_m_s; // assuming it is negative
         final double dt_s = 10; // in seconds
+        double time_s = 0;
 
         while( altitude_m > 0.0 )
         {
@@ -88,6 +90,7 @@ public class AdvancedLandingPointPredictor
 
             altitude_m = altitude_m + climb_m_s * dt_s;
             double distance_m = windSpeedAtAltitude_km_h * 1000.0 / 3600.0 * dt_s;
+            time_s += dt_s;
 
             // calculate new longitude and latitude
             calc.setStartingGeographicPoint( lon, lat );
@@ -96,7 +99,10 @@ public class AdvancedLandingPointPredictor
             lon = newPoint.getX();
             lat = newPoint.getY();
         }
+        
+        Point2D location = new DirectPosition2D( lon, lat );
+        ZonedDateTime landingTime = dataPoint.utcDateTime.plusSeconds( (long)(time_s) );
 
-        return new DirectPosition2D( lon, lat );
+        return new LandingPoint(location, landingTime);
     }
 }

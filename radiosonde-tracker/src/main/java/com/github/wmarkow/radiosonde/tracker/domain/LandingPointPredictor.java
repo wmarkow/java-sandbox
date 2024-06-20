@@ -1,6 +1,7 @@
 package com.github.wmarkow.radiosonde.tracker.domain;
 
 import java.awt.geom.Point2D;
+import java.time.ZonedDateTime;
 
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -44,9 +45,9 @@ public class LandingPointPredictor
      * 
      * @param dataPoint
      *            sonde's current data point
-     * @return
+     * @return predicted landing point
      */
-    public Point2D predict( DataPoint dataPoint )
+    public LandingPoint predict( DataPoint dataPoint )
     {
         if( dataPoint.climbing_m_s > 0 )
         {
@@ -66,6 +67,8 @@ public class LandingPointPredictor
         calc.setDirection( dataPoint.course, distance_m );
         Point2D landingPoint = calc.getDestinationGeographicPoint();
 
-        return landingPoint;
+        ZonedDateTime landingTime = dataPoint.utcDateTime.plusSeconds( (long)(time_h * 3600) );
+
+        return new LandingPoint( landingPoint, landingTime );
     }
 }
