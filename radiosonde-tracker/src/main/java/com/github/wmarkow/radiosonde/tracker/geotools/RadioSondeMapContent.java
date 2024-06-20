@@ -223,7 +223,7 @@ public class RadioSondeMapContent extends MapContent
         return fullDataSet;
     }
 
-    private DataSet getSondeDataSet()
+    public DataSet getSondeDataSet()
     {
         if( sondeDataSet == null && fullDataSet != null )
         {

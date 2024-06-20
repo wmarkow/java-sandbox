@@ -32,6 +32,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
     private JMenuBar menuBar;
     private JMenuItem loadCsvMenuItem;
     private Color orig;
+    private RadioSondePredictorConsolePanel consolePanel;
 
     public RadioSondeTrackerFrame( RadioSondeMapContent content )
     {
@@ -89,6 +90,8 @@ public class RadioSondeTrackerFrame extends JMapFrame
                         csvReader.readDataPoints( chooser.getSelectedFile().getAbsolutePath() );
                     DataSet dataSet = new DataSet( dataPoints );
                     radioSondeMapContent.setFullDataSet( dataSet );
+                    
+                    consolePanel.refreshGui();
                 }
             }
         } );
@@ -112,7 +115,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
 
         JPanel newPanel = new JPanel(new BorderLayout());
         newPanel.add( originalMapPanel, BorderLayout.CENTER );
-        RadioSondePredictorConsolePanel consolePanel = new RadioSondePredictorConsolePanel();
+        consolePanel = new RadioSondePredictorConsolePanel();
         consolePanel.setMapContent( radioSondeMapContent );
         newPanel.add( consolePanel, BorderLayout.EAST );
 
