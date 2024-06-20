@@ -147,14 +147,13 @@ public class RadioSondePredictorConsolePanel extends JPanel
 
         JSlider sondeAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 0 );
         sondeAgeSlider.setBorder( BorderFactory.createEmptyBorder( 10, 0, 0, 10 ) );
-        JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 100, 100 );
+        JSlider predictionAgeSlider = new JSlider( JSlider.VERTICAL, 0, 60, 60 );
         predictionAgeSlider.setBorder( BorderFactory.createEmptyBorder( 10, 0, 0, 10 ) );
 
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.5;
-        // gbc.weighty = 0.5;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         sondeAgeSlider.setMajorTickSpacing( 10 );
@@ -185,8 +184,8 @@ public class RadioSondePredictorConsolePanel extends JPanel
         gbc.weighty = 0.5;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        predictionAgeSlider.setMajorTickSpacing( 10 );
-        predictionAgeSlider.setMinorTickSpacing( 5 );
+        predictionAgeSlider.setMajorTickSpacing( 5 );
+        predictionAgeSlider.setMinorTickSpacing( 1 );
         predictionAgeSlider.setSnapToTicks( false );
         predictionAgeSlider.setPaintTicks( true );
         predictionAgeSlider.setPaintLabels( true );

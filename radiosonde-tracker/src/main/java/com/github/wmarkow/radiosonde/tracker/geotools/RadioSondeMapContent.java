@@ -94,7 +94,7 @@ public class RadioSondeMapContent extends MapContent
         addLayer( sondeLayer );
     }
 
-    public void recalculatePrediction( int notOlderThanMinutes )
+    public void recalculatePrediction( int notOlderThanSeconds )
     {
         if( getSondeDataSet() == null )
         {
@@ -109,7 +109,7 @@ public class RadioSondeMapContent extends MapContent
         LandingPointPredictor calc = new LandingPointPredictor();
 
         ArrayList< DataPoint > dataPoints =
-            getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanMinutes * 60 );
+            getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );
         for( DataPoint dp : dataPoints )
         {
             if( dp.climbing_m_s >= 0 )
@@ -142,7 +142,7 @@ public class RadioSondeMapContent extends MapContent
         addLayer( predictionLayer );
     }
 
-    public void recalculateAdvancedPrediction( int notOlderThanMinutes )
+    public void recalculateAdvancedPrediction( int notOlderThanSeconds )
     {
         if( getSondeDataSet() == null )
         {
@@ -159,7 +159,7 @@ public class RadioSondeMapContent extends MapContent
         AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( climbingDataSet );
 
         ArrayList< DataPoint > dataPoints =
-            getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanMinutes * 60 );
+            getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );
         for( DataPoint dp : dataPoints )
         {
             if( dp.climbing_m_s >= 0 )
