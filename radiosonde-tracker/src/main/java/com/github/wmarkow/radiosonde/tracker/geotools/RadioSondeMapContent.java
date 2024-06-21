@@ -28,7 +28,7 @@ import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.LandingPoint;
-import com.github.wmarkow.radiosonde.tracker.domain.LandingPointPredictor;
+import com.github.wmarkow.radiosonde.tracker.domain.BasicLandingPointPredictor;
 
 public class RadioSondeMapContent extends MapContent
 {
@@ -87,8 +87,14 @@ public class RadioSondeMapContent extends MapContent
         ArrayList< DataPoint > dataPoints =
             getFullDataSet().getEntriesOlderThanTheYoungestButWithMinAge( olderThanMinutes * 60 );
         sondeDataSet = new DataSet( dataPoints );
-        for( int q = 0; q < dataPoints.size(); q += 10 )
+        int dq = 10;
+        for( int q = 0; q < dataPoints.size(); q += dq )
         {
+            if(dataPoints.size() - q < 100)
+            {
+                // Render all latest 100 points
+                dq = 1;
+            }
             DataPoint dp = dataPoints.get( q );
 
             /* Longitude (= x coord) first ! */
@@ -125,7 +131,7 @@ public class RadioSondeMapContent extends MapContent
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        LandingPointPredictor calc = new LandingPointPredictor();
+        BasicLandingPointPredictor calc = new BasicLandingPointPredictor();
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );

@@ -7,13 +7,13 @@ import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 
 /***
- * A simple landing point predictor.
+ * A basic landing point predictor.
  * <p>
- * It calculates location of the landing point only based on sonde's current track point.
+ * It calculates location of the landing point basing only on sonde's current track point.
  * 
  * @author wmarkowski
  */
-public class LandingPointPredictor
+public class BasicLandingPointPredictor
 {
     private GeodeticCalculator calc = new GeodeticCalculator( DefaultGeographicCRS.WGS84 );
 

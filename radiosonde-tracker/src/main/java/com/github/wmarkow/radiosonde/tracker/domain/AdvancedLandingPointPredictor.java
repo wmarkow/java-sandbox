@@ -57,7 +57,7 @@ public class AdvancedLandingPointPredictor
      * </ul>
      * <p>
      * This prediction method is more complex but it gives more accurate results than
-     * {@linkplain LandingPointPredictor}, even when the sonde is at middle altitude (5-10km)
+     * {@linkplain BasicLandingPointPredictor}, even when the sonde is at middle altitude (5-10km)
      * 
      * @param dataPoint
      * @return landing point prediction
