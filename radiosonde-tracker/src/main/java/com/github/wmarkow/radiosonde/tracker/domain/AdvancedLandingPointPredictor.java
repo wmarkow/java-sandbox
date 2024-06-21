@@ -85,8 +85,16 @@ public class AdvancedLandingPointPredictor
 
         while( altitude_m > 0.0 )
         {
-            double windSpeedAtAltitude_km_h = dataSet.getWindSpeed( altitude_m );
-            double windCourseAtAltitude = dataSet.getWindCourse( altitude_m );
+            Double windSpeedAtAltitude_km_h = dataSet.getWindSpeed( altitude_m );
+            if( windSpeedAtAltitude_km_h == null )
+            {
+                return null;
+            }
+            Double windCourseAtAltitude = dataSet.getWindCourse( altitude_m );
+            if( windCourseAtAltitude == null )
+            {
+                return null;
+            }
 
             altitude_m = altitude_m + climb_m_s * dt_s;
             double distance_m = windSpeedAtAltitude_km_h * 1000.0 / 3600.0 * dt_s;
@@ -99,10 +107,10 @@ public class AdvancedLandingPointPredictor
             lon = newPoint.getX();
             lat = newPoint.getY();
         }
-        
+
         Point2D location = new DirectPosition2D( lon, lat );
         ZonedDateTime landingTime = dataPoint.utcDateTime.plusSeconds( (long)(time_s) );
 
-        return new LandingPoint(location, landingTime);
+        return new LandingPoint( location, landingTime );
     }
 }

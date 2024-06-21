@@ -22,6 +22,7 @@ import org.geotools.swing.JMapFrame;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.CsvReader;
+import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.DynamicReader;
 import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
 
 public class RadioSondeTrackerFrame extends JMapFrame
@@ -31,6 +32,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
 
     private JMenuBar menuBar;
     private JMenuItem loadCsvMenuItem;
+    private JMenuItem trackOnlineMenuItem;
     private Color orig;
     private RadioSondePredictorConsolePanel consolePanel;
 
@@ -66,9 +68,39 @@ public class RadioSondeTrackerFrame extends JMapFrame
         super.initComponents();
 
         menuBar = new JMenuBar();
-        loadCsvMenuItem = new JMenuItem( "Load CSV" );
-        orig = loadCsvMenuItem.getBackground();
-        loadCsvMenuItem.addActionListener( new ActionListener()
+        loadCsvMenuItem = prepareLoadCsvMenuItem();
+        menuBar.add( loadCsvMenuItem );
+        trackOnlineMenuItem = prepareTrackOnlineMenuItem();
+        menuBar.add( trackOnlineMenuItem );
+        setJMenuBar( menuBar );
+
+        Component originalMapPanel = getContentPane().getComponent( 0 );
+        getContentPane().remove( 0 );
+
+        JPanel newPanel = new JPanel( new BorderLayout() );
+        newPanel.add( originalMapPanel, BorderLayout.CENTER );
+        consolePanel = new RadioSondePredictorConsolePanel();
+        consolePanel.setMapContent( radioSondeMapContent );
+        newPanel.add( consolePanel, BorderLayout.EAST );
+
+        getContentPane().add( newPanel );
+    }
+
+    private static void doShowMap( RadioSondeMapContent content )
+    {
+        final RadioSondeTrackerFrame frame = new RadioSondeTrackerFrame( content );
+        frame.enableStatusBar( true );
+        frame.enableToolBar( true );
+        frame.initComponents();
+        frame.setSize( 800, 600 );
+        frame.setVisible( true );
+    }
+
+    private JMenuItem prepareLoadCsvMenuItem()
+    {
+        JMenuItem result = new JMenuItem( "Load CSV" );
+        orig = result.getBackground();
+        result.addActionListener( new ActionListener()
         {
             @Override
             public void actionPerformed( ActionEvent e )
@@ -90,45 +122,58 @@ public class RadioSondeTrackerFrame extends JMapFrame
                         csvReader.readDataPoints( chooser.getSelectedFile().getAbsolutePath() );
                     DataSet dataSet = new DataSet( dataPoints );
                     radioSondeMapContent.setFullDataSet( dataSet );
-                    
+
                     consolePanel.refreshGui();
                 }
             }
         } );
-        loadCsvMenuItem.addMouseListener( new MouseAdapter()
+        result.addMouseListener( new MouseAdapter()
         {
             public void mouseEntered( MouseEvent arg0 )
             {
-                loadCsvMenuItem.setBackground( orig.darker() );
+                result.setBackground( orig.darker() );
             }
 
             public void mouseExited( MouseEvent arg0 )
             {
-                loadCsvMenuItem.setBackground( orig );
+                result.setBackground( orig );
             }
         } );
-        menuBar.add( loadCsvMenuItem );
-        setJMenuBar( menuBar );
 
-        Component originalMapPanel = getContentPane().getComponent( 0 );
-        getContentPane().remove( 0 );
-
-        JPanel newPanel = new JPanel(new BorderLayout());
-        newPanel.add( originalMapPanel, BorderLayout.CENTER );
-        consolePanel = new RadioSondePredictorConsolePanel();
-        consolePanel.setMapContent( radioSondeMapContent );
-        newPanel.add( consolePanel, BorderLayout.EAST );
-
-        getContentPane().add( newPanel );
+        return result;
     }
 
-    private static void doShowMap( RadioSondeMapContent content )
+    private JMenuItem prepareTrackOnlineMenuItem()
     {
-        final RadioSondeTrackerFrame frame = new RadioSondeTrackerFrame( content );
-        frame.enableStatusBar( true );
-        frame.enableToolBar( true );
-        frame.initComponents();
-        frame.setSize( 800, 600 );
-        frame.setVisible( true );
+        JMenuItem result = new JMenuItem( "Track online" );
+        orig = result.getBackground();
+        result.addActionListener( new ActionListener()
+        {
+            @Override
+            public void actionPerformed( ActionEvent e )
+            {
+                System.out.println( "Track online clicked!" );
+                DynamicReader readereader = new DynamicReader();
+                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "W1240257" );
+                DataSet dataSet = new DataSet( dataPoints );
+                radioSondeMapContent.setFullDataSet( dataSet );
+
+                consolePanel.refreshGui();
+            }
+        } );
+        result.addMouseListener( new MouseAdapter()
+        {
+            public void mouseEntered( MouseEvent arg0 )
+            {
+                result.setBackground( orig.darker() );
+            }
+
+            public void mouseExited( MouseEvent arg0 )
+            {
+                result.setBackground( orig );
+            }
+        } );
+
+        return result;
     }
 }

@@ -198,6 +198,11 @@ public class RadioSondeMapContent extends MapContent
             // Sonde is falling down. Let's predict its landing point.
             LandingPoint landingPoint = calc.predict( dp );
 
+            if(landingPoint == null)
+            {
+                continue;
+            }
+            
             /* Longitude (= x coord) first ! */
             Point point = geometryFactory.createPoint(
                 new Coordinate( landingPoint.getLocation().getX(), landingPoint.getLocation().getY() ) );

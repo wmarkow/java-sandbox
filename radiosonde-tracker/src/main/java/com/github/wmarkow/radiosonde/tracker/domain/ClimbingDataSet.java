@@ -18,6 +18,7 @@ public class ClimbingDataSet extends DataSet
 {
     private PolynomialSplineFunction windSpeedFunction_km_h = null;
     private PolynomialSplineFunction windCourseFunction = null;
+    private boolean dataSetValid = true;
 
     private ClimbingDataSet( ArrayList< DataPoint > dataPoints )
     {
@@ -52,6 +53,13 @@ public class ClimbingDataSet extends DataSet
 
         // Create an interpolation function.
         int size = monotonicWindData.size();
+        if( size < 2 )
+        {
+            // to small amount of data points
+            dataSetValid = false;
+            return;
+        }
+
         double altitude_m[] = new double[ size ];
         double windSpeed_km_h[] = new double[ size ];
         double windCourse[] = new double[ size ];
@@ -75,12 +83,17 @@ public class ClimbingDataSet extends DataSet
      *            in meters
      * @return wind speed in km/h
      */
-    public double getWindSpeed( double altitude )
+    public Double getWindSpeed( double altitude )
     {
         if( altitude < 0.0 )
         {
             throw new IllegalArgumentException(
                 String.format( "Passed altitude value %s must not be negative.", altitude ) );
+        }
+
+        if( windSpeedFunction_km_h == null )
+        {
+            return null;
         }
 
         if( windSpeedFunction_km_h.isValidPoint( altitude ) )
@@ -107,12 +120,17 @@ public class ClimbingDataSet extends DataSet
      *            in meters
      * @return wind course
      */
-    public double getWindCourse( double altitude )
+    public Double getWindCourse( double altitude )
     {
         if( altitude < 0.0 )
         {
             throw new IllegalArgumentException(
                 String.format( "Passed altitude value %s must not be negative.", altitude ) );
+        }
+
+        if( windCourseFunction == null )
+        {
+            return null;
         }
 
         if( windCourseFunction.isValidPoint( altitude ) )
