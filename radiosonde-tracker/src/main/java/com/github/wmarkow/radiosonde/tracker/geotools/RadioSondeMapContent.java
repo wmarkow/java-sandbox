@@ -28,6 +28,7 @@ import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.LandingPoint;
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataByClimbingDataSetProvider;
 import com.github.wmarkow.radiosonde.tracker.domain.BasicLandingPointPredictor;
 
 public class RadioSondeMapContent extends MapContent
@@ -90,7 +91,7 @@ public class RadioSondeMapContent extends MapContent
         int dq = 10;
         for( int q = 0; q < dataPoints.size(); q += dq )
         {
-            if(dataPoints.size() - q < 100)
+            if( dataPoints.size() - q < 100 )
             {
                 // Render all latest 100 points
                 dq = 1;
@@ -189,7 +190,9 @@ public class RadioSondeMapContent extends MapContent
 
         // LandingPointPredictor calc = new LandingPointPredictor();
         ClimbingDataSet climbingDataSet = ClimbingDataSet.valueOf( getFullDataSet() );
-        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( climbingDataSet );
+        WindDataByClimbingDataSetProvider windDataProvider =
+            new WindDataByClimbingDataSetProvider( climbingDataSet );
+        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( windDataProvider );
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );
@@ -204,11 +207,11 @@ public class RadioSondeMapContent extends MapContent
             // Sonde is falling down. Let's predict its landing point.
             LandingPoint landingPoint = calc.predict( dp );
 
-            if(landingPoint == null)
+            if( landingPoint == null )
             {
                 continue;
             }
-            
+
             /* Longitude (= x coord) first ! */
             Point point = geometryFactory.createPoint(
                 new Coordinate( landingPoint.getLocation().getX(), landingPoint.getLocation().getY() ) );
