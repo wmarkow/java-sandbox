@@ -14,6 +14,16 @@ public class WindDataByClimbingDataSetProvider implements WindDataProvider
     private PolynomialSplineFunction windSpeedFunction_km_h = null;
     private PolynomialSplineFunction windCourseFunction = null;
 
+    /***
+     * Provides wind data based on the ClimbingDataSet. Because climbing data set contains only data from one
+     * sonde climbing part of the flight, the provided wind data are with rough accuracy and are valid only in
+     * the geographic area where the sonde had its climbing part of the flight.
+     * <p>
+     * Data provider doesn't take care about latitude and longitude of the data; it silently assumes the data
+     * queries are "in the area" of sonde climbing flight.
+     * 
+     * @param climbingDataSet
+     */
     public WindDataByClimbingDataSetProvider( ClimbingDataSet climbingDataSet )
     {
         // Make the wind data monotonic by altitude, as initial sonde data can contain multiple entries for
@@ -68,12 +78,16 @@ public class WindDataByClimbingDataSetProvider implements WindDataProvider
     }
 
     /***
-     * Gets the wind speed at the specific altitude.
+     * Gets the wind speed at the specific altitude. Latitude and longitude are not used here.
      * 
      * @param latitude
+     *            not used, pass whatever you want
      * @param longitude
+     *            not used, pass whatever you want
      * @param altitude
-     * @return wind speed in km/h
+     *            in meters
+     * @return wind speed in km/h, it may be null if provided in the constructor ClimbingDataSet contains not
+     *         enough data (less that 2 data points)
      */
     @Override
     public Double getWindSpeed( double latitude, double longitude, double altitude )
@@ -107,12 +121,16 @@ public class WindDataByClimbingDataSetProvider implements WindDataProvider
     }
 
     /***
-     * Gets the wind course at the specific altitude.
+     * Gets the wind course at the specific altitude. Latitude and longitude are not used here.
      * 
      * @param latitude
+     *            not used, pass whatever you want
      * @param longitude
+     *            not used, pass whatever you want
      * @param altitude
-     * @return wind course
+     *            in meters
+     * @return wind course, it may be null if provided in the constructor ClimbingDataSet contains not enough
+     *         data (less that 2 data points)
      */
     @Override
     public Double getWindCourse( double latitude, double longitude, double altitude )
