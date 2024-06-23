@@ -82,7 +82,7 @@ public class CEFBrowserExample extends JFrame
         // behavior of the browser. See example.detailed.SimpleFrameExample for an example
         // of how to use these handlers.
         client_ = cefApp_.createClient();
-        client_.addRequestHandler(new CustomRequestHandler());
+        client_.addRequestHandler( new CustomCefRequestHandlerAdapter() );
 
         // (3) One CefBrowser instance is responsible to control what you'll see on
         // the UI component of the instance. It can be displayed off-screen

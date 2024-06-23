@@ -11,7 +11,7 @@ import org.cef.handler.CefResourceRequestHandler;
 import org.cef.misc.BoolRef;
 import org.cef.network.CefRequest;
 
-public class CustomRequestHandler extends CefRequestHandlerAdapter
+public class CustomCefRequestHandlerAdapter extends CefRequestHandlerAdapter
 {
 
     @Override
