@@ -20,7 +20,6 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
     @Override
     public CefResourceHandler getResourceHandler( CefBrowser browser, CefFrame frame, CefRequest request )
     {
-
         CefResourceHandler result = super.getResourceHandler( browser, frame, request );
 
         if( "GET".equals( request.getMethod() ) )
@@ -33,7 +32,7 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
                 if(path.matches( "([a-z]|[A-Z]|[0-9]|\\/)+" ))
                 {
                     System.out.println("sounding data are requested");
-//                    return new SoundingDataResourceHandlerAdapter(result);
+                    return new SoundingDataResourceHandlerAdapter();
                 }
             }
         }
