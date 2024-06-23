@@ -10,6 +10,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>26.7</geotools.version>
+		<java-cef.version>78.2.7</java-cef.version>
 	</properties>
 
 	<build>
@@ -23,6 +24,32 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>java-cef</groupId>
+                                    <artifactId>jcef-native-lib-win64</artifactId>
+                                    <version>${java-cef.version}</version>
+                                    <classifier>resources</classifier>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.directory}/lib/jcef</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>**/*</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>     
 		</plugins>
 	</build>
 
@@ -62,6 +89,50 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.17.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.squareup.retrofit2</groupId>
+			<artifactId>retrofit</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.retrofit2</groupId>
+			<artifactId>converter-gson</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>java-cef</groupId>
+            <artifactId>gluegen-rt-natives-windows-amd64</artifactId>
+            <version>${java-cef.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>java-cef</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>${java-cef.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>java-cef</groupId>
+            <artifactId>jcef</artifactId>
+            <version>${java-cef.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>java-cef</groupId>
+            <artifactId>jogl-all-natives-windows-amd64</artifactId>
+            <version>${java-cef.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>java-cef</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>${java-cef.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>java-cef</groupId>
+            <artifactId>jcef-native-lib-win64</artifactId>
+            <version>${java-cef.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+        </dependency>
+        
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
