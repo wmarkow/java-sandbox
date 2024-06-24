@@ -14,9 +14,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.cef.OS;
 import org.geotools.swing.JMapFrame;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
@@ -35,6 +37,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
     private JMenuItem trackOnlineMenuItem;
     private Color orig;
     private RadioSondePredictorConsolePanel consolePanel;
+    private WindyCefBrowser windyCefBrowser;
 
     public RadioSondeTrackerFrame( RadioSondeMapContent content )
     {
@@ -77,13 +80,18 @@ public class RadioSondeTrackerFrame extends JMapFrame
         Component originalMapPanel = getContentPane().getComponent( 0 );
         getContentPane().remove( 0 );
 
-        JPanel newPanel = new JPanel( new BorderLayout() );
-        newPanel.add( originalMapPanel, BorderLayout.CENTER );
+        JPanel newMapPanel = new JPanel( new BorderLayout() );
+        newMapPanel.add( originalMapPanel, BorderLayout.CENTER );
         consolePanel = new RadioSondePredictorConsolePanel();
         consolePanel.setMapContent( radioSondeMapContent );
-        newPanel.add( consolePanel, BorderLayout.EAST );
+        newMapPanel.add( consolePanel, BorderLayout.EAST );
 
-        getContentPane().add( newPanel );
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add( "Map", newMapPanel );
+        windyCefBrowser = new WindyCefBrowser("google.pl", OS.isLinux(), false);
+        tabbedPane.add( "Browser", windyCefBrowser.getBrowserComponent() );
+        
+        getContentPane().add( tabbedPane );
     }
 
     private static void doShowMap( RadioSondeMapContent content )
