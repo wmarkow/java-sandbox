@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.gui;
+package com.github.wmarkow.radiosonde.tracker.cef.windy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

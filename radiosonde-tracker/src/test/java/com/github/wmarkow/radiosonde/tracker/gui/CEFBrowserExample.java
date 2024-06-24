@@ -18,6 +18,8 @@ import org.cef.OS;
 import org.cef.browser.CefBrowser;
 import org.cef.handler.CefAppHandlerAdapter;
 
+import com.github.wmarkow.radiosonde.tracker.cef.windy.CustomCefRequestHandlerAdapter;
+
 /**
  * This is a simple example application using JCEF. It displays a JFrame with a JTextField at its top and a
  * CefBrowser in its center. The JTextField is used to enter and assign an URL to the browser UI. No
