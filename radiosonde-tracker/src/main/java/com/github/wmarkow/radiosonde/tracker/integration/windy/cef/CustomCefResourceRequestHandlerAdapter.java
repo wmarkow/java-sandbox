@@ -8,11 +8,19 @@ import org.cef.network.CefRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistributionListener;
+
 public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHandlerAdapter
 {
     private final static Logger LOGGER =
         LoggerFactory.getLogger( CustomCefResourceRequestHandlerAdapter.class );
 
+    private WindDataDistributionListener listener;
+    public CustomCefResourceRequestHandlerAdapter(WindDataDistributionListener listener)
+    {
+        this.listener = listener;
+    }
+    
     @Override
     public boolean onBeforeResourceLoad( CefBrowser browser, CefFrame frame, CefRequest request )
     {
@@ -39,7 +47,7 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
                         .info( String.format( "getResourceHandler() called. Sounding data request found: %s",
                             request.toString() ) );
 
-                    return new SoundingDataResourceHandlerAdapter();
+                    return new SoundingDataResourceHandlerAdapter(listener);
                 }
             }
         }

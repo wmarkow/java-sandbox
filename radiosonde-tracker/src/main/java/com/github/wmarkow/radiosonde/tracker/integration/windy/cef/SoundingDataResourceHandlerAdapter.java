@@ -9,11 +9,19 @@ import org.cef.network.CefResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistributionListener;
+
 public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapter
 {
     private final static Logger LOGGER = LoggerFactory.getLogger( SoundingDataResourceHandlerAdapter.class );
 
     private SoundingCefURLRequestClient requestClient = null;
+    private WindDataDistributionListener listener;
+
+    public SoundingDataResourceHandlerAdapter( WindDataDistributionListener listener )
+    {
+        this.listener = listener;
+    }
 
     @Override
     public boolean processRequest( CefRequest request, CefCallback callback )
@@ -29,7 +37,7 @@ public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapte
         // browser.
         // CustomCefURLRequestClient will be executed anyway but the browser will not render sounding
         // correctly.
-        requestClient = new SoundingCefURLRequestClient();
+        requestClient = new SoundingCefURLRequestClient( listener );
         requestClient.send( request );
 
         // Cancel the request but our CustomCefURLRequestClient will be executed anyway.

@@ -11,14 +11,22 @@ import org.cef.handler.CefResourceRequestHandler;
 import org.cef.misc.BoolRef;
 import org.cef.network.CefRequest;
 
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistributionListener;
+
 public class CustomCefRequestHandlerAdapter extends CefRequestHandlerAdapter
 {
+    private WindDataDistributionListener listener;
+
+    public CustomCefRequestHandlerAdapter( WindDataDistributionListener listener )
+    {
+        this.listener = listener;
+    }
 
     @Override
     public CefResourceRequestHandler getResourceRequestHandler( CefBrowser browser, CefFrame frame,
         CefRequest request, boolean isNavigation, boolean isDownload, String requestInitiator,
         BoolRef disableDefaultHandling )
     {
-        return new CustomCefResourceRequestHandlerAdapter();
+        return new CustomCefResourceRequestHandlerAdapter(listener);
     }
 }

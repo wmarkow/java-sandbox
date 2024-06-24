@@ -7,6 +7,7 @@ import org.cef.CefClient;
 import org.cef.CefSettings;
 import org.cef.browser.CefBrowser;
 
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistributionListener;
 import com.github.wmarkow.radiosonde.tracker.integration.windy.cef.CustomCefRequestHandlerAdapter;
 
 public class WindyCefBrowser
@@ -18,14 +19,15 @@ public class WindyCefBrowser
     private final CefBrowser browser;
     private final Component browerUI;
 
-    public WindyCefBrowser( String startURL, boolean useOSR, boolean isTransparent )
+    public WindyCefBrowser( String startURL, boolean useOSR, boolean isTransparent,
+        WindDataDistributionListener listener )
     {
         CefSettings settings = new CefSettings();
         settings.windowless_rendering_enabled = useOSR;
         cefApp = CefApp.getInstance( settings );
 
         client = cefApp.createClient();
-        client.addRequestHandler( new CustomCefRequestHandlerAdapter() );
+        client.addRequestHandler( new CustomCefRequestHandlerAdapter( listener ) );
 
         browser = client.createBrowser( startURL, useOSR, isTransparent );
         browerUI = browser.getUIComponent();

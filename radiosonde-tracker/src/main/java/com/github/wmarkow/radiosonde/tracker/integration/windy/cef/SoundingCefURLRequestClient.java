@@ -12,15 +12,22 @@ import org.cef.network.CefURLRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistributionListener;
+
 public class SoundingCefURLRequestClient implements CefURLRequestClient
 {
     private final static Logger LOGGER = LoggerFactory.getLogger( SoundingCefURLRequestClient.class );
 
     private long nativeRef_ = 0;
     private ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    private byte[] receivedBody = null;
-    private volatile boolean requestCompleted = false;
+    private byte[] receivedBody = null; 
+    private WindDataDistributionListener listener;
 
+    public SoundingCefURLRequestClient(WindDataDistributionListener listener)
+    {
+        this.listener = listener;
+    }
+    
     public void send( CefRequest request )
     {
         // It is good enough just to create the request ;it will be executed automatically.
@@ -65,7 +72,6 @@ public class SoundingCefURLRequestClient implements CefURLRequestClient
     @Override
     public void onRequestComplete( CefURLRequest request )
     {
-        requestCompleted = true;
         byte[] responseBody = getResponseBody();
         String bodyAsString = new String( responseBody, StandardCharsets.US_ASCII );
 
@@ -75,7 +81,12 @@ public class SoundingCefURLRequestClient implements CefURLRequestClient
         byte[] decodedBytes = Base64.getDecoder().decode( responseBody );
         String soundingJson = new String( decodedBytes );
         LOGGER.debug( String.format( "onRequestComplete() called. Sounding json is %s", soundingJson ) );
-        // TODO: update wind data in the wind service
+ 
+        if(listener != null)
+        {
+            // TODO: parse JSON
+            listener.onNewWindDataDistributionAvailable( null );
+        }
     }
 
     @Override
@@ -84,18 +95,8 @@ public class SoundingCefURLRequestClient implements CefURLRequestClient
         LOGGER.info( String.format( "onUploadProgress() called." ) );
     }
 
-    public boolean isRequestCompleted()
+    private byte[] getResponseBody()
     {
-        return requestCompleted;
-    }
-
-    public byte[] getResponseBody()
-    {
-        if( requestCompleted == false )
-        {
-            return null;
-        }
-
         if( receivedBody == null )
         {
             try

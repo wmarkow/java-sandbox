@@ -23,6 +23,7 @@ import org.geotools.swing.JMapFrame;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
+import com.github.wmarkow.radiosonde.tracker.domain.RadioSondeTrackerContext;
 import com.github.wmarkow.radiosonde.tracker.integration.geotools.RadioSondeMapContent;
 import com.github.wmarkow.radiosonde.tracker.integration.radiosondy.CsvReader;
 import com.github.wmarkow.radiosonde.tracker.integration.radiosondy.DynamicReader;
@@ -88,9 +89,10 @@ public class RadioSondeTrackerFrame extends JMapFrame
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.add( "Map", newMapPanel );
-        windyCefBrowser = new WindyCefBrowser("google.pl", OS.isLinux(), false);
+        windyCefBrowser = new WindyCefBrowser( "google.pl", OS.isLinux(), false,
+            RadioSondeTrackerContext.windyDotComWindDataProvider );
         tabbedPane.add( "Browser", windyCefBrowser.getBrowserComponent() );
-        
+
         getContentPane().add( tabbedPane );
     }
 
