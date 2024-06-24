@@ -21,9 +21,9 @@ import org.geotools.swing.JMapFrame;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
-import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.CsvReader;
-import com.github.wmarkow.radiosonde.tracker.domain.radiosondy.DynamicReader;
-import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
+import com.github.wmarkow.radiosonde.tracker.integration.geotools.RadioSondeMapContent;
+import com.github.wmarkow.radiosonde.tracker.integration.radiosondy.CsvReader;
+import com.github.wmarkow.radiosonde.tracker.integration.radiosondy.DynamicReader;
 
 public class RadioSondeTrackerFrame extends JMapFrame
 {
@@ -154,7 +154,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
             {
                 System.out.println( "Track online clicked!" );
                 DynamicReader readereader = new DynamicReader();
-                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "MEB101569" );
+                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "V3640904" );
                 DataSet dataSet = new DataSet( dataPoints );
                 radioSondeMapContent.setFullDataSet( dataSet );
 

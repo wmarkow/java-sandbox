@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
+import com.github.wmarkow.radiosonde.tracker.integration.radiosondy.CsvReader;
 
 public class CsvReaderTest
 {

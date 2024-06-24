@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.domain.radiosondy;
+package com.github.wmarkow.radiosonde.tracker.integration.radiosondy;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

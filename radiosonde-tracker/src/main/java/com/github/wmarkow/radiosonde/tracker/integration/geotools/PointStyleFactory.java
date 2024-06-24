@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.geotools;
+package com.github.wmarkow.radiosonde.tracker.integration.geotools;
 
 import java.awt.Color;
 

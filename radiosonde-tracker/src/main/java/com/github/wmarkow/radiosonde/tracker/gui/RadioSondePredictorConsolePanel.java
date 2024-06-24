@@ -13,7 +13,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
-import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
+import com.github.wmarkow.radiosonde.tracker.integration.geotools.RadioSondeMapContent;
 
 public class RadioSondePredictorConsolePanel extends JPanel
 {

@@ -2,8 +2,8 @@ package com.github.wmarkow.radiosonde.tracker;
 
 import org.geotools.feature.SchemaException;
 
-import com.github.wmarkow.radiosonde.tracker.geotools.RadioSondeMapContent;
 import com.github.wmarkow.radiosonde.tracker.gui.RadioSondeTrackerFrame;
+import com.github.wmarkow.radiosonde.tracker.integration.geotools.RadioSondeMapContent;
 
 public class RadioSondeTrackerApp
 {

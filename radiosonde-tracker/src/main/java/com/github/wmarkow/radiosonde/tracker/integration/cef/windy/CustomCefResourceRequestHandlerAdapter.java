@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.cef.windy;
+package com.github.wmarkow.radiosonde.tracker.integration.cef.windy;
 
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
