@@ -1,6 +1,7 @@
 package com.github.wmarkow.radiosonde.tracker.gui;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -8,11 +9,16 @@ import org.cef.callback.CefAuthCallback;
 import org.cef.callback.CefURLRequestClient;
 import org.cef.network.CefRequest;
 import org.cef.network.CefURLRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CustomCefURLRequestClient implements CefURLRequestClient
 {
+    private final static Logger LOGGER = LoggerFactory.getLogger( CustomCefURLRequestClient.class );
+
     private long nativeRef_ = 0;
     private ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+    private byte[] receivedBody = null;
     private volatile boolean requestCompleted = false;
 
     public void send( CefRequest request )
@@ -37,14 +43,15 @@ public class CustomCefURLRequestClient implements CefURLRequestClient
     public boolean getAuthCredentials( boolean isProxy, String host, int port, String realm, String scheme,
         CefAuthCallback callback )
     {
-        System.out.println( "getAuthCredentials" );
+        LOGGER.info( String.format( "getAuthCredentials() called." ) );
+
         return false;
     }
 
     @Override
     public void onDownloadData( CefURLRequest request, byte[] data, int dataLength )
     {
-        System.out.println( String.format( "onDownloadData, received %s bytes", dataLength) );
+        LOGGER.info( String.format( "onDownloadData() called. Received %s bytes.", dataLength ) );
 
         // TODO Copy byte stream and store it somewhere
         byteStream.write( data, 0, dataLength );
@@ -53,43 +60,64 @@ public class CustomCefURLRequestClient implements CefURLRequestClient
     @Override
     public void onDownloadProgress( CefURLRequest request, int current, int total )
     {
-        System.out.println( "onDownloadProgress" );
+        LOGGER.info( String.format( "onDownloadProgress() called." ) );
     }
 
     @Override
     public void onRequestComplete( CefURLRequest request )
     {
-        System.out.println( String.format( "onRequestComplete, received %s bytes", byteStream.size() ) );
-        
-        // TODO: indicate somewhere that the data downloaded ?
         requestCompleted = true;
         byte[] responseBody = getResponseBody();
-        String s = new String( responseBody, StandardCharsets.US_ASCII );
-        System.out.println(String.format( "Received body as string is %s", s ));
-        byte[] decodedBytes = Base64.getDecoder().decode( responseBody );
-        String decodedString = new String(decodedBytes);
-        System.out.println(String.format( "Received body as string is %s", decodedString ));
-        
-        // String updateStr = "onRequestCompleted\n\n";
-        // CefResponse response = request.getResponse();
-        // boolean isText = response.getHeaderByName("Content-Type").startsWith("text");
-        // updateStr += response.toString();
-        // updateStatus(updateStr, isText);
+        String bodyAsString = new String( responseBody, StandardCharsets.US_ASCII );
+
+        LOGGER.debug( String.format( "onRequestComplete() called. Received %s bytes. Body as string is %s",
+            byteStream.size(), bodyAsString ) );
+
+        // byte[] decodedBytes = Base64.getDecoder().decode( responseBody );
+        // String decodedString = new String( decodedBytes );
+        // System.out.println( String.format( "Received body as string is %s", decodedString ) );
     }
 
     @Override
     public void onUploadProgress( CefURLRequest request, int current, int total )
     {
-        System.out.println( "onUploadProgress" );
+        LOGGER.info( String.format( "onUploadProgress() called." ) );
     }
 
     public boolean isRequestCompleted()
     {
         return requestCompleted;
     }
-    
+
     public byte[] getResponseBody()
     {
-        return byteStream.toByteArray();
+        if(requestCompleted == false)
+        {
+            return null;
+        }
+        
+        if( receivedBody == null )
+        {
+            try
+            {
+                byteStream.flush();
+            }
+            catch( IOException e )
+            {
+
+                LOGGER.error( e.getMessage(), e );
+            }
+            receivedBody = byteStream.toByteArray();
+            try
+            {
+                byteStream.close();
+            }
+            catch( IOException e )
+            {
+                LOGGER.error( e.getMessage(), e );
+            }
+        }
+
+        return receivedBody;
     }
 }

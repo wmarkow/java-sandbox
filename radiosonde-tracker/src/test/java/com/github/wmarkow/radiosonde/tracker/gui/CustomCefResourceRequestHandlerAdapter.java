@@ -5,14 +5,18 @@ import org.cef.browser.CefFrame;
 import org.cef.handler.CefResourceHandler;
 import org.cef.handler.CefResourceRequestHandlerAdapter;
 import org.cef.network.CefRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHandlerAdapter
 {
+    private final static Logger LOGGER =
+        LoggerFactory.getLogger( CustomCefResourceRequestHandlerAdapter.class );
 
     @Override
     public boolean onBeforeResourceLoad( CefBrowser browser, CefFrame frame, CefRequest request )
     {
-        System.out.println( request.toString() );
+        LOGGER.trace( String.format( "onBeforeResourceLoad() called. Request is %s", request.toString() ) );
 
         return false;
     }
@@ -25,13 +29,16 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
         if( "GET".equals( request.getMethod() ) )
         {
             final String URL_BASE = "https://node.windy.com";
-            if(request.getURL().startsWith( URL_BASE ))
+            if( request.getURL().startsWith( URL_BASE ) )
             {
                 String path = request.getURL().substring( URL_BASE.length() );
-                
-                if(path.matches( "([a-z]|[A-Z]|[0-9]|\\/)+" ))
+
+                if( path.matches( "([a-z]|[A-Z]|[0-9]|\\/)+" ) )
                 {
-                    System.out.println("sounding data are requested");
+                    LOGGER
+                        .info( String.format( "getResourceHandler() called. Sounding data request found: %s",
+                            request.toString() ) );
+
                     return new SoundingDataResourceHandlerAdapter();
                 }
             }
