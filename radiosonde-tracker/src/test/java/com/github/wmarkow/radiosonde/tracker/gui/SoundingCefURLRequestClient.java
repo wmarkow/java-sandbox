@@ -12,20 +12,19 @@ import org.cef.network.CefURLRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CustomCefURLRequestClient implements CefURLRequestClient
+public class SoundingCefURLRequestClient implements CefURLRequestClient
 {
-    private final static Logger LOGGER = LoggerFactory.getLogger( CustomCefURLRequestClient.class );
+    private final static Logger LOGGER = LoggerFactory.getLogger( SoundingCefURLRequestClient.class );
 
     private long nativeRef_ = 0;
     private ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     private byte[] receivedBody = null;
-    private CefURLRequest cefUrlRequest = null;
     private volatile boolean requestCompleted = false;
 
     public void send( CefRequest request )
     {
         // It is good enough just to create the request ;it will be executed automatically.
-        cefUrlRequest = CefURLRequest.create( request, this );
+        CefURLRequest.create( request, this );
     }
 
     @Override
@@ -54,7 +53,6 @@ public class CustomCefURLRequestClient implements CefURLRequestClient
     {
         LOGGER.info( String.format( "onDownloadData() called. Received %s bytes.", dataLength ) );
 
-        // TODO Copy byte stream and store it somewhere
         byteStream.write( data, 0, dataLength );
     }
 
@@ -74,9 +72,10 @@ public class CustomCefURLRequestClient implements CefURLRequestClient
         LOGGER.debug( String.format( "onRequestComplete() called. Received %s bytes. Body as string is %s",
             byteStream.size(), bodyAsString ) );
 
-        // byte[] decodedBytes = Base64.getDecoder().decode( responseBody );
-        // String decodedString = new String( decodedBytes );
-        // System.out.println( String.format( "Received body as string is %s", decodedString ) );
+        byte[] decodedBytes = Base64.getDecoder().decode( responseBody );
+        String soundingJson = new String( decodedBytes );
+        LOGGER.debug( String.format( "onRequestComplete() called. Sounding json is %s", soundingJson ) );
+        // TODO: update wind data in the wind service
     }
 
     @Override

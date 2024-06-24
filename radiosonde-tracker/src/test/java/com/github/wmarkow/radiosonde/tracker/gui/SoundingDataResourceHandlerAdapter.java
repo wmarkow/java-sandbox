@@ -13,29 +13,34 @@ public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapte
 {
     private final static Logger LOGGER = LoggerFactory.getLogger( SoundingDataResourceHandlerAdapter.class );
 
-    private CustomCefURLRequestClient requestClient = null;
+    private SoundingCefURLRequestClient requestClient = null;
 
     @Override
     public boolean processRequest( CefRequest request, CefCallback callback )
     {
         LOGGER.info( String.format( "processRequest() called." ) );
-        // TODO: here I need to process request by my own
-        // read whole data from the server and then provide it in readResponse method
-        // Use CustomCefURLRequestClient (?)
-        requestClient = new CustomCefURLRequestClient();
+
+        // The request must be handled separately with the help of CustomCefURLRequestClient.
+        // https://github.com/chromiumembedded/java-cef/issues/85 says that CefURLRequestClient is used for
+        // creating browser independent requests.
+        // Side effect: the CustomCefURLRequestClient is executed in his own way outside of the lifecycle of
+        // the browser, after the getResponseHeaders()
+        // and readResponse() are called, so it is not possible to correctly provide the result to the
+        // browser.
+        // CustomCefURLRequestClient will be executed anyway but the browser will not render sounding
+        // correctly.
+        requestClient = new SoundingCefURLRequestClient();
         requestClient.send( request );
 
-        callback.Continue();
-        return true;
+        // Cancel the request but our CustomCefURLRequestClient will be executed anyway.
+        callback.cancel();
+        return false;
     }
 
     @Override
     public void getResponseHeaders( CefResponse response, IntRef responseLength, StringRef redirectUrl )
     {
         LOGGER.info( String.format( "getResponseHeaders() called." ) );
-
-        // TODO: copy response headers from CustomCefURLRequestClient ?
-        // wrapped.getResponseHeaders( response, responseLength, redirectUrl );
     }
 
     @Override
@@ -43,24 +48,7 @@ public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapte
     {
         LOGGER.info( String.format( "readResponse() called." ) );
 
-//        while( true )
-//        {
-//            try
-//            {
-//                Thread.sleep( 100 );
-//            }
-//            catch( InterruptedException e )
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-        // TODO: copy response from CustomCefURLRequestClient ?
-        // TODO: log the response to file
-        // return wrapped.readResponse( dataOut, bytesToRead, bytesRead, callback );
-        // byte[] responseBody = requestClient.getResponseBody();
-        // String s = new String( responseBody, StandardCharsets.US_ASCII );
-        // System.out.println( String.format( "Received body as string is %s", s ) );
-        return true;
+        return false;
     }
 
     @Override
