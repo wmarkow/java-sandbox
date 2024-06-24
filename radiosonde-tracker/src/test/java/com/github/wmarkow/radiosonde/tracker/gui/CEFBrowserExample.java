@@ -146,6 +146,9 @@ public class CEFBrowserExample extends JFrame
         // supported yet. On Macintosh and Windows windowed rendering is used as
         // default. If you want to test OSR mode on those platforms, simply replace
         // "OS.isLinux()" with "true" and recompile.
-        new CEFBrowserExample( "https://www.windy.com/sounding/51.985/16.835", OS.isLinux(), false );
+        double lat = 51.985 + Math.random();
+        double lon = 16.835 + Math.random();
+        String url = String.format( "https://www.windy.com/sounding/%s/%s", lat, lon );
+        new CEFBrowserExample( url, OS.isLinux(), false );
     }
 }

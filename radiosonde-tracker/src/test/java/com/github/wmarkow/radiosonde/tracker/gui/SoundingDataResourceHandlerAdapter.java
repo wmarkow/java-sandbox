@@ -1,7 +1,5 @@
 package com.github.wmarkow.radiosonde.tracker.gui;
 
-import java.nio.charset.StandardCharsets;
-
 import org.cef.callback.CefCallback;
 import org.cef.handler.CefResourceHandlerAdapter;
 import org.cef.misc.IntRef;
@@ -27,18 +25,6 @@ public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapte
         requestClient = new CustomCefURLRequestClient();
         requestClient.send( request );
 
-        // while( requestClient.isRequestCompleted() == false )
-        // {
-        // try
-        // {
-        // Thread.sleep( 100 );
-        // }
-        // catch( InterruptedException e )
-        // {
-        // e.printStackTrace();
-        // }
-        // }
-
         callback.Continue();
         return true;
     }
@@ -47,6 +33,7 @@ public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapte
     public void getResponseHeaders( CefResponse response, IntRef responseLength, StringRef redirectUrl )
     {
         LOGGER.info( String.format( "getResponseHeaders() called." ) );
+
         // TODO: copy response headers from CustomCefURLRequestClient ?
         // wrapped.getResponseHeaders( response, responseLength, redirectUrl );
     }
@@ -55,12 +42,24 @@ public class SoundingDataResourceHandlerAdapter extends CefResourceHandlerAdapte
     public boolean readResponse( byte[] dataOut, int bytesToRead, IntRef bytesRead, CefCallback callback )
     {
         LOGGER.info( String.format( "readResponse() called." ) );
+
+//        while( true )
+//        {
+//            try
+//            {
+//                Thread.sleep( 100 );
+//            }
+//            catch( InterruptedException e )
+//            {
+//                e.printStackTrace();
+//            }
+//        }
         // TODO: copy response from CustomCefURLRequestClient ?
         // TODO: log the response to file
         // return wrapped.readResponse( dataOut, bytesToRead, bytesRead, callback );
-//        byte[] responseBody = requestClient.getResponseBody();
-//        String s = new String( responseBody, StandardCharsets.US_ASCII );
-//        System.out.println( String.format( "Received body as string is %s", s ) );
+        // byte[] responseBody = requestClient.getResponseBody();
+        // String s = new String( responseBody, StandardCharsets.US_ASCII );
+        // System.out.println( String.format( "Received body as string is %s", s ) );
         return true;
     }
 

@@ -19,12 +19,13 @@ public class CustomCefURLRequestClient implements CefURLRequestClient
     private long nativeRef_ = 0;
     private ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     private byte[] receivedBody = null;
+    private CefURLRequest cefUrlRequest = null;
     private volatile boolean requestCompleted = false;
 
     public void send( CefRequest request )
     {
         // It is good enough just to create the request ;it will be executed automatically.
-        CefURLRequest.create( request, this );
+        cefUrlRequest = CefURLRequest.create( request, this );
     }
 
     @Override
@@ -91,11 +92,11 @@ public class CustomCefURLRequestClient implements CefURLRequestClient
 
     public byte[] getResponseBody()
     {
-        if(requestCompleted == false)
+        if( requestCompleted == false )
         {
             return null;
         }
-        
+
         if( receivedBody == null )
         {
             try
