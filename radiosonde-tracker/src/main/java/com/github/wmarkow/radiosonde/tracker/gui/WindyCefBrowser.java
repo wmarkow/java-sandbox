@@ -7,7 +7,7 @@ import org.cef.CefClient;
 import org.cef.CefSettings;
 import org.cef.browser.CefBrowser;
 
-import com.github.wmarkow.radiosonde.tracker.integration.cef.windy.CustomCefRequestHandlerAdapter;
+import com.github.wmarkow.radiosonde.tracker.integration.windy.cef.CustomCefRequestHandlerAdapter;
 
 public class WindyCefBrowser
 {

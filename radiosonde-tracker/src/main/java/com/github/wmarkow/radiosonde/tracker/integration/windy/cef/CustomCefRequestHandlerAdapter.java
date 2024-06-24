@@ -2,7 +2,7 @@
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-package com.github.wmarkow.radiosonde.tracker.integration.cef.windy;
+package com.github.wmarkow.radiosonde.tracker.integration.windy.cef;
 
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;

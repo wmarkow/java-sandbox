@@ -1,4 +1,4 @@
-package com.github.wmarkow.radiosonde.tracker.integration.cef.windy;
+package com.github.wmarkow.radiosonde.tracker.integration.windy.cef;
 
 import org.cef.callback.CefCallback;
 import org.cef.handler.CefResourceHandlerAdapter;
