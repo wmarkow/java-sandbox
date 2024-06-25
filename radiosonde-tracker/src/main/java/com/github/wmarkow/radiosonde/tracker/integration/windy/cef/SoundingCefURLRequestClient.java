@@ -12,7 +12,9 @@ import org.cef.network.CefURLRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistribution;
 import com.github.wmarkow.radiosonde.tracker.domain.WindDataDistributionListener;
+import com.github.wmarkow.radiosonde.tracker.integration.windy.WindDataDistributionProvider;
 
 public class SoundingCefURLRequestClient implements CefURLRequestClient
 {
@@ -20,14 +22,14 @@ public class SoundingCefURLRequestClient implements CefURLRequestClient
 
     private long nativeRef_ = 0;
     private ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    private byte[] receivedBody = null; 
+    private byte[] receivedBody = null;
     private WindDataDistributionListener listener;
 
-    public SoundingCefURLRequestClient(WindDataDistributionListener listener)
+    public SoundingCefURLRequestClient( WindDataDistributionListener listener )
     {
         this.listener = listener;
     }
-    
+
     public void send( CefRequest request )
     {
         // It is good enough just to create the request ;it will be executed automatically.
@@ -81,11 +83,14 @@ public class SoundingCefURLRequestClient implements CefURLRequestClient
         byte[] decodedBytes = Base64.getDecoder().decode( responseBody );
         String soundingJson = new String( decodedBytes );
         LOGGER.debug( String.format( "onRequestComplete() called. Sounding json is %s", soundingJson ) );
- 
-        if(listener != null)
+
+        if( listener != null )
         {
-            // TODO: parse JSON
-            listener.onNewWindDataDistributionAvailable( null );
+            WindDataDistributionProvider provider = new WindDataDistributionProvider();
+            // TODO: pass correct latitude and longitude
+            WindDataDistribution distribution = provider.parse( soundingJson, 0.0, 0.0 );
+
+            listener.onNewWindDataDistributionAvailable( distribution );
         }
     }
 

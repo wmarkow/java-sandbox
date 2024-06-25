@@ -16,11 +16,12 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
         LoggerFactory.getLogger( CustomCefResourceRequestHandlerAdapter.class );
 
     private WindDataDistributionListener listener;
-    public CustomCefResourceRequestHandlerAdapter(WindDataDistributionListener listener)
+
+    public CustomCefResourceRequestHandlerAdapter( WindDataDistributionListener listener )
     {
         this.listener = listener;
     }
-    
+
     @Override
     public boolean onBeforeResourceLoad( CefBrowser browser, CefFrame frame, CefRequest request )
     {
@@ -43,11 +44,10 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
 
                 if( path.matches( "([a-z]|[A-Z]|[0-9]|\\/)+" ) )
                 {
-                    LOGGER
-                        .info( String.format( "getResourceHandler() called. Sounding data request found: %s",
-                            request.toString() ) );
-
-                    return new SoundingDataResourceHandlerAdapter(listener);
+                    LOGGER.info( String.format(
+                        "getResourceHandler() called. Browser URL %s. Sounding data request found: %s",
+                        browser.getURL(), request.toString() ) );
+                    return new SoundingDataResourceHandlerAdapter( listener );
                 }
             }
         }
