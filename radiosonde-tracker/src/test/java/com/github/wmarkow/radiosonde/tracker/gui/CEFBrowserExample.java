@@ -18,6 +18,7 @@ import org.cef.OS;
 import org.cef.browser.CefBrowser;
 import org.cef.handler.CefAppHandlerAdapter;
 
+import com.github.wmarkow.radiosonde.tracker.domain.RadioSondeTrackerContext;
 import com.github.wmarkow.radiosonde.tracker.integration.windy.cef.CustomCefRequestHandlerAdapter;
 
 /**
@@ -84,7 +85,8 @@ public class CEFBrowserExample extends JFrame
         // behavior of the browser. See example.detailed.SimpleFrameExample for an example
         // of how to use these handlers.
         client_ = cefApp_.createClient();
-        client_.addRequestHandler( new CustomCefRequestHandlerAdapter(null) );
+        client_.addRequestHandler(
+            new CustomCefRequestHandlerAdapter( RadioSondeTrackerContext.windyDotComWindDataProvider ) );
 
         // (3) One CefBrowser instance is responsible to control what you'll see on
         // the UI component of the instance. It can be displayed off-screen

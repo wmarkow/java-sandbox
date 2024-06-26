@@ -30,7 +30,6 @@ public class WindyDotComWindDataProvider implements WindDataProvider, WindDataDi
         // TODO new data with wind data distribution are ready
         LOGGER.info( String.format( "onNewWindDataDistributionAvailable() called with %s",
             windDataDistribution.toString() ) );
-
     }
 
 }

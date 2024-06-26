@@ -2,6 +2,14 @@ package com.github.wmarkow.radiosonde.tracker.integration.windy;
 
 import com.google.gson.annotations.SerializedName;
 
+/***
+ * Wind speed and direction defined by a two-dimensional vector. The component u defines the speed of a wind
+ * blowing from the West towards the East (a negative value therefore implies the opposite direction). The
+ * component v similarly defines the speed of a wind blowing from the South towards the North. Wind speed
+ * value is in knots.
+ * 
+ * @author wmarkowski
+ */
 class Data
 {
     @SerializedName( value = "wind_u-surface" )
@@ -65,7 +73,7 @@ class Data
     public double[] windV200h;
     @SerializedName( value = "wind_v-150h" )
     public double[] windV150h;
-    
+
     @SerializedName( value = "hours" )
     public long[] hours;
 }

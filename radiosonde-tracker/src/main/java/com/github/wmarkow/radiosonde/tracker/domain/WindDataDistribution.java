@@ -23,9 +23,19 @@ public class WindDataDistribution
         this.windData.add( windData );
     }
 
+    public ZonedDateTime getDateTime()
+    {
+        return zonedDateTime;
+    }
+
     public WindData getWindData( int altitude )
     {
         // calculate the wind data at specific altitude
         return null;
+    }
+
+    public List< WindData > getRawWindData()
+    {
+        return windData;
     }
 }
