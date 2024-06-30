@@ -21,7 +21,7 @@ public class RadioSondePredictorConsolePanel extends JPanel
 
     private RadioSondeMapContent radioSondeMapContent;
     private JLabel altitudeLabel;
-    private JLabel fallingSpeedLabel;
+    private JLabel climbingSpeedLabel;
     private JLabel speedLabel;
     private JLabel courseLabel;
     private JLabel landingCountdownRedLabel;
@@ -45,7 +45,7 @@ public class RadioSondePredictorConsolePanel extends JPanel
     {
         DataPoint youngestDataPoint = radioSondeMapContent.getSondeDataSet().getYoungestDataPoint();
         altitudeLabel.setText( String.format( "%s m", youngestDataPoint.altitude_m ) );
-        fallingSpeedLabel.setText( String.format( "%s m/s", Math.abs( youngestDataPoint.climbing_m_s ) ) );
+        climbingSpeedLabel.setText( String.format( "%s m/s", youngestDataPoint.climbing_m_s  ) );
         speedLabel.setText( String.format( "%s km/h", Math.abs( youngestDataPoint.speed_km_h ) ) );
         courseLabel.setText( String.format( "%s deg", Math.abs( youngestDataPoint.course ) ) );
 
@@ -126,7 +126,7 @@ public class RadioSondePredictorConsolePanel extends JPanel
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        JLabel fsLabel = new JLabel( "Falling speed " );
+        JLabel fsLabel = new JLabel( "Climbing speed " );
         fsLabel.setFont( font );
         add( fsLabel, gbc );
         gbc.gridx = 1;
@@ -136,9 +136,9 @@ public class RadioSondePredictorConsolePanel extends JPanel
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        fallingSpeedLabel = new JLabel();
-        fallingSpeedLabel.setFont( font );
-        add( fallingSpeedLabel, gbc );
+        climbingSpeedLabel = new JLabel();
+        climbingSpeedLabel.setFont( font );
+        add( climbingSpeedLabel, gbc );
 
         /* Speed */
         gbc.gridx = 0;
