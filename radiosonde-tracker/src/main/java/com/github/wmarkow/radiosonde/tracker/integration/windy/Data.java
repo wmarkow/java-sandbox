@@ -3,10 +3,16 @@ package com.github.wmarkow.radiosonde.tracker.integration.windy;
 import com.google.gson.annotations.SerializedName;
 
 /***
- * Wind speed and direction defined by a two-dimensional vector. The component u defines the speed of a wind
- * blowing from the West towards the East (a negative value therefore implies the opposite direction). The
- * component v similarly defines the speed of a wind blowing from the South towards the North. Wind speed
- * value is in knots.
+ * Wind speed and direction defined by a two-dimensional vector.
+ * <p>
+ * The component <b>u</b> defines the speed of a wind blowing from the West towards the East (a negative value
+ * therefore implies the opposite direction). Expressed in m/s.
+ * <p>
+ * The component <b>v</b> similarly defines the speed of a wind blowing from the South towards the North.
+ * Expressed in m/s.
+ * <p>
+ * The timestamp index in the table are given in the <b>hours</b> variable. It is expressed in milliseconds of
+ * Epoch Unix Timestamp.
  * 
  * @author wmarkowski
  */

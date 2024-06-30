@@ -26,6 +26,8 @@ public class WindDataDistributionProvider
         // the value under index 0 is 6 hours ago
         // the value under index 1 is 3 hours ago
         // the value under index 2 is "current" time
+        // FIXME: the index must be correctly derived from the hours table: just look for the neares timestamp
+        // in milliseconds
         final int index = 2;
         long epochMillis = sd.data.hours[ index ];
 
@@ -52,16 +54,25 @@ public class WindDataDistributionProvider
         return result;
     }
 
+    /***
+     * @param altitude
+     *            in m
+     * @param speedU
+     *            in m/s
+     * @param speedV
+     *            in m/s
+     * @return
+     */
     private WindData getWindData( int altitude, double speedU, double speedV )
     {
-        double speed_kt = Math.sqrt( speedU * speedU + speedV * speedV );
-        double speed_km_h = 1.852 * speed_kt;
-        double course = Math.toDegrees( Math.atan2( speedU, speedV ));
-        if(course < 0.0 )
+        double speed_m_s = Math.sqrt( speedU * speedU + speedV * speedV );
+        double speed_km_h = speed_m_s * 3.6;
+        double course = Math.toDegrees( Math.atan2( speedU, speedV ) );
+        if( course < 0.0 )
         {
             course += 360.0;
         }
-        
-        return new WindData(altitude, speed_km_h, course);
+
+        return new WindData( altitude, speed_km_h, course );
     }
 }
