@@ -23,12 +23,7 @@ public class WindDataDistributionProvider
         SoundingDataProvider sdp = new SoundingDataProvider();
         SoundingData sd = sdp.parse( soundingJson );
 
-        // the value under index 0 is 6 hours ago
-        // the value under index 1 is 3 hours ago
-        // the value under index 2 is "current" time
-        // FIXME: the index must be correctly derived from the hours table: just look for the neares timestamp
-        // in milliseconds
-        final int index = 2;
+        final int index = findDataIndex( sd, System.currentTimeMillis() );
         long epochMillis = sd.data.hours[ index ];
 
         Instant i = Instant.ofEpochMilli( epochMillis );
@@ -74,5 +69,28 @@ public class WindDataDistributionProvider
         }
 
         return new WindData( altitude, speed_km_h, course );
+    }
+
+    private int findDataIndex( SoundingData sd, long currentMillis )
+    {
+        for( int index = 0; index < sd.data.hours.length; index++ )
+        {
+            if( sd.data.hours[ index ] > currentMillis )
+            {
+                // found a millis from the near future; lets return the previous index, so we return the
+                // nearest timestamp from the past
+                int resultIndex = index -1;
+                if(resultIndex < 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return resultIndex;
+                }
+            }
+        }
+
+        return 0;
     }
 }
