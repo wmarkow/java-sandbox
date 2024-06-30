@@ -15,6 +15,8 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
     private final static Logger LOGGER =
         LoggerFactory.getLogger( CustomCefResourceRequestHandlerAdapter.class );
 
+    public final static String WINDY_URL_BASE = "https://node.windy.com";
+
     private WindDataDistributionListener listener;
 
     public CustomCefResourceRequestHandlerAdapter( WindDataDistributionListener listener )
@@ -37,15 +39,14 @@ public class CustomCefResourceRequestHandlerAdapter extends CefResourceRequestHa
 
         if( "GET".equals( request.getMethod() ) )
         {
-            final String URL_BASE = "https://node.windy.com";
-            if( request.getURL().startsWith( URL_BASE ) )
+            if( request.getURL().startsWith( WINDY_URL_BASE ) )
             {
-                String path = request.getURL().substring( URL_BASE.length() );
+                String path = request.getURL().substring( WINDY_URL_BASE.length() );
 
                 if( path.matches( "([a-z]|[A-Z]|[0-9]|\\/)+" ) )
                 {
                     LOGGER.info( String.format(
-                        "getResourceHandler() called. Browser URL %s. Sounding data request found: %s",
+                        "getResourceHandler() called: Browser URL %s. Sounding data request found: %s",
                         browser.getURL(), request.toString() ) );
                     return new SoundingDataResourceHandlerAdapter( listener );
                 }

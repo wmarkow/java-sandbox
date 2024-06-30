@@ -91,6 +91,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
         tabbedPane.add( "Map", newMapPanel );
         windyCefBrowser = new WindyCefBrowser( "google.pl", OS.isLinux(), false,
             RadioSondeTrackerContext.windyDotComWindDataProvider );
+        RadioSondeTrackerContext.windyDotComWindDataProvider.setWindyCefBrowser( windyCefBrowser );
         tabbedPane.add( "Browser", windyCefBrowser.getBrowserComponent() );
 
         getContentPane().add( tabbedPane );
@@ -164,7 +165,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
             {
                 System.out.println( "Track online clicked!" );
                 DynamicReader readereader = new DynamicReader();
-                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "V3640904" );
+                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "D21065478" );
                 DataSet dataSet = new DataSet( dataPoints );
                 radioSondeMapContent.setFullDataSet( dataSet );
 

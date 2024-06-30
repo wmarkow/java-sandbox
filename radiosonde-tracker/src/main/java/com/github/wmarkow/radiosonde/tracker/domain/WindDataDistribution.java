@@ -38,4 +38,11 @@ public class WindDataDistribution
     {
         return windData;
     }
+
+    @Override
+    public String toString()
+    {
+        return "WindDataDistribution [latitude=" + latitude + ", longitude=" + longitude + ", zonedDateTime="
+            + zonedDateTime + ", windData=" + windData + "]";
+    }
 }

@@ -6,7 +6,7 @@ public class WindData
     private double speed_km_h;
     private double course;
 
-    public WindData(int altitude, double speed_km_h, double course)
+    public WindData( int altitude, double speed_km_h, double course )
     {
         this.altitude = altitude;
         this.speed_km_h = speed_km_h;
@@ -26,5 +26,11 @@ public class WindData
     public double getCourse()
     {
         return course;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "WindData [altitude=" + altitude + ", speed_km_h=" + speed_km_h + ", course=" + course + "]";
     }
 }
