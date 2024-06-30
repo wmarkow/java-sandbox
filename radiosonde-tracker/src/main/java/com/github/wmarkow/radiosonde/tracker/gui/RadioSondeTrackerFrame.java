@@ -165,7 +165,8 @@ public class RadioSondeTrackerFrame extends JMapFrame
             {
                 System.out.println( "Track online clicked!" );
                 DynamicReader readereader = new DynamicReader();
-                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "D21065478" );
+                ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "D21065799" );
+                
                 DataSet dataSet = new DataSet( dataPoints );
                 radioSondeMapContent.setFullDataSet( dataSet );
 

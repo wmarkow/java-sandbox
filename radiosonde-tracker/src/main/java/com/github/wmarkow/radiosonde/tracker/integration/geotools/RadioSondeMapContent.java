@@ -28,6 +28,7 @@ import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.DataPoint;
 import com.github.wmarkow.radiosonde.tracker.domain.DataSet;
 import com.github.wmarkow.radiosonde.tracker.domain.LandingPoint;
+import com.github.wmarkow.radiosonde.tracker.domain.RadioSondeTrackerContext;
 import com.github.wmarkow.radiosonde.tracker.domain.WindDataByClimbingDataSetProvider;
 import com.github.wmarkow.radiosonde.tracker.domain.BasicLandingPointPredictor;
 
@@ -188,11 +189,8 @@ public class RadioSondeMapContent extends MapContent
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        // LandingPointPredictor calc = new LandingPointPredictor();
-        ClimbingDataSet climbingDataSet = ClimbingDataSet.valueOf( getFullDataSet() );
-        WindDataByClimbingDataSetProvider windDataProvider =
-            new WindDataByClimbingDataSetProvider( climbingDataSet );
-        AdvancedLandingPointPredictor calc = new AdvancedLandingPointPredictor( windDataProvider );
+        AdvancedLandingPointPredictor calc =
+            new AdvancedLandingPointPredictor( RadioSondeTrackerContext.windyDotComWindDataProvider );
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );

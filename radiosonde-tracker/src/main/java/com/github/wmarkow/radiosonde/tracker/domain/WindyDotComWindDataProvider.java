@@ -60,7 +60,14 @@ public class WindyDotComWindDataProvider implements WindDataProvider, WindDataDi
 
     private WindDataDistribution getClosestWindDataDistribution()
     {
-        return null;
+        if( distributions.size() == 0 )
+        {
+            return null;
+        }
+
+        // FIXME: do not return the first one. Find the latest and the nearest one (or something like this);
+        // if not found then trigger data download.
+        return distributions.get( 0 );
     }
 
     private void fireWindDataRequest( double latitude, double longitude )

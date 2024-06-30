@@ -30,8 +30,26 @@ public class WindDataDistribution
 
     public WindData getWindData( int altitude )
     {
-        // calculate the wind data at specific altitude
-        return null;
+        if( altitude < 0 )
+        {
+            throw new IllegalArgumentException(
+                String.format( "Passed altitude %s m must not be negative", altitude ) );
+        }
+        
+        // TODO: implement an interpolation function
+        int smallestAltitudeDelta = Integer.MAX_VALUE;
+        WindData result = null;
+        for(WindData windData : windData)
+        {
+            int altitudeDelta = Math.abs( windData.getAltitude() - altitude );
+            if(altitudeDelta < smallestAltitudeDelta)
+            {
+                result = windData;
+                smallestAltitudeDelta = altitudeDelta;
+            }
+        }
+        
+        return result;
     }
 
     public List< WindData > getRawWindData()
