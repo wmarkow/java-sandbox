@@ -3,6 +3,8 @@ package com.github.wmarkow.radiosonde.tracker.integration.geotools;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,9 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.map.FeatureLayer;
 import org.geotools.map.MapContent;
+import org.geotools.map.MapLayerListListener;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.swing.JMapPane;
 import org.geotools.tile.TileService;
 import org.geotools.tile.util.TileLayer;
 import org.locationtech.jts.geom.Coordinate;
@@ -22,6 +26,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.wmarkow.radiosonde.tracker.domain.AdvancedLandingPointPredictor;
 import com.github.wmarkow.radiosonde.tracker.domain.ClimbingDataSet;
@@ -34,6 +40,8 @@ import com.github.wmarkow.radiosonde.tracker.domain.BasicLandingPointPredictor;
 
 public class RadioSondeMapContent extends MapContent
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger( RadioSondeMapContent.class );
+
     private DataSet fullDataSet = null;
     private DataSet sondeDataSet = null;
     private FeatureLayer sondeLayer = null;
@@ -42,6 +50,8 @@ public class RadioSondeMapContent extends MapContent
     private PointStyleFactory pointStyleFactory = new PointStyleFactory();
     private ZonedDateTime avgLandingTimeRedPrediction;
     private ZonedDateTime avgLandingTimeYellowPrediction;
+
+    private JMapPane jMapPane = null;
 
     public RadioSondeMapContent() throws SchemaException
     {
@@ -247,6 +257,58 @@ public class RadioSondeMapContent extends MapContent
         recalculateSondeData( 0 );
         recalculatePrediction( 100 );
         recalculateAdvancedPrediction( 100 );
+
+        forceRepaint();
+    }
+
+    public void addMapLayerListListener( MapLayerListListener listener )
+    {
+        super.addMapLayerListListener( listener );
+
+        if( listener instanceof JMapPane )
+        {
+            this.jMapPane = (JMapPane)listener;
+        }
+    }
+
+    /***
+     * Forces to repaint the map.
+     * <p>
+     * It is useful when i.e. a lot of layer operations (remove or add) have been done on the map in a short
+     * time; every layer operation triggers map repaint but there is only one repaint worker (and repaint
+     * takes a bit of time), so not all layers may be painted correctly.
+     * <p>
+     * Call this method after you finish layer operations, so the map can be repainted correctly.
+     */
+    public void forceRepaint()
+    {
+        if( jMapPane == null )
+        {
+            return;
+        }
+
+        try
+        {
+            Method maxProtectedMethod = JMapPane.class.getSuperclass().getDeclaredMethod( "onImageMoved" );
+            maxProtectedMethod.setAccessible( true );
+            maxProtectedMethod.invoke( jMapPane );
+        }
+        catch( NoSuchMethodException | SecurityException e )
+        {
+            LOGGER.error( e.getMessage(), e );
+        }
+        catch( IllegalAccessException e )
+        {
+            LOGGER.error( e.getMessage(), e );
+        }
+        catch( IllegalArgumentException e )
+        {
+            LOGGER.error( e.getMessage(), e );
+        }
+        catch( InvocationTargetException e )
+        {
+            LOGGER.error( e.getMessage(), e );
+        }
     }
 
     private SimpleFeatureType createFeatureType()
