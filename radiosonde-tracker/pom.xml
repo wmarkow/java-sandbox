@@ -9,7 +9,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<geotools.version>26.7</geotools.version>
+		<geotools.version>28.5</geotools.version>
 		<java-cef.version>78.2.7</java-cef.version>
 		<slf4j-log4j.version>2.23.1</slf4j-log4j.version>
 	</properties>
