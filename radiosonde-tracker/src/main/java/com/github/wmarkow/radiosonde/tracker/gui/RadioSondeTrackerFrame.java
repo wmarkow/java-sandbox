@@ -132,6 +132,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
                     ArrayList< DataPoint > dataPoints =
                         csvReader.readDataPoints( chooser.getSelectedFile().getAbsolutePath() );
                     DataSet dataSet = new DataSet( dataPoints );
+                    radioSondeMapContent.setLiveTracking( false );
                     radioSondeMapContent.setFullDataSet( dataSet );
 
                     consolePanel.refreshGui();
@@ -168,6 +169,7 @@ public class RadioSondeTrackerFrame extends JMapFrame
                 ArrayList< DataPoint > dataPoints = readereader.readDataPoints( "D21065799" );
                 
                 DataSet dataSet = new DataSet( dataPoints );
+                radioSondeMapContent.setLiveTracking( true );
                 radioSondeMapContent.setFullDataSet( dataSet );
 
                 consolePanel.refreshGui();

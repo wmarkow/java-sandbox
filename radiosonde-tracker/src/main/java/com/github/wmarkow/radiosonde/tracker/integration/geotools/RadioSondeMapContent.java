@@ -50,6 +50,7 @@ public class RadioSondeMapContent extends MapContent
     private PointStyleFactory pointStyleFactory = new PointStyleFactory();
     private ZonedDateTime avgLandingTimeRedPrediction;
     private ZonedDateTime avgLandingTimeYellowPrediction;
+    private boolean liveTracking = false;
 
     private JMapPane jMapPane = null;
 
@@ -199,8 +200,20 @@ public class RadioSondeMapContent extends MapContent
         List< SimpleFeature > featureList = new ArrayList< SimpleFeature >();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        AdvancedLandingPointPredictor calc =
-            new AdvancedLandingPointPredictor( RadioSondeTrackerContext.windyDotComWindDataProvider );
+        AdvancedLandingPointPredictor calc = null;
+        if( liveTracking )
+        {
+            // while live tracking use windy online wind data
+            calc = new AdvancedLandingPointPredictor( RadioSondeTrackerContext.windyDotComWindDataProvider );
+        }
+        else
+        {
+            // while not on live use wind data from climbing data set
+            ClimbingDataSet climbingDataSet = ClimbingDataSet.valueOf( getFullDataSet() );
+            WindDataByClimbingDataSetProvider windDataProvider =
+                new WindDataByClimbingDataSetProvider( climbingDataSet );
+            calc = new AdvancedLandingPointPredictor( windDataProvider );
+        }
 
         ArrayList< DataPoint > dataPoints =
             getSondeDataSet().getEntriesOlderThanTheYoungestButWithMaxAge( notOlderThanSeconds );
@@ -259,6 +272,18 @@ public class RadioSondeMapContent extends MapContent
         recalculateAdvancedPrediction( 100 );
 
         forceRepaint();
+    }
+
+    /***
+     * Sets the flag if the tracking is a live tracking. It is important to choose correct predictors, i.e.
+     * not live tracking (when presenting data read from CSV file) it will use
+     * WindDataByClimbingDataSetProvider during prediction process.
+     * 
+     * @param liveTracking
+     */
+    public void setLiveTracking( boolean liveTracking )
+    {
+        this.liveTracking = liveTracking;
     }
 
     public void addMapLayerListListener( MapLayerListListener listener )
