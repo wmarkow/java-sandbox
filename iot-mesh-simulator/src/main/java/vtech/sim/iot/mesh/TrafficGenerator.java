@@ -61,4 +61,8 @@ public abstract class TrafficGenerator extends Process {
     protected abstract double getMillisToNextRequest();
 
     protected abstract Packet getNextPacketToSend();
+    
+    public Transmitter getTransmitter() {
+	return transmitter;
+    }
 }

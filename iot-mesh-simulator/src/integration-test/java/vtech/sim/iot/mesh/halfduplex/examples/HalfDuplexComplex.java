@@ -30,25 +30,25 @@ public class HalfDuplexComplex extends AbstractGraphExample {
     public HalfDuplexComplex() {
 	super(WINDOW_TITLE);
 	aloha0Sim.init();
-	aloha0Sim.start();
+//	aloha0Sim.start();
 
 	aloha1Sim.init();
-	aloha1Sim.start();
+//	aloha1Sim.start();
 
 	aloha2Sim.init();
-	aloha2Sim.start();
+//	aloha2Sim.start();
 
 	aloha3Sim.init();
-	aloha3Sim.start();
+//	aloha3Sim.start();
 
 	aloha4Sim.init();
-	aloha4Sim.start();
+//	aloha4Sim.start();
 
 	aloha5Sim.init();
-	aloha5Sim.start();
+//	aloha5Sim.start();
 
 	aloha6Sim.init();
-	aloha6Sim.start();
+//	aloha6Sim.start();
 
 	aloha7Sim.init();
 	aloha7Sim.start();

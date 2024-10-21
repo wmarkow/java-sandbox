@@ -10,8 +10,8 @@ public class AlohaDevice extends Device {
     private PoissonGenerator generator;
     private AlohaTransmitter transmitter;
 
-    public AlohaDevice(double requestsPerSecond, int dataRateBps, Medium medium) {
-	transmitter = new AlohaTransmitter(medium);
+    public AlohaDevice(double requestsPerSecond, int dataRateBps, Medium medium, int transmitterId) {
+	transmitter = new AlohaTransmitter(medium, transmitterId);
 	transmitter.setDataRateBps(dataRateBps);
 	
 	generator = new PoissonGenerator(transmitter, requestsPerSecond);

@@ -20,6 +20,7 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     private final static int EVENT_PACKET_TRANSMITION_FINISHED = 3;
 
     private Medium medium;
+    private int transmitterId;
     private int dataRateBps;
     private List<Packet> packetsToSend = new ArrayList<Packet>();
     private List<Packet> packetsReceived = new ArrayList<Packet>();
@@ -30,10 +31,11 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	IDLE, RX, TX
     }
 
-    public HalfDuplexTransceiver(Medium medium) {
+    public HalfDuplexTransceiver(Medium medium, int transmitterId) {
 	super();
 
 	this.medium = medium;
+	this.transmitterId = transmitterId;
 	medium.addListener(this);
     }
 
@@ -172,5 +174,10 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     @Override
     public void setDataRateBps(int dataRateBps) {
 	this.dataRateBps = dataRateBps;
+    }
+
+    @Override
+    public int getTransmitterId() {
+	return transmitterId;
     }
 }

@@ -7,7 +7,7 @@ public class HalfDuplexComplex1Simulation extends MeshSimulation {
 
     @Override
     protected void prepareDevices() {
-	addDevice(new HalfDuplexComplexDevice(10, 250000, getMedium()));
+	addDevice(new HalfDuplexComplexDevice(10, 250000, getMedium(), 0));
     }
 
     public static void main(String[] args) {

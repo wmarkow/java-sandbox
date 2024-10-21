@@ -10,8 +10,8 @@ public class HalfDuplexDevice extends Device {
     private PoissonGenerator generator;
     private HalfDuplexTransceiver transmitter;
 
-    public HalfDuplexDevice(double requestsPerSecond, int dataRateBps, Medium medium) {
-	transmitter = new HalfDuplexTransceiver(medium);
+    public HalfDuplexDevice(double requestsPerSecond, int dataRateBps, Medium medium, int transmitterId) {
+	transmitter = new HalfDuplexTransceiver(medium, transmitterId);
 	transmitter.setDataRateBps(dataRateBps);
 	generator = new PoissonGenerator(transmitter, requestsPerSecond);
     }

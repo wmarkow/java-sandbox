@@ -3,6 +3,7 @@ package vtech.sim.iot.mesh.flooding;
 import vtech.sim.iot.mesh.Packet;
 
 public class NetworkPacket extends Packet {
+   
     public final static int PROTOCOL_ICMP = 0x01;
     public final static int PROTOCOL_TCP = 0x06;
     public final static int PROTOCOL_UDP = 0x11;
@@ -16,6 +17,10 @@ public class NetworkPacket extends Packet {
     private int srcIpAddress;
     private int dstIpAddress;
 
+    public NetworkPacket(int transmitterId) {
+	super(transmitterId);
+    }
+    
     public int getId() {
 	return id;
     }

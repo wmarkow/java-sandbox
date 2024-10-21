@@ -17,7 +17,7 @@ public class AprsAlohaPureSimulation extends MeshSimulation {
     @Override
     protected void prepareDevices() {
 	for (int q = 0; q < numberOfDevices; q++) {
-	    addDevice(new AlohaDevice(requestsPerSecond, 1200, getMedium()));
+	    addDevice(new AlohaDevice(requestsPerSecond, 1200, getMedium(), q));
 	}
     }
 

@@ -4,8 +4,8 @@ public class PacketFactory {
 
     private int packetId = 0;
 
-    public NetworkPacket createPingPacket(int srcIpAddress, int dstIpAddress) {
-	NetworkPacket packet = new NetworkPacket();
+    public NetworkPacket createPingPacket(int srcIpAddress, int dstIpAddress, int transmitterId) {
+	NetworkPacket packet = new NetworkPacket(transmitterId);
 
 	packet.setDstIpAddress(dstIpAddress);
 	packet.setId(getPacketId());
@@ -16,8 +16,8 @@ public class PacketFactory {
 	return packet;
     }
 
-    public NetworkPacket createAckPacket(NetworkPacket packet) {
-	NetworkPacket result = new NetworkPacket();
+    public NetworkPacket createAckPacket(NetworkPacket packet, int transmitterId) {
+	NetworkPacket result = new NetworkPacket(transmitterId);
 
 	result.setDstIpAddress(packet.getSrcIpAddress());
 	result.setId(getPacketId());

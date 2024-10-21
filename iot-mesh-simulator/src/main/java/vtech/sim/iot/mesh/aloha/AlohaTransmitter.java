@@ -16,6 +16,7 @@ public class AlohaTransmitter extends Process implements Transmitter {
     private final static int EVENT_PACKET_SENT = 1;
 
     private Medium medium;
+    private int transmitterId;
     private int dataRateBps;
     private List<Packet> packets = new ArrayList<Packet>();
     private State state = State.IDLE;
@@ -24,10 +25,11 @@ public class AlohaTransmitter extends Process implements Transmitter {
 	IDLE, TX
     }
     
-    public AlohaTransmitter(Medium medium) {
+    public AlohaTransmitter(Medium medium, int transmitterId) {
 	super();
 
 	this.medium = medium;
+	this.transmitterId = transmitterId;
     }
 
     @Override
@@ -87,5 +89,10 @@ public class AlohaTransmitter extends Process implements Transmitter {
     @Override
     public void setDataRateBps(int dataRateBps) {
 	this.dataRateBps = dataRateBps;
+    }
+
+    @Override
+    public int getTransmitterId() {
+	return transmitterId;
     }
 }

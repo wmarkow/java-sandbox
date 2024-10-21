@@ -16,7 +16,7 @@ public class AprsHalfDuplexSimulation extends MeshSimulation {
     @Override
     protected void prepareDevices() {
 	for (int q = 0; q < numberOfDevices; q++) {
-	    addDevice(new HalfDuplexDevice(requestsPerSecond, 1200, getMedium()));
+	    addDevice(new HalfDuplexDevice(requestsPerSecond, 1200, getMedium(), q));
 	}
     }
 }

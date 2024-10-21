@@ -22,6 +22,7 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     private final static int EVENT_RANDOM_WAIT_FINISHED = 4;
 
     private Medium medium;
+    private int transmitterId;
     private int dataRateBps;
     private List<Packet> packetsToSend = new ArrayList<Packet>();
     private List<Packet> packetsReceived = new ArrayList<Packet>();
@@ -33,10 +34,11 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
 	IDLE, RX, RANDOM_WAIT, TX
     }
 
-    public HalfDuplexComplexTransceiver(Medium medium) {
+    public HalfDuplexComplexTransceiver(Medium medium, int transmitterId) {
 	super();
 
 	this.medium = medium;
+	this.transmitterId = transmitterId;
 	medium.addListener(this);
     }
 
@@ -95,6 +97,11 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
 	switch (event.getEventType()) {
 	case EVENT_NEW_PACKET_TO_SEND:
 	    if (medium.isBusy()) {
+		// need to wait a random time
+		state = State.RANDOM_WAIT;
+		double waitInMillis = random.getDouble(0.1);
+		scheduleNextExecution(waitInMillis, EVENT_RANDOM_WAIT_FINISHED);
+		
 		return;
 	    }
 
@@ -121,15 +128,13 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
 		listener.packetReceived();
 	    }
 
+	    state = State.IDLE;
+	    
 	    if (packetsToSend.size() == 0) {
-		state = State.IDLE;
 		return;
 	    }
 
-	    // it waits max for 0.1ms (100us)
-	    double waitInMillis = random.getDouble(0.1);
-	    state = State.RANDOM_WAIT;
-	    scheduleNextExecution(waitInMillis, EVENT_RANDOM_WAIT_FINISHED);
+	    scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
 	    break;
 	default:
 	    throw new IllegalStateException();
@@ -139,12 +144,9 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     private void executeForRandomWait(Event event) {
 	switch (event.getEventType()) {
 	case EVENT_RANDOM_WAIT_FINISHED:
-	    if (medium.isBusy()) {
-		state = State.IDLE;
-		return;
-	    }
-
-	    sendPacket(packetsToSend.remove(0));
+	    state = State.IDLE;
+	    scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
+	    
 	    break;
 	default:
 	}
@@ -159,12 +161,12 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
 	case EVENT_PACKET_RECEIVING_FINISHED:
 	    break;
 	case EVENT_PACKET_TRANSMITION_FINISHED:
+	    state = State.IDLE;
 	    if (packetsToSend.size() == 0) {
-		state = State.IDLE;
 		return;
 	    }
 
-	    sendPacket(packetsToSend.remove(0));
+	    scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
 	    break;
 	default:
 	    throw new IllegalStateException();
@@ -191,5 +193,10 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     @Override
     public void setDataRateBps(int dataRateBps) {
 	this.dataRateBps = dataRateBps;
+    }
+
+    @Override
+    public int getTransmitterId() {
+	return transmitterId;
     }
 }

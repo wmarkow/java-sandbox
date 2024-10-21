@@ -47,4 +47,9 @@ public class FloodingNetworkLayer extends Process implements ReceiverListener, T
     public void setDataRateBps(int dataRateBps) {
 	this.dataRateBps = dataRateBps;
     }
+
+    @Override
+    public int getTransmitterId() {
+	return transceiver.getTransmitterId();
+    }
 }

@@ -9,4 +9,6 @@ public interface Transmitter {
     public int getDataRateBps();
     
     public void setDataRateBps(int dataRateBps);
+    
+    public int getTransmitterId();
 }

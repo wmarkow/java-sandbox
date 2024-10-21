@@ -8,7 +8,7 @@ public class HalfDuplex128Simulation extends MeshSimulation {
     @Override
     protected void prepareDevices() {
 	for (int q = 0; q < 128; q++) {
-	    addDevice(new HalfDuplexDevice(10, 250000, getMedium()));
+	    addDevice(new HalfDuplexDevice(10, 250000, getMedium(), q));
 	}
     }
 

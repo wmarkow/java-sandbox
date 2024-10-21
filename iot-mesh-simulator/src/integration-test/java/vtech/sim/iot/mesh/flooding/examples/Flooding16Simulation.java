@@ -8,7 +8,7 @@ public class Flooding16Simulation extends MeshSimulation {
     @Override
     protected void prepareDevices() {
 	for (int q = 0; q < 16; q++) {
-	    addDevice(new FloodingDevice(10, 250000, getMedium(), 1, new int[] { 2, 3, 4, 5, 6 }));
+	    addDevice(new FloodingDevice(10, 250000, getMedium(), 1, new int[] { 2, 3, 4, 5, 6 }, q));
 	}
     }
 

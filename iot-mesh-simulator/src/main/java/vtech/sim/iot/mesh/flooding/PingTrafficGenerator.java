@@ -26,6 +26,6 @@ public class PingTrafficGenerator extends PoissonGenerator {
     protected NetworkPacket getNextPacketToSend() {
 	int index = getRandomGenerator().getInt(0, destinationIPs.length - 1);
 
-	return packetFactory.createPingPacket(srcIpAddress, destinationIPs[index]);
+	return packetFactory.createPingPacket(srcIpAddress, destinationIPs[index], getTransmitter().getTransmitterId());
     }
 }

@@ -22,6 +22,6 @@ public class PoissonGenerator extends TrafficGenerator {
 
     @Override
     protected Packet getNextPacketToSend() {
-	return new Packet();
+	return new Packet(getTransmitter().getTransmitterId());
     }
 }
