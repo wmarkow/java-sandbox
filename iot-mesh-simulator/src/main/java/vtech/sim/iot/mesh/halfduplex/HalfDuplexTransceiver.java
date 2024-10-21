@@ -89,6 +89,7 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	switch (event.getEventType()) {
 	case EVENT_NEW_PACKET_TO_SEND:
 	    if (medium.isBusy()) {
+		scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
 		return;
 	    }
 
@@ -115,12 +116,13 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 		listener.packetReceived();
 	    }
 
+	    state = State.IDLE;
+	    
 	    if (packetsToSend.size() == 0) {
-		state = State.IDLE;
 		return;
 	    }
 
-	    sendPacket(packetsToSend.remove(0));
+	    scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
 	    break;
 	default:
 	    throw new IllegalStateException();
@@ -136,12 +138,14 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	case EVENT_PACKET_RECEIVING_FINISHED:
 	    break;
 	case EVENT_PACKET_TRANSMITION_FINISHED:
+	    state = State.IDLE;
+	    
 	    if (packetsToSend.size() == 0) {
-		state = State.IDLE;
 		return;
 	    }
+	    
+	    scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
 
-	    sendPacket(packetsToSend.remove(0));
 	    break;
 	default:
 	    throw new IllegalStateException();
