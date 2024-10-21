@@ -26,7 +26,7 @@ public abstract class AbstractGraphExample extends ApplicationFrame {
     private static final float Y_MAX = 100;
     private static final float Y_MIN = 0;
     private static final int COUNT = 120;
-    private static final int FAST = 1000;
+    private static final int FAST = 100;
     private Timer timer;
 
     private JScrollPane scrollPane;
