@@ -12,17 +12,18 @@ import vtech.sim.iot.mesh.Transmitter;
 
 public class AlohaTransmitter extends Process implements Transmitter {
 
-    private final static int STATE_IDLE = 0;
-    private final static int STATE_TRANSMITTING = 1;
-
     private final static int EVENT_TRY_TO_SEND_PACKET = 0;
     private final static int EVENT_PACKET_SENT = 1;
 
     private Medium medium;
-    private int dataRateBps = 250000;
+    private int dataRateBps;
     private List<Packet> packets = new ArrayList<Packet>();
-    private int state = STATE_IDLE;
+    private State state = State.IDLE;
 
+    private enum State {
+	IDLE, TX
+    }
+    
     public AlohaTransmitter(Medium medium) {
 	super();
 
@@ -32,7 +33,7 @@ public class AlohaTransmitter extends Process implements Transmitter {
     @Override
     public void execute(Event event) {
 	switch (state) {
-	case STATE_IDLE:
+	case IDLE:
 	    if (event.getEventType() == EVENT_INIT) {
 		return;
 	    }
@@ -44,21 +45,21 @@ public class AlohaTransmitter extends Process implements Transmitter {
 		Packet packet = packets.remove(0);
 		Transmission transmission = medium.sendPacket(packet, getDataRateBps());
 
-		state = STATE_TRANSMITTING;
+		state = State.TX;
 		scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_SENT);
 
 		return;
 	    }
 
 	    throw new IllegalStateException();
-	case STATE_TRANSMITTING:
+	case TX:
 	    if (event.getEventType() == EVENT_TRY_TO_SEND_PACKET) {
 		return;
 	    }
 
 	    if (event.getEventType() == EVENT_PACKET_SENT) {
 
-		state = STATE_IDLE;
+		state = State.IDLE;
 		scheduleNextExecutionToNow(EVENT_TRY_TO_SEND_PACKET);
 		return;
 	    }
