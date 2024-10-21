@@ -8,7 +8,7 @@ public class AlohaPure16Simulation extends MeshSimulation {
     @Override
     protected void prepareDevices() {
 	for (int q = 0; q < 16; q++) {
-	    addDevice(new AlohaDevice(10, getMedium()));
+	    addDevice(new AlohaDevice(10, 250000, getMedium()));
 	}
     }
 

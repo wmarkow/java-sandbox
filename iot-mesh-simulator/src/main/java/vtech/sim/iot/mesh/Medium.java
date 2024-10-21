@@ -46,8 +46,8 @@ public class Medium extends Process {
 	}
     }
 
-    public Transmission sendPacket(Packet packet) {
-	Transmission tr = new Transmission(packet, this.getCurrentMillisTime());
+    public Transmission sendPacket(Packet packet, int dataRateInBps) {
+	Transmission tr = new Transmission(packet, this.getCurrentMillisTime(), dataRateInBps);
 
 	if (currentTransmissions.size() == 0) {
 	    // medium begins to be busy

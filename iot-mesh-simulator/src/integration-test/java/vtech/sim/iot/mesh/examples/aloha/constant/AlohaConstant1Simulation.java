@@ -7,7 +7,7 @@ public class AlohaConstant1Simulation extends MeshSimulation {
 
     @Override
     protected void prepareDevices() {
-	addDevice(new AlohaConstantGeneratorDevice(10, getMedium()));
+	addDevice(new AlohaConstantGeneratorDevice(10, 250000, getMedium()));
     }
 
     public static void main(String[] args) {

@@ -1,23 +1,24 @@
 package vtech.sim.iot.mesh;
 
 public class Transmission {
-    private final static int DEFAULT_DATA_RATE = 250000;
 
     private Packet packet;
     private double transmissionStartInMillis;
     private double transmissionEndInMillis;
     private boolean collision = false;
+    private int dataRateInBps;
 
-    public Transmission(Packet packet, double transmissionStartInMillis) {
+    public Transmission(Packet packet, double transmissionStartInMillis, int dataRateInBps) {
 	this.packet = packet;
-
+	this.dataRateInBps = dataRateInBps;
+	
 	double packetDurationInMillis = 1000.0 * packet.getSize() * 8L / getDataRate();
 	this.transmissionStartInMillis = transmissionStartInMillis;
 	transmissionEndInMillis = transmissionStartInMillis + packetDurationInMillis;
     }
 
     public int getDataRate() {
-	return DEFAULT_DATA_RATE;
+	return dataRateInBps;
     }
 
     public double getTransmissionStartInMillis() {

@@ -10,6 +10,7 @@ import vtech.sim.iot.mesh.halfduplex.HalfDuplexComplexTransceiver;
 public class FloodingNetworkLayer extends Process implements ReceiverListener, Transmitter {
 
     private HalfDuplexComplexTransceiver transceiver;
+    private int dataRateBps = 250000;
 
     public FloodingNetworkLayer(HalfDuplexComplexTransceiver transceiver) {
 	this.transceiver = transceiver;
@@ -35,5 +36,15 @@ public class FloodingNetworkLayer extends Process implements ReceiverListener, T
     @Override
     public int getCountOfPacketsWaitingToSend() {
 	return transceiver.getCountOfPacketsWaitingToSend();
+    }
+    
+    @Override
+    public int getDataRateBps() {
+	return dataRateBps;
+    }
+
+    @Override
+    public void setDataRateBps(int dataRateBps) {
+	this.dataRateBps = dataRateBps;
     }
 }

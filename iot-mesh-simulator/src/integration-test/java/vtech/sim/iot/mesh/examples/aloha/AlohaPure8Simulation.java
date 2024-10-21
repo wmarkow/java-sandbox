@@ -7,14 +7,14 @@ public class AlohaPure8Simulation extends MeshSimulation {
 
     @Override
     protected void prepareDevices() {
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
-	addDevice(new AlohaDevice(10, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
+	addDevice(new AlohaDevice(10, 250000, getMedium()));
     }
 
     public static void main(String[] args) {

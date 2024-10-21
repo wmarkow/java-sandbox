@@ -19,6 +19,7 @@ public class AlohaTransmitter extends Process implements Transmitter {
     private final static int EVENT_PACKET_SENT = 1;
 
     private Medium medium;
+    private int dataRateBps = 250000;
     private List<Packet> packets = new ArrayList<Packet>();
     private int state = STATE_IDLE;
 
@@ -41,7 +42,7 @@ public class AlohaTransmitter extends Process implements Transmitter {
 		    return;
 		}
 		Packet packet = packets.remove(0);
-		Transmission transmission = medium.sendPacket(packet);
+		Transmission transmission = medium.sendPacket(packet, getDataRateBps());
 
 		state = STATE_TRANSMITTING;
 		scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_SENT);
@@ -75,5 +76,15 @@ public class AlohaTransmitter extends Process implements Transmitter {
     @Override
     public int getCountOfPacketsWaitingToSend() {
 	return packets.size();
+    }
+
+    @Override
+    public int getDataRateBps() {
+	return dataRateBps;
+    }
+
+    @Override
+    public void setDataRateBps(int dataRateBps) {
+	this.dataRateBps = dataRateBps;
     }
 }

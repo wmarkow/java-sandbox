@@ -22,6 +22,7 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     private final static int EVENT_RANDOM_WAIT_FINISHED = 4;
 
     private Medium medium;
+    private int dataRateBps;
     private List<Packet> packetsToSend = new ArrayList<Packet>();
     private List<Packet> packetsReceived = new ArrayList<Packet>();
     private List<ReceiverListener> listeners = new ArrayList<ReceiverListener>();
@@ -171,7 +172,7 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     }
 
     private void sendPacket(Packet packet) {
-	Transmission transmission = medium.sendPacket(packet);
+	Transmission transmission = medium.sendPacket(packet, getDataRateBps());
 
 	state = State.TX;
 	scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
@@ -180,5 +181,15 @@ public class HalfDuplexComplexTransceiver extends Process implements MediumListe
     @Override
     public int getCountOfPacketsWaitingToSend() {
 	return packetsToSend.size();
+    }
+    
+    @Override
+    public int getDataRateBps() {
+	return dataRateBps;
+    }
+
+    @Override
+    public void setDataRateBps(int dataRateBps) {
+	this.dataRateBps = dataRateBps;
     }
 }

@@ -10,8 +10,10 @@ public class AlohaConstantGeneratorDevice extends Device {
     private ConstantGenerator generator;
     private AlohaTransmitter transmitter;
 
-    public AlohaConstantGeneratorDevice(int requestsPerSecond, Medium medium) {
+    public AlohaConstantGeneratorDevice(int requestsPerSecond, int dataRateBps, Medium medium) {
 	transmitter = new AlohaTransmitter(medium);
+	transmitter.setDataRateBps(dataRateBps);
+	
 	generator = new ConstantGenerator(transmitter, requestsPerSecond);
     }
 

@@ -12,8 +12,9 @@ public class FloodingDevice extends Device {
     private FloodingNetworkLayer floodingNetworkLayer;
     private HalfDuplexComplexTransceiver transmitter;
 
-    public FloodingDevice(double averageRequestsPerSecond, Medium medium, int ipAddress, int[] otherIPs) {
+    public FloodingDevice(double averageRequestsPerSecond, int dataRateBps, Medium medium, int ipAddress, int[] otherIPs) {
 	transmitter = new HalfDuplexComplexTransceiver(medium);
+	transmitter.setDataRateBps(dataRateBps);
 	floodingNetworkLayer = new FloodingNetworkLayer(transmitter);
 	pingGenerator = new PingTrafficGenerator(floodingNetworkLayer, averageRequestsPerSecond);
 	pingGenerator.setSrcAddress(ipAddress);
