@@ -11,15 +11,17 @@ import vtech.sim.iot.mesh.examples.aloha.AlohaPureSimulation;
 public class Comparison extends AbstractGraphExample {
 
     private static final long serialVersionUID = -6341446516504124795L;
-    
-    final static String WINDOW_TITLE = "Simulation";
-    final static String ALOHA_0_TITLE = "Pure Aloha. 16 stations, 10 packets per second, 32B per packet, 250kbps. Transmitter sends data at once.";
-    final static String ALOHA_1_TITLE = "Half-duplex. 16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transmitter.";
-    final static String ALOHA_2_TITLE = "Half-duplex improved, 16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transmitter waits additional random time.";
 
-    private AlohaPureSimulation aloha0Sim = new AlohaPureSimulation(16);
-    private HalfDuplexSimulation aloha1Sim = new HalfDuplexSimulation(16);
-    private HalfDuplexComplex16Simulation aloha2Sim = new HalfDuplexComplex16Simulation();
+    final static String WINDOW_TITLE = "Comparison simulation";
+    final static String ALOHA_0_TITLE = "16 stations, 10 packets per second, 32B per packet, 250kbps. Pure Aloha transmitter";
+    final static String ALOHA_1_TITLE = "16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transmitter.";
+    final static String ALOHA_2_TITLE = "16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex improved transmitter.";
+
+    private final static int NUMBER_OF_DEVICES = 16;
+
+    private AlohaPureSimulation aloha0Sim = new AlohaPureSimulation(NUMBER_OF_DEVICES);
+    private HalfDuplexSimulation aloha1Sim = new HalfDuplexSimulation(NUMBER_OF_DEVICES);
+    private HalfDuplexComplexSimulation aloha2Sim = new HalfDuplexComplexSimulation(NUMBER_OF_DEVICES);
 
     public Comparison() {
 	super(WINDOW_TITLE);

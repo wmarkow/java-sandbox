@@ -6,14 +6,14 @@ import org.jfree.ui.RefineryUtilities;
 
 import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
-import vtech.sim.iot.mesh.halfduplex.examples.HalfDuplexComplex16Simulation;
+import vtech.sim.iot.mesh.halfduplex.examples.HalfDuplexComplexSimulation;
 
 public class Flooding extends AbstractGraphExample {
     final static String WINDOW_TITLE = "Simulation";
     final static String ALOHA_0_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
     final static String ALOHA_1_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex flooding transceiver.";
 
-    private HalfDuplexComplex16Simulation aloha3Sim = new HalfDuplexComplex16Simulation();
+    private HalfDuplexComplexSimulation aloha3Sim = new HalfDuplexComplexSimulation(16);
     private Flooding16Simulation aloha4Sim = new Flooding16Simulation();
 
     public Flooding() {

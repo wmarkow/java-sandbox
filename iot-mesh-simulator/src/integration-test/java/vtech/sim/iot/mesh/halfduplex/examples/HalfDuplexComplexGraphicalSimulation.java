@@ -7,48 +7,51 @@ import org.jfree.ui.RefineryUtilities;
 import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
-public class HalfDuplexComplex extends AbstractGraphExample {
-    final static String WINDOW_TITLE = "Half-duplex Simulation";
-    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
-    final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
+public class HalfDuplexComplexGraphicalSimulation extends AbstractGraphExample {
+    
+    private static final long serialVersionUID = -8743567299323918350L;
+    
+    final static String WINDOW_TITLE = "Half-duplex complex transceiver simulation";
+    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250bps.";
+    final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250bps.";
 
-    private HalfDuplexComplex1Simulation aloha0Sim = new HalfDuplexComplex1Simulation();
-    private HalfDuplexComplex2Simulation aloha1Sim = new HalfDuplexComplex2Simulation();
-    private HalfDuplexComplex4Simulation aloha2Sim = new HalfDuplexComplex4Simulation();
-    private HalfDuplexComplex8Simulation aloha3Sim = new HalfDuplexComplex8Simulation();
-    private HalfDuplexComplex16Simulation aloha4Sim = new HalfDuplexComplex16Simulation();
-    private HalfDuplexComplex32Simulation aloha5Sim = new HalfDuplexComplex32Simulation();
-    private HalfDuplexComplex64Simulation aloha6Sim = new HalfDuplexComplex64Simulation();
-    private HalfDuplexComplex128Simulation aloha7Sim = new HalfDuplexComplex128Simulation();
+    private HalfDuplexComplexSimulation aloha0Sim = new HalfDuplexComplexSimulation(1);
+    private HalfDuplexComplexSimulation aloha1Sim = new HalfDuplexComplexSimulation(2);
+    private HalfDuplexComplexSimulation aloha2Sim = new HalfDuplexComplexSimulation(4);
+    private HalfDuplexComplexSimulation aloha3Sim = new HalfDuplexComplexSimulation(8);
+    private HalfDuplexComplexSimulation aloha4Sim = new HalfDuplexComplexSimulation(16);
+    private HalfDuplexComplexSimulation aloha5Sim = new HalfDuplexComplexSimulation(32);
+    private HalfDuplexComplexSimulation aloha6Sim = new HalfDuplexComplexSimulation(64);
+    private HalfDuplexComplexSimulation aloha7Sim = new HalfDuplexComplexSimulation(128);
 
-    public HalfDuplexComplex() {
+    public HalfDuplexComplexGraphicalSimulation() {
 	super(WINDOW_TITLE);
 	aloha0Sim.init();
-//	aloha0Sim.start();
+	aloha0Sim.start();
 
 	aloha1Sim.init();
-//	aloha1Sim.start();
+	aloha1Sim.start();
 
 	aloha2Sim.init();
-//	aloha2Sim.start();
+	aloha2Sim.start();
 
 	aloha3Sim.init();
-//	aloha3Sim.start();
+	aloha3Sim.start();
 
 	aloha4Sim.init();
-//	aloha4Sim.start();
+	aloha4Sim.start();
 
 	aloha5Sim.init();
-//	aloha5Sim.start();
+	aloha5Sim.start();
 
 	aloha6Sim.init();
-//	aloha6Sim.start();
+	aloha6Sim.start();
 
 	aloha7Sim.init();
 	aloha7Sim.start();
@@ -136,7 +139,7 @@ public class HalfDuplexComplex extends AbstractGraphExample {
 
 	    @Override
 	    public void run() {
-		HalfDuplexComplex demo = new HalfDuplexComplex();
+		HalfDuplexComplexGraphicalSimulation demo = new HalfDuplexComplexGraphicalSimulation();
 		demo.pack();
 		RefineryUtilities.centerFrameOnScreen(demo);
 		demo.setVisible(true);
