@@ -7,17 +7,20 @@ import org.jfree.ui.RefineryUtilities;
 import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
-public class AlohaPureConstantGenerator extends AbstractGraphExample {
-    final static String WINDOW_TITLE = "Aloha Simulation with constant traffic generator";
-    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Packets generated at constant rate. Transmitter sends data at once.";
-    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Packets generated at constant rate. Transmitter sends data at once.";
-    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Packets generated at constant rate. Transmitter sends data at once.";
+public class AlohaPureConstantGraphicalSimulation extends AbstractGraphExample {
+    
+    private static final long serialVersionUID = 1042989445720518009L;
+    
+    final static String WINDOW_TITLE = "Aloha pure simulation with constant traffic generator";
+    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250bps. Packets generated at constant rate.";
+    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250bps. Packets generated at constant rate.";
+    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250bps. Packets generated at constant rate.";
 
-    private AlohaConstant1Simulation aloha0Sim = new AlohaConstant1Simulation();
-    private AlohaConstant2Simulation aloha1Sim = new AlohaConstant2Simulation();
-    private AlohaConstant4Simulation aloha2Sim = new AlohaConstant4Simulation();
+    private AlohaConstantSimulation aloha0Sim = new AlohaConstantSimulation(1);
+    private AlohaConstantSimulation aloha1Sim = new AlohaConstantSimulation(2);
+    private AlohaConstantSimulation aloha2Sim = new AlohaConstantSimulation(4);
 
-    public AlohaPureConstantGenerator() {
+    public AlohaPureConstantGraphicalSimulation() {
 	super(WINDOW_TITLE);
 	aloha0Sim.init();
 	aloha0Sim.start();
@@ -69,7 +72,7 @@ public class AlohaPureConstantGenerator extends AbstractGraphExample {
 
 	    @Override
 	    public void run() {
-		AlohaPureConstantGenerator demo = new AlohaPureConstantGenerator();
+		AlohaPureConstantGraphicalSimulation demo = new AlohaPureConstantGraphicalSimulation();
 		demo.pack();
 		RefineryUtilities.centerFrameOnScreen(demo);
 		demo.setVisible(true);
