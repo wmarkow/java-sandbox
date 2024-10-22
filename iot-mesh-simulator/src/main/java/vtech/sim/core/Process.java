@@ -6,7 +6,7 @@ public abstract class Process {
 
     protected final static int EVENT_INIT = 1000;
 
-    private EventScheduler scheduler;
+    protected EventScheduler scheduler;
     private int phase;
 
     public Process() {

@@ -3,6 +3,9 @@ package vtech.sim.iot.mesh.halfduplex;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import vtech.sim.core.Event;
 import vtech.sim.core.Process;
 import vtech.sim.iot.mesh.Medium;
@@ -14,6 +17,9 @@ import vtech.sim.iot.mesh.Transmission;
 import vtech.sim.iot.mesh.Transmitter;
 
 public class HalfDuplexTransceiver extends Process implements MediumListener, Transmitter, Receiver {
+    
+    private final static Logger LOGGER = LoggerFactory.getLogger( HalfDuplexTransceiver.class );
+    
     private final static int EVENT_NEW_PACKET_TO_SEND = 0;
     private final static int EVENT_PACKET_RECEIVING_STARTED = 1;
     private final static int EVENT_PACKET_RECEIVING_FINISHED = 2;
@@ -58,6 +64,8 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 
     @Override
     public void addPacketToSend(Packet packet) {
+	logDebugMessage("New packet arrived to send");
+	
 	packetsToSend.add(packet);
 
 	scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
@@ -91,6 +99,8 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	switch (event.getEventType()) {
 	case EVENT_NEW_PACKET_TO_SEND:
 	    if (medium.isBusy()) {
+		logDebugMessage("Medium is busy");
+
 		scheduleNextExecutionToNow(EVENT_NEW_PACKET_TO_SEND);
 		return;
 	    }
@@ -98,6 +108,7 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	    sendPacket(packetsToSend.remove(0));
 	    break;
 	case EVENT_PACKET_RECEIVING_STARTED:
+	    logDebugMessage("Packet receiving started");
 	    state = State.RX;
 	    break;
 	default:
@@ -110,8 +121,11 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	    break;
 	case EVENT_PACKET_RECEIVING_STARTED:
 	    // collision
+	    logDebugMessage("Packet receiving started (collision)");
 	    break;
 	case EVENT_PACKET_RECEIVING_FINISHED:
+	    logDebugMessage("Packet receiving finished");
+	    
 	    Packet packet = (Packet) event.getParam();
 	    packetsReceived.add(packet);
 	    for (ReceiverListener listener : listeners) {
@@ -136,10 +150,13 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
 	case EVENT_NEW_PACKET_TO_SEND:
 	    break;
 	case EVENT_PACKET_RECEIVING_STARTED:
+	    logDebugMessage("Packet receiving started");
 	    break;
 	case EVENT_PACKET_RECEIVING_FINISHED:
 	    break;
 	case EVENT_PACKET_TRANSMITION_FINISHED:
+	    logDebugMessage("Packet sending finished");
+	    
 	    state = State.IDLE;
 	    
 	    if (packetsToSend.size() == 0) {
@@ -155,6 +172,8 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     }
 
     private void sendPacket(Packet packet) {
+	logDebugMessage("Packet sending started");
+	
 	Transmission transmission = medium.sendPacket(packet, getDataRateBps());
 
 	state = State.TX;
@@ -179,5 +198,15 @@ public class HalfDuplexTransceiver extends Process implements MediumListener, Tr
     @Override
     public int getTransmitterId() {
 	return transmitterId;
+    }
+    
+    private void logDebugMessage(String message)
+    {
+	if(getTransmitterId() != 0)
+	{
+	    return;
+	}
+	
+	LOGGER.debug(String.format("%s %s %s", scheduler.getCurrentMillisTime(), state, message));
     }
 }
