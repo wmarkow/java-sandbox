@@ -18,7 +18,7 @@ public class Comparison extends AbstractGraphExample {
     final static String ALOHA_2_TITLE = "Half-duplex improved, 16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transmitter waits additional random time.";
 
     private AlohaPureSimulation aloha0Sim = new AlohaPureSimulation(16);
-    private HalfDuplex16Simulation aloha1Sim = new HalfDuplex16Simulation();
+    private HalfDuplexSimulation aloha1Sim = new HalfDuplexSimulation(16);
     private HalfDuplexComplex16Simulation aloha2Sim = new HalfDuplexComplex16Simulation();
 
     public Comparison() {

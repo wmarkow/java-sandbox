@@ -7,27 +7,27 @@ import org.jfree.ui.RefineryUtilities;
 import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
-public class HalfDuplex extends AbstractGraphExample {
-    final static String WINDOW_TITLE = "Half-duplex Simulation";
-    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
-    final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250kbps. Half-duplex transceiver.";
+public class HalfDuplexGraphicalSimulation extends AbstractGraphExample {
+    final static String WINDOW_TITLE = "Half-duplex transceiver simulation";
+    final static String ALOHA_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_3_TITLE = "8 stations, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_4_TITLE = "16 stations, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_5_TITLE = "32 stations, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_6_TITLE = "64 stations, 10 packets per second, 32B per packet, 250kbps.";
+    final static String ALOHA_7_TITLE = "128 stations, 10 packets per second, 32B per packet, 250kbps.";
 
-    private HalfDuplex1Simulation aloha0Sim = new HalfDuplex1Simulation();
-    private HalfDuplex2Simulation aloha1Sim = new HalfDuplex2Simulation();
-    private HalfDuplex4Simulation aloha2Sim = new HalfDuplex4Simulation();
-    private HalfDuplex8Simulation aloha3Sim = new HalfDuplex8Simulation();
-    private HalfDuplex16Simulation aloha4Sim = new HalfDuplex16Simulation();
-    private HalfDuplex32Simulation aloha5Sim = new HalfDuplex32Simulation();
-    private HalfDuplex64Simulation aloha6Sim = new HalfDuplex64Simulation();
-    private HalfDuplex128Simulation aloha7Sim = new HalfDuplex128Simulation();
+    private HalfDuplexSimulation aloha0Sim = new HalfDuplexSimulation(1);
+    private HalfDuplexSimulation aloha1Sim = new HalfDuplexSimulation(2);
+    private HalfDuplexSimulation aloha2Sim = new HalfDuplexSimulation(4);
+    private HalfDuplexSimulation aloha3Sim = new HalfDuplexSimulation(8);
+    private HalfDuplexSimulation aloha4Sim = new HalfDuplexSimulation(16);
+    private HalfDuplexSimulation aloha5Sim = new HalfDuplexSimulation(32);
+    private HalfDuplexSimulation aloha6Sim = new HalfDuplexSimulation(64);
+    private HalfDuplexSimulation aloha7Sim = new HalfDuplexSimulation(128);
 
-    public HalfDuplex() {
+    public HalfDuplexGraphicalSimulation() {
 	super(WINDOW_TITLE);
 	aloha0Sim.init();
 	aloha0Sim.start();
@@ -136,7 +136,7 @@ public class HalfDuplex extends AbstractGraphExample {
 
 	    @Override
 	    public void run() {
-		HalfDuplex demo = new HalfDuplex();
+		HalfDuplexGraphicalSimulation demo = new HalfDuplexGraphicalSimulation();
 		demo.pack();
 		RefineryUtilities.centerFrameOnScreen(demo);
 		demo.setVisible(true);
