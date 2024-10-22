@@ -8,15 +8,18 @@ import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 import vtech.sim.iot.mesh.halfduplex.examples.HalfDuplexComplexSimulation;
 
-public class Flooding extends AbstractGraphExample {
-    final static String WINDOW_TITLE = "Simulation";
+public class FloodingGraphicalSimulation extends AbstractGraphExample {
+   
+    private static final long serialVersionUID = -6691610568402718851L;
+    
+    final static String WINDOW_TITLE = "Flooding simulation";
     final static String ALOHA_0_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex complex transceiver.";
     final static String ALOHA_1_TITLE = "16 stations, 10 packets per second, 32B per packet, 250bps. Half-duplex flooding transceiver.";
 
     private HalfDuplexComplexSimulation aloha3Sim = new HalfDuplexComplexSimulation(16);
-    private Flooding16Simulation aloha4Sim = new Flooding16Simulation();
+    private FloodingSimulation aloha4Sim = new FloodingSimulation(16);
 
-    public Flooding() {
+    public FloodingGraphicalSimulation() {
 	super(WINDOW_TITLE);
 	aloha3Sim.init();
 	aloha3Sim.start();
@@ -55,7 +58,7 @@ public class Flooding extends AbstractGraphExample {
 
 	    @Override
 	    public void run() {
-		Flooding demo = new Flooding();
+		FloodingGraphicalSimulation demo = new FloodingGraphicalSimulation();
 		demo.pack();
 		RefineryUtilities.centerFrameOnScreen(demo);
 		demo.setVisible(true);

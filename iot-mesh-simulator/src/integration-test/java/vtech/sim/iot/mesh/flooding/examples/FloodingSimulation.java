@@ -3,8 +3,14 @@ package vtech.sim.iot.mesh.flooding.examples;
 import vtech.sim.iot.mesh.MeshSimulation;
 import vtech.sim.iot.mesh.flooding.FloodingDevice;
 
-public class Flooding16Simulation extends MeshSimulation {
+public class FloodingSimulation extends MeshSimulation {
 
+    private int numberOfDevices;
+
+    public FloodingSimulation(int numberOfDevices) {
+	this.numberOfDevices = numberOfDevices;
+    }
+    
     @Override
     protected void prepareDevices() {
 	for (int q = 0; q < 16; q++) {
@@ -13,7 +19,7 @@ public class Flooding16Simulation extends MeshSimulation {
     }
 
     public static void main(String[] args) {
-	Flooding16Simulation sim = new Flooding16Simulation();
+	FloodingSimulation sim = new FloodingSimulation(16);
 	sim.init();
 	sim.start();
     }
