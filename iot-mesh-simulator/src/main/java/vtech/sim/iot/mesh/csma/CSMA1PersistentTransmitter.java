@@ -119,9 +119,9 @@ public class CSMA1PersistentTransmitter extends Process implements MediumListene
     private void sendPacket(Packet packet) {
 	logDebugMessage("Packet sending started");
 
+	state = State.TX;
 	Transmission transmission = medium.sendPacket(packet, getDataRateBps());
 
-	state = State.TX;
 	scheduleNextExecution(transmission.getTransmissionDurationInMillis(), EVENT_PACKET_TRANSMITION_FINISHED);
     }
 
