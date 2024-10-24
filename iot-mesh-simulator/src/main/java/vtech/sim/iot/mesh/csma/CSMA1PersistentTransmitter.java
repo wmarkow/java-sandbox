@@ -83,7 +83,6 @@ public class CSMA1PersistentTransmitter extends Process implements MediumListene
 	    if (medium.isBusy()) {
 		logDebugMessage("Medium is busy");
 
-		scheduleNextExecution(0.000001, EVENT_NEW_PACKET_TO_SEND);
 		return;
 	    }
 
@@ -98,7 +97,6 @@ public class CSMA1PersistentTransmitter extends Process implements MediumListene
 	case EVENT_NEW_PACKET_TO_SEND:
 	    break;
 	case EVENT_PACKET_RECEIVING_FINISHED:
-	    break;
 	case EVENT_PACKET_TRANSMITION_FINISHED:
 	    logDebugMessage("Packet sending finished");
 
