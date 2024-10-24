@@ -26,9 +26,17 @@ public abstract class MeshSimulation extends Simulation {
     public double getMediumBusyPercentage() {
 	return medium.getMediumBusyPercentage();
     }
+    
+    public double getMediumBusySuccessPercentage() {
+	return medium.getMediumBusySuccessPercentage();
+    }
 
     public double getCollidedPacketsPercentage() {
 	return medium.getCollidedPacketsPercentage();
+    }
+    
+    public double getDeliveredPacketsPercentage() {
+	return medium.getDeliveredPacketsPercentage();
     }
 
     public double getOutgoingQueueSize() {

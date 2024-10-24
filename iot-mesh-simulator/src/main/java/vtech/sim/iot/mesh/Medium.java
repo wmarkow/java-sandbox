@@ -10,7 +10,8 @@ public class Medium extends Process {
 
     private final static int EVENT_PROCESS = 0;
 
-    private volatile double mediumBusySummaryTimeInMillis = 0;
+    private volatile double mediumBusyTotalTimeInMillis = 0;
+    private volatile double mediumBusySuccessTimeInMillis = 0;
     private volatile Double mediumStartedBusyInMillis = null;
 
     private long lastPrintTimeInMillis = 0;
@@ -98,11 +99,15 @@ public class Medium extends Process {
 		if (tr.isCollision()) {
 		    packetsCollided++;
 		}
+		else
+		{
+		    mediumBusySuccessTimeInMillis += tr.getTransmissionDurationInMillis();
+		}
 	    }
 	}
 
 	if (currentTransmissions.size() == 0 && mediumStartedBusyInMillis != null) {
-	    mediumBusySummaryTimeInMillis += (getCurrentMillisTime() - mediumStartedBusyInMillis);
+	    mediumBusyTotalTimeInMillis += (getCurrentMillisTime() - mediumStartedBusyInMillis);
 	    mediumStartedBusyInMillis = null;
 	}
     }
@@ -139,16 +144,25 @@ public class Medium extends Process {
 	System.out.println("Packets sent           : " + packetsSent);
 	System.out.println("Packets collision      : " + packetsCollided);
 	System.out.println("Packets collision   [%]: " + getCollidedPacketsPercentage());
-	System.out.println("Medium busy        [ms]: " + mediumBusySummaryTimeInMillis);
+	System.out.println("Medium busy        [ms]: " + mediumBusyTotalTimeInMillis);
 	System.out.println("Medium busy         [%]: " + getMediumBusyPercentage());
+	System.out.println("Medium busy success [%]: " + getMediumBusySuccessPercentage());
 	System.out.println("");
     }
 
     public double getMediumBusyPercentage() {
-	return 100 * mediumBusySummaryTimeInMillis / getCurrentMillisTime();
+	return 100 * mediumBusyTotalTimeInMillis / getCurrentMillisTime();
+    }
+    
+    public double getMediumBusySuccessPercentage() {
+	return 100 * mediumBusySuccessTimeInMillis / getCurrentMillisTime();
     }
 
     public double getCollidedPacketsPercentage() {
 	return 100.0 * (packetsCollided) / (packetsSent);
+    }
+    
+    public double getDeliveredPacketsPercentage() {
+	return 100.0 * (packetsSent - packetsCollided) / (packetsSent);
     }
 }
