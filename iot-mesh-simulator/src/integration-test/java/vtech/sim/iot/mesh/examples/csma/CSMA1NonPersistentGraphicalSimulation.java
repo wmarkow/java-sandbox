@@ -7,11 +7,11 @@ import org.jfree.ui.RefineryUtilities;
 import vtech.sim.iot.mesh.examples.AbstractGraphExample;
 import vtech.sim.iot.mesh.examples.SimulationGraphInfo;
 
-public class CSMA1PersistentGraphicalSimulation extends AbstractGraphExample {
+public class CSMA1NonPersistentGraphicalSimulation extends AbstractGraphExample {
 
     private static final long serialVersionUID = 1907903696069975751L;
 
-    final static String WINDOW_TITLE = "CSMA 1-persistent transmitter simulation with Poisson traffic generator";
+    final static String WINDOW_TITLE = "CSMA 1-Nonpersistent transmitter simulation with Poisson traffic generator";
     final static String SIM_0_TITLE = "1 station, 10 packets per second, 32B per packet, 250kbps.";
     final static String SIM_1_TITLE = "2 stations, 10 packets per second, 32B per packet, 250kbps.";
     final static String SIM_2_TITLE = "4 stations, 10 packets per second, 32B per packet, 250kbps.";
@@ -23,18 +23,18 @@ public class CSMA1PersistentGraphicalSimulation extends AbstractGraphExample {
     final static String SIM_8_TITLE = "128 stations, 10 packets per second, 32B per packet, 250kbps.";
     final static String SIM_9_TITLE = "256 stations, 10 packets per second, 32B per packet, 250kbps.";
 
-    private CSMA1PersistentSimulation sim0 = new CSMA1PersistentSimulation(1);
-    private CSMA1PersistentSimulation sim1 = new CSMA1PersistentSimulation(2);
-    private CSMA1PersistentSimulation sim2 = new CSMA1PersistentSimulation(4);
-    private CSMA1PersistentSimulation sim3 = new CSMA1PersistentSimulation(8);
-    private CSMA1PersistentSimulation sim4 = new CSMA1PersistentSimulation(16);
-    private CSMA1PersistentSimulation sim5 = new CSMA1PersistentSimulation(32);
-    private CSMA1PersistentSimulation sim6 = new CSMA1PersistentSimulation(64);
-    private CSMA1PersistentSimulation sim7 = new CSMA1PersistentSimulation(97);
-    private CSMA1PersistentSimulation sim8 = new CSMA1PersistentSimulation(128);
-    private CSMA1PersistentSimulation sim9 = new CSMA1PersistentSimulation(256);
+    private CSMA1NonPersistentSimulation sim0 = new CSMA1NonPersistentSimulation(1);
+    private CSMA1NonPersistentSimulation sim1 = new CSMA1NonPersistentSimulation(2);
+    private CSMA1NonPersistentSimulation sim2 = new CSMA1NonPersistentSimulation(4);
+    private CSMA1NonPersistentSimulation sim3 = new CSMA1NonPersistentSimulation(8);
+    private CSMA1NonPersistentSimulation sim4 = new CSMA1NonPersistentSimulation(16);
+    private CSMA1NonPersistentSimulation sim5 = new CSMA1NonPersistentSimulation(32);
+    private CSMA1NonPersistentSimulation sim6 = new CSMA1NonPersistentSimulation(64);
+    private CSMA1NonPersistentSimulation sim7 = new CSMA1NonPersistentSimulation(97);
+    private CSMA1NonPersistentSimulation sim8 = new CSMA1NonPersistentSimulation(128);
+    private CSMA1NonPersistentSimulation sim9 = new CSMA1NonPersistentSimulation(256);
 
-    public CSMA1PersistentGraphicalSimulation() {
+    public CSMA1NonPersistentGraphicalSimulation() {
 	super(WINDOW_TITLE);
 	sim0.init();
 	sim0.start();
@@ -174,7 +174,7 @@ public class CSMA1PersistentGraphicalSimulation extends AbstractGraphExample {
 
 	    @Override
 	    public void run() {
-		CSMA1PersistentGraphicalSimulation demo = new CSMA1PersistentGraphicalSimulation();
+		CSMA1NonPersistentGraphicalSimulation demo = new CSMA1NonPersistentGraphicalSimulation();
 		demo.pack();
 		RefineryUtilities.centerFrameOnScreen(demo);
 		demo.setVisible(true);
