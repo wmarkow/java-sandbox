@@ -169,7 +169,7 @@ public class CSMA1NonPersistentTransmitter extends Process implements MediumList
     }
 
     private void logDebugMessage(String message) {
-	if (getTransmitterId() != 0) {
+	if (getTransmitterId() != -1) {
 	    return;
 	}
 

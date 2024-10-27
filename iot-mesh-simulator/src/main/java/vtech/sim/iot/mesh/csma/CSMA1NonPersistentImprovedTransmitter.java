@@ -171,7 +171,7 @@ public class CSMA1NonPersistentImprovedTransmitter extends Process implements Me
     }
 
     private void logDebugMessage(String message) {
-	if (getTransmitterId() != 0) {
+	if (getTransmitterId() != -1) {
 	    return;
 	}
 
