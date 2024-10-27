@@ -144,7 +144,7 @@ public class CSMA1PersistentTransmitter extends Process implements MediumListene
     }
 
     private void logDebugMessage(String message) {
-	if (getTransmitterId() != 0) {
+	if (getTransmitterId() != -1) {
 	    return;
 	}
 
