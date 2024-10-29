@@ -156,6 +156,43 @@ public class AlohaPureGraphicalSimulation extends AbstractGraphExample {
 
 	return result;
     }
+    
+    @Override
+    protected double getSeriesCurrentTimeMillis(int graphIndex) {
+	if (graphIndex == 0) {
+	    return aloha0Sim.getCurrentMillisTime();
+	}
+
+	if (graphIndex == 1) {
+	    return aloha1Sim.getCurrentMillisTime();
+	}
+	
+	if (graphIndex == 2) {
+	    return aloha2Sim.getCurrentMillisTime();
+	}
+	
+	if (graphIndex == 3) {
+	    return aloha3Sim.getCurrentMillisTime();
+	}
+	
+	if (graphIndex == 4) {
+	    return aloha4Sim.getCurrentMillisTime();
+	}
+	
+	if (graphIndex == 5) {
+	    return aloha5Sim.getCurrentMillisTime();
+	}
+	
+	if (graphIndex == 6) {
+	    return aloha6Sim.getCurrentMillisTime();
+	}
+	
+	if (graphIndex == 7) {
+	    return aloha7Sim.getCurrentMillisTime();
+	}
+
+	return aloha8Sim.getCurrentMillisTime();
+    }
 
     public static void main(final String[] args) {
 	EventQueue.invokeLater(new Runnable() {

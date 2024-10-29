@@ -66,6 +66,19 @@ public class AlohaPureConstantGraphicalSimulation extends AbstractGraphExample {
 
 	return result;
     }
+    
+    @Override
+    protected double getSeriesCurrentTimeMillis(int graphIndex) {
+	if (graphIndex == 0) {
+	    return aloha0Sim.getCurrentMillisTime();
+	}
+
+	if (graphIndex == 1) {
+	    return aloha1Sim.getCurrentMillisTime();
+	}
+
+	return aloha2Sim.getCurrentMillisTime();
+    }
 
     public static void main(final String[] args) {
 	EventQueue.invokeLater(new Runnable() {

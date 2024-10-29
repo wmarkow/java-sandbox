@@ -32,6 +32,10 @@ public abstract class Simulation {
 	}).start();
     }
 
+    public double getCurrentMillisTime() {
+	return scheduler.getCurrentMillisTime();
+    }
+
     protected EventScheduler getEventScheduler() {
 	return scheduler;
     }
